@@ -18,5 +18,8 @@
         <checkout>
             <request>rpay/v1/checkout</request>
         </checkout>
+        <pooling>
+            <request>rpay/v1/charges</request>
+        </pooling>
     </services>
 </Resources>

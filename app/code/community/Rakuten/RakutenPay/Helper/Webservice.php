@@ -112,4 +112,10 @@ class Rakuten_RakutenPay_Helper_Webservice extends Rakuten_RakutenPay_Helper_Dat
             throw new Exception($e->getMessage());
         }
     }
+
+    public function poolingRequest($chargeId)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info("Processing poolingRequest in HelperWebservice", ['service' => "Webservice.Pooling"]);
+        return \Rakuten\Connector\Services\Pooling\OrderStatus::check($chargeId);
+    }
 }

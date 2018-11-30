@@ -41,13 +41,13 @@ class Rakuten_RakutenLogistics_Model_Shipping_Carrier_RakutenLogistics
      */
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing collectRates in RakutenLogistics');
         $isActive = (bool) Mage::getStoreConfig('carriers/rakutenlogistics_settings/active');
 
         if (false === $isActive) {
             return $isActive;
-        } 
-        
+        }
+
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing collectRates in RakutenLogistics');
         $result = Mage::getModel('shipping/rate_result');
 
         $webserviceHelper = Mage::helper('rakutenlogistics/webservice');

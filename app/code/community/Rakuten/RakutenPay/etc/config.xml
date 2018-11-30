@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Rakuten_RakutenPay>
-            <version>1.2.5</version>
+            <version>1.2.6</version>
         </Rakuten_RakutenPay>
     </modules>
     <global>
@@ -148,14 +148,6 @@
             </updates>
         </layout>
         <events>
-            <sales_order_grid_collection_load_before>
-                <observers>
-                    <rakuten_rakutenpay>
-                        <model>rakuten_rakutenpay/observer</model>
-                        <method>salesOrderGridCollectionLoadBefore</method>
-                    </rakuten_rakutenpay>
-                </observers>
-            </sales_order_grid_collection_load_before>
             <admin_system_config_changed_section_payment>
                 <observers>
                     <rakuten_rakutenpay>
@@ -201,6 +193,11 @@
         </layout>
     </frontend>
     <default>
+        <cron>
+            <update_order_status>
+                <active>0</active>
+            </update_order_status>
+        </cron>
         <payment>
             <rakutenpay_credit_card>
                 <active>0</active>
@@ -220,5 +217,17 @@
             </rakutenpay_boleto>
         </payment>
     </default>
+    <crontab>
+        <jobs>
+            <rakuten_rakutenpay>
+                <schedule>
+                    <cron_expr>*/1 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>rakuten_rakutenpay/cron_orderstatus::updateOrderStatus</model>
+                </run>
+            </rakuten_rakutenpay>
+        </jobs>
+    </crontab>
 </config>
 

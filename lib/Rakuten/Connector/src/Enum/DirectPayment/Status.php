@@ -17,31 +17,22 @@
  ************************************************************************
  */
 
-namespace Rakuten\Connector\Resources\Connection;
+namespace Rakuten\Connector\Enum\DirectPayment;
+
+use Rakuten\Connector\Enum\Enum;
 
 /**
- * Class Data
- * @package Rakuten\Connector\Resources\Connection
+ * Class Status
+ * @package Rakuten\Connector\Enum\DirectPayment
  */
-class Data
+class Status extends Enum
 {
-    use Base\Checkout\Payment;
-    use Base\DirectPayment\Payment;
-    use Base\Checkout;
-    use Base\Notification;
-    use Base\Refund;
-    use Base\Cancel;
-    use Base\Pooling\OrderStatus;
-    use Base\Transaction\Search {
-        Base\Transaction\Search::buildSearchRequestUrl as buildTransactionSearchRequestUrl;
-    }
-
-    /**
-     * @param $data
-     * @return string
-     */
-    public function buildHttpUrl($data)
-    {
-        return http_build_query($data);
-    }
+    const PENDING = "pending";
+    const AUTHORIZED = "em_analise_rp";
+    const APPROVED = "paga_rp";
+    const COMPLETED = "disponivel_rp";
+    const CHARGEBACK = "devolvida_rp";
+    const CANCELLED = "cancelada_rp";
+    const REFUNDED = "chargeback_debitado_rp";
+    const PARTIAL_REFUNDED = "chargeback_parcial_debitado_rp";
 }

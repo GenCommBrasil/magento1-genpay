@@ -22,17 +22,20 @@
  */
 function validateRakutenPayActiveMethod() {
     //OSCPayment.currentMethod
-    switch (document.querySelector('#checkout-payment-method-load .radio:checked').value) {
-        case "rakutenpay_credit_card":
-            return validateCreditCardFormOneStepCheckout();
-            break;
-        case "rakutenpay_boleto":
-            return validateBoletoFormOneStepCheckout();
-            break;
-        default:
-            return true;
-            break;
+    if(typeof(document.querySelector('#checkout-payment-method-load .radio:checked').value) !== "undefined") {
+        switch (document.querySelector('#checkout-payment-method-load .radio:checked').value) {
+            case "rakutenpay_credit_card":
+                return validateCreditCardFormOneStepCheckout();
+                break;
+            case "rakutenpay_boleto":
+                return validateBoletoFormOneStepCheckout();
+                break;
+            default:
+                return true;
+                break;
+        }
     }
+    return false;
 }
 
 /**
@@ -69,7 +72,7 @@ function addCardFieldsObserver() {
             updateBilletFingerprint();
         }
     } catch(e) {
-        console.error('Não foi possível adicionar observação aos cartões. ' + e.message);
+        // console.error('Não foi possível adicionar observação aos cartões. ' + e.message);
     }
 }
 
@@ -176,9 +179,7 @@ OnestepcheckoutShipment.prototype.switchToMethod = OnestepcheckoutShipment.proto
     });
 
 OnestepcheckoutForm.prototype.validate = OnestepcheckoutForm.prototype.validate.wrap(function (validate) {
-    if (validateRakutenPayActiveMethod()) {
-        return validate;
-    }
+    return validate() && validateRakutenPayActiveMethod();
 });
 
 addCardFieldsObserver();
