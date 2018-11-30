@@ -192,13 +192,13 @@ function validateCreditCardCode(self) {
 
 function validateCreditCardForm(save) {
   if (
-    validateCreditCard(document.querySelector('#creditCardNum')) &&
-    validateDocument(document.querySelector('#creditCardDocument')) &&
-    validateCardHolder(document.querySelector('#creditCardHolder')) &&
-    validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
-    validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
-    validateCreditCardCode(document.querySelector('#creditCardCode')) &&
-    validateCreditCardInstallment(document.querySelector('#card_installment_option'))
+      validateCreditCard(document.querySelector('#creditCardNum')) &&
+      validateCreditCardCode(document.querySelector('#creditCardCode')) &&
+      validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
+      validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
+      validateCardHolder(document.querySelector('#creditCardHolder')) &&
+      validateDocument(document.querySelector('#creditCardDocument')) &&
+     validateCreditCardInstallment(document.querySelector('#card_installment_option'))
   ) {
 
     createCardToken(save);
@@ -206,11 +206,11 @@ function validateCreditCardForm(save) {
   }
 
   validateCreditCard(document.querySelector('#creditCardNum'))
-  validateDocument(document.querySelector('#creditCardDocument'))
-  validateCardHolder(document.querySelector('#creditCardHolder'))
+  validateCreditCardCode(document.querySelector('#creditCardCode'))
   validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
   validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
-  validateCreditCardCode(document.querySelector('#creditCardCode'))
+  validateCardHolder(document.querySelector('#creditCardHolder'))
+  validateDocument(document.querySelector('#creditCardDocument'))
   validateCreditCardInstallment(document.querySelector('#card_installment_option'))
   return false;
 }
@@ -218,11 +218,11 @@ function validateCreditCardForm(save) {
 function validateCreditCardFormOneStepCheckout() {
     if (
         validateCreditCard(document.querySelector('#creditCardNumVisible')) &&
-        validateDocument(document.querySelector('#creditCardDocument')) &&
-        validateCardHolder(document.querySelector('#creditCardHolder')) &&
+        validateCreditCardCode(document.querySelector('#creditCardCode')) &&
         validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
         validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
-        validateCreditCardCode(document.querySelector('#creditCardCode')) &&
+        validateCardHolder(document.querySelector('#creditCardHolder')) &&
+        validateDocument(document.querySelector('#creditCardDocument')) &&
         validateCreditCardInstallment(document.querySelector('#card_installment_option')) &&
         validateHiddenFields()
     ) {
