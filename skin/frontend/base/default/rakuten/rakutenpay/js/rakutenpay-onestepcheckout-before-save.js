@@ -179,6 +179,19 @@ OnestepcheckoutShipment.prototype.switchToMethod = OnestepcheckoutShipment.proto
     });
 
 OnestepcheckoutForm.prototype.validate = OnestepcheckoutForm.prototype.validate.wrap(function (validate) {
+
+    var paymentMethod = document.querySelector('#checkout-payment-method-load .radio:checked').value;
+
+    if (paymentMethod === "rakutenpay_credit_card") {
+        var creditCardNum = document.querySelector('#creditCardNumVisible');
+        var creditCardMonth = document.querySelector('#creditCardExpirationMonth');
+        var creditCardYear = document.querySelector('#creditCardExpirationYear');
+
+        updateCreditCardToken(creditCardNum.value, creditCardMonth.value, creditCardYear.value);
+    } else if (paymentMethod === "rakutenpay_boleto") {
+        updateBilletFingerprint();
+    }
+
     return validate() && validateRakutenPayActiveMethod();
 });
 
