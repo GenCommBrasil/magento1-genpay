@@ -195,7 +195,7 @@
     <default>
         <cron>
             <update_order_status>
-                <active>0</active>
+                <active>1</active>
             </update_order_status>
         </cron>
         <payment>
@@ -224,7 +224,7 @@
                     <cron_expr>*/1 * * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>rakuten_rakutenpay/cron_orderstatus::updateOrderStatus</model>
+                    <model>rakuten_rakutenpay/cron_orderStatus::updateOrderStatus</model>
                 </run>
             </rakuten_rakutenpay>
         </jobs>
