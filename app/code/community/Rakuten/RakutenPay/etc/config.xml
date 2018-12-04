@@ -195,7 +195,7 @@
     <default>
         <cron>
             <update_order_status>
-                <active>1</active>
+                <active>0</active>
             </update_order_status>
         </cron>
         <payment>
