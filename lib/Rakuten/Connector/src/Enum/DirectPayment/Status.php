@@ -27,12 +27,12 @@ use Rakuten\Connector\Enum\Enum;
  */
 class Status extends Enum
 {
+    const APPROVED = "processing";
     const PENDING = "pending";
-    const AUTHORIZED = "em_analise_rp";
-    const APPROVED = "paga_rp";
-    const COMPLETED = "disponivel_rp";
-    const CHARGEBACK = "devolvida_rp";
-    const CANCELLED = "cancelada_rp";
-    const REFUNDED = "chargeback_debitado_rp";
-    const PARTIAL_REFUNDED = "chargeback_parcial_debitado_rp";
+    const AUTHORIZED = "payment_review";
+    const COMPLETED = "completed";
+    const CANCELLED = "canceled";
+    const CHARGEBACK = "canceled";
+    const REFUNDED = "closed";
+    const PARTIAL_REFUNDED = "closed";
 }
