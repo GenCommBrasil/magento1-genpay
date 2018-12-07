@@ -132,11 +132,7 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
                 ) {
                     if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
                         if (Mage::getSingleton('core/session')->getData("store_id") == $orderHandler->getStoreId()) {
-                            if ($orderHandler->getStatus() == "paga_rp"
-                                    or $orderHandler->getStatus() == 'em_disputa_rp'
-                                    or $orderHandler->getStatus() == 'disponivel_rp'
-                                    or $orderHandler->getStatus() == 'chargeback_parcial_debitado_rp'
-                            ) {
+                            if ($orderHandler->getStatus() == \Rakuten\Connector\Enum\DirectPayment\Status::APPROVED) {
                                 $RakutenPaySummaryItem = $this->findRakutenPayTransactionByReference(
                                         $orderHandler->getEntityId()
                                 );
@@ -146,11 +142,7 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
                             }
                         }
                     } elseif ($orderHandler) {
-                        if ($orderHandler->getStatus() == "paga_rp"
-                                or $orderHandler->getStatus() == 'em_disputa_rp'
-                                or $orderHandler->getStatus() == 'disponivel_rp'
-                                or $orderHandler->getStatus() == 'chargeback_parcial_debitado_rp'
-                        ) {
+                        if ($orderHandler->getStatus() == \Rakuten\Connector\Enum\DirectPayment\Status::APPROVED) {
                             $RakutenPaySummaryItem = $this->findRakutenPayTransactionByReference(
                                     $orderHandler->getEntityId()
                             );

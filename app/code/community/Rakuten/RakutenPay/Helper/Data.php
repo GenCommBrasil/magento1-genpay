@@ -40,13 +40,13 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
      */
     private $arrayPaymentStatusList = array(
         "pending" => "pending",
-        "authorized" => "em_analise_rp",
-        "approved" => "paga_rp",
-        "completed" => "disponivel_rp",
-        "chargeback" => "devolvida_rp",
-        "cancelled" => "cancelada_rp",
-        "refunded" => "chargeback_debitado_rp",
-        "partial_refunded" => "chargeback_parcial_debitado_rp"
+        "authorized" => "payment_review",
+        "approved" => "processing",
+        "completed" => "complete",
+        "chargeback" => "canceled",
+        "cancelled" => "canceled",
+        "refunded" => "closed",
+        "partial_refunded" => "closed"
     );
 
     /**
@@ -326,24 +326,16 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             switch ($this->arrayPaymentStatusList[$key]) {
                 case 'pending':
                     return $this->__('Pendente');
-                case 'aguardando_pagamento_rp':
-                    return $this->__('Aguardando pagamento');
-                case 'em_analise_rp':
-                    return $this->__('Em an&aacute;lise');
-                case 'paga_rp':
-                    return $this->__('Paga');
-                case 'disponivel_rp':
-                    return $this->__('Dispon&iacute;vel');
-                case 'em_disputa_rp':
-                    return $this->__('Em disputa');
-                case 'devolvida_rp':
-                    return $this->__('Devolvida');
-                case 'cancelada_rp':
-                    return $this->__('Cancelada');
-                case 'chargeback_debitado_rp':
-                    return $this->__('Chargeback Debitado');
-                case 'em_contestacao_rp':
-                    return $this->__('Em Contestação');
+                case 'payment_review':
+                    return $this->__('Análise de Pagamento');
+                case 'processing':
+                    return $this->__('Processando');
+                case 'canceled':
+                    return $this->__('Cancelado');
+                case 'complete':
+                    return $this->__('Completo');
+                case 'closed':
+                    return $this->__('Fechado');
             }
         }
 
@@ -452,7 +444,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
                     ['service' => 'WEBHOOK']
                 );
                 $this
-                    ->notifyCustomer($orderId, $orderStatus, $orderStatus == 'chargeback_debitado_rp');
+                    ->notifyCustomer($orderId, $orderStatus, $orderStatus == 'canceled');
 
                 Mage::helper('rakutenpay/log')
                 ->setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus);

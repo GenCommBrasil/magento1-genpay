@@ -70,31 +70,30 @@ class Rakuten_RakutenPay_Model_Observer
 
             \Rakuten\Connector\Resources\Log\Logger::info('Processing admin orderAfterSave');
 
-            $OldStatus=$order->getOrigData('status');
-            $NewStatus=$order->getStatus();
+            $oldStatus = $order->getOrigData('status');
+            $newStatus = $order->getStatus();
 
-            \Rakuten\Connector\Resources\Log\Logger::info(sprintf('OldStatus: %s', $OldStatus));
-            \Rakuten\Connector\Resources\Log\Logger::info(sprintf('NewStatus: %s', $NewStatus));
+            \Rakuten\Connector\Resources\Log\Logger::info(sprintf('OldStatus: %s', $oldStatus));
+            \Rakuten\Connector\Resources\Log\Logger::info(sprintf('NewStatus: %s', $newStatus));
 
-            if($OldStatus!=$NewStatus){
-                $magentoCancelStatus = array('chargeback', 'refunded', 'canceled');
-                $rpayCancelStatus = array('chargeback_debitado_rp', 'devolvida_rp');
+            if ($oldStatus != $newStatus) {
+                $magentoCancelStatus = array('canceled', 'closed');
 
-                if(in_array($NewStatus, $magentoCancelStatus) && !in_array($OldStatus, $rpayCancelStatus)){
-                    if ($paymentMethod === 'rakutenpay_boleto' && $OldStatus === 'pending') {
+                if (in_array($newStatus, $magentoCancelStatus)) {
+                    if ($paymentMethod === 'rakutenpay_boleto' && $oldStatus === 'pending') {
                         $cancel =
                             Mage::helper('rakutenpay')
                             ->updateOrderStatusMagentoCancel(
                                 $order->getId(),
                                 $order->getPayment()->getAdditionalInformation('rakutenpay_id'),
-                                $NewStatus);
+                                $newStatus);
                     } else {
                         $cancel =
                             Mage::helper('rakutenpay')
                             ->updateOrderStatusMagentoRefund(
                                 $order->getId(),
                                 $order->getPayment()->getAdditionalInformation('rakutenpay_id'),
-                                $NewStatus,
+                                $newStatus,
                                 (float)$order->getGrandTotal());
                     }
                 }
