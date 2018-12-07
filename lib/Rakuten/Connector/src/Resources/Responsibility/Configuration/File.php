@@ -43,8 +43,7 @@ class File implements Handler
             return array_merge(
                 \Rakuten\Connector\Helpers\Wrapper::environment($wrapper),
                 \Rakuten\Connector\Helpers\Wrapper::credentials($wrapper),
-                \Rakuten\Connector\Helpers\Wrapper::charset($wrapper),
-                \Rakuten\Connector\Helpers\Wrapper::log($wrapper)
+                \Rakuten\Connector\Helpers\Wrapper::charset($wrapper)
             );
         }
         return $this->handler($action, $class);

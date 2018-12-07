@@ -42,8 +42,7 @@ class Wrapper implements Handler
             return array_merge(
                 \Rakuten\Connector\Helpers\Wrapper::environment($configWrapper),
                 \Rakuten\Connector\Helpers\Wrapper::credentials($configWrapper),
-                \Rakuten\Connector\Helpers\Wrapper::charset($configWrapper),
-                \Rakuten\Connector\Helpers\Wrapper::log($configWrapper)
+                \Rakuten\Connector\Helpers\Wrapper::charset($configWrapper)
             );
         }
         return $this->successor->handler($action, $class);

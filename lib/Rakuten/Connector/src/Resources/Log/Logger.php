@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Resources\Log;
 
 use Rakuten\Connector\Enum\Log\Level;
+use Rakuten\Connector\Exception\ConnectorException;
 
 /**
  * It simply delegates all log-level-specific methods to the `log` method to
@@ -30,6 +31,11 @@ class Logger implements LoggerInterface
 {
 
     const DEFAULT_FILE = "RakutenConnector.Log";
+
+    /**
+     * @var string
+     */
+    private static $logString = "";
 
     /**
      * System is unusable.
@@ -150,21 +156,33 @@ class Logger implements LoggerInterface
      * @param mixed $level
      * @param string $message
      * @param array $context
-     * @return bool
-     * @throws \Exception
+     * @return bool|null
+     * @throws ConnectorException
      */
     public static function log($level, $message, array $context = array())
     {
-
-        if (!self::active()) {
-            return false;
-        }
-
         try {
             self::write(self::location(), self::message($level, $message, $context));
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             throw $exception;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public static function getContent()
+    {
+        return self::$logString;
+    }
+
+    /**
+     * Verify if has a location in configuration file
+     * @return string
+     */
+    public static function location()
+    {
+        return sprintf("%1s/../%1s", '', self::DEFAULT_FILE);
     }
 
     /**
@@ -191,45 +209,29 @@ class Logger implements LoggerInterface
      * Write in file
      * @param $file
      * @param $message
-     * @throws \Exception
+     * @throws ConnectorException
      */
     private static function write($file, $message)
     {
-        $isWrite = file_put_contents($file, $message, FILE_APPEND | LOCK_EX);
-        if (false === $isWrite) {
-           throw new \Exception('Error: Could not write to log.');
+        self::$logString .= $message;
+        if (self::isFileWrite()) {
+            $isWrite = file_put_contents($file, $message, FILE_APPEND | LOCK_EX);
+            if (false === $isWrite) {
+                throw new ConnectorException('Error: Could not write to log.');
+            }
         }
     }
 
-
     /**
-     * Verify if the log option in configuration file is active
      * @return bool
      */
-    public static function active()
+    private static function isFileWrite()
     {
-        return \Rakuten\Connector\Configuration\Configure::getLog()->getActive();
-    }
-
-    public static function filepath()
-    {
-        if (\Rakuten\Connector\Configuration\Configure::getLog()->getLocation()) {
-            return \Rakuten\Connector\Configuration\Configure::getLog()->getLocation();
-        } else {
-            return self::DEFAULT_FILE;
+        $fileWrite = (int) \Mage::getConfig()->getNode('default/log/file_write/active');
+        if ($fileWrite == 1) {
+            return true;
         }
-    }
 
-    /**
-     * Verify if has a location in configuration file
-     * @return string
-     */
-    private static function location()
-    {
-        if (\Rakuten\Connector\Configuration\Configure::getLog()->getLocation()) {
-            return \Rakuten\Connector\Configuration\Configure::getLog()->getLocation() . '/' . self::DEFAULT_FILE;
-        } else {
-            return sprintf("%1s/../%1s", '', self::DEFAULT_FILE);
-        }
+        return false;
     }
 }

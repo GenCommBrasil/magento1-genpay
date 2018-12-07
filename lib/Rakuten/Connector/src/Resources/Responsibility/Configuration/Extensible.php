@@ -95,16 +95,4 @@ class Extensible implements Handler
             )
         ];
     }
-
-    private function log()
-    {
-        //Loading XML configuration file.
-        $xml = simplexml_load_file(RP_CONFIG)->log;
-        return [
-            'log' => [
-                'active' => current($xml->active),
-                'location' => current($xml->location)
-            ]
-        ];
-    }
 }

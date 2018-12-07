@@ -27,21 +27,26 @@ use Rakuten\Connector\Resources\Log\Logger;
  */
 class ConnectorException extends \Exception
 {
-    // Redefine a exceção de forma que a mensagem não seja opcional
-    public function __construct($message, $code = 0, \Exception $previous = null) {
-        // código
-
-        // garante que tudo está corretamente inicializado
+    /**
+     * ConnectorException constructor.
+     * @param $message
+     * @param int $code
+     * @param \Exception|null $previous
+     */
+    public function __construct($message, $code = 0, \Exception $previous = null)
+    {
         parent::__construct($message, $code, $previous);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-//        $teste = ob_get_contents();
-//        ob_end_clean();
-//        $file = \Rakuten\Connector\Configuration\Configure::getLog()->getLocation() . '/' . Logger::DEFAULT_FILE;
-//        $isWrite = file_put_contents($file, $teste, FILE_APPEND | LOCK_EX);
-//        return $teste;
+        Logger::error($this->getMessage(), ['service' => 'Exception']);
+        $file = Logger::location();
+        file_put_contents($file, Logger::getContent(), FILE_APPEND | LOCK_EX);
 
+        return $this->getMessage();
     }
 }

@@ -48,8 +48,7 @@ class Environment implements Handler
             return array_merge(
                 $this->environment(),
                 $this->credentials(),
-                $this->charset(),
-                $this->log()
+                $this->charset()
             );
         }
         return $this->successor->handler($action, $class);
@@ -93,16 +92,6 @@ class Environment implements Handler
     {
         return [
             'charset' => getenv(\Rakuten\Connector\Enum\Configuration\Environment::CHARSET)
-        ];
-    }
-
-    private function log()
-    {
-        return [
-            'log' => [
-                'active' => getenv(\Rakuten\Connector\Enum\Configuration\Environment::LOG_ACTIVE),
-                'location' => getenv(\Rakuten\Connector\Enum\Configuration\Environment::LOG_LOCATION)
-            ]
         ];
     }
 }

@@ -31,18 +31,7 @@ class Rakuten_RakutenPay_Helper_Log
         $module = 'RakutenPayAbandoned.';
         $phrase = "Mail( SendEmailAbandoned: array (\n 'orderId' => ".$orderId.",\n ";
         $phrase .= "'recoveryCode' => '".$recoveryCode."'\n) )";
-        $this->setLog($phrase, $module);
-    }
-
-    /**
-     * @param $phrase
-     * @param $module
-     */
-    public function setLog($phrase, $module)
-    {
-        if (Mage::getStoreConfig('payment/rakutenpay/log')) {
-            \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $module]);
-        }
+        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $module]);
     }
 
     /**
@@ -54,19 +43,20 @@ class Rakuten_RakutenPay_Helper_Log
         $module = 'RakutenPayAbandoned.';
         $phrase = "SentEmailUpdate( Has been updated to ".$sent." the number of emails sent,";
         $phrase .= " belonging to order ".$orderId." )";
-        $this->setLog($phrase, $module);
+        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $module]);
     }
 
     public function setRequirementsLog()
     {
         $module = 'RakutenPayRequirements.';
         $phrase = "Verification ( Checked requirements )";
-        $this->setLog($phrase, $module);
+        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $module]);
     }
 
     /**
      * @param $class
      * @param $days
+     * @throws Exception
      */
     public function setSearchTransactionLog($class, $days)
     {
@@ -75,7 +65,7 @@ class Rakuten_RakutenPay_Helper_Log
         $initial->sub(new \DateInterval('P' . $days . 'D'));
         $phrase = "Search( '".$days." days - Range of dates ";
         $phrase .= $initial->format('Y-m-d')." until ".$now->format('Y-m-d')."' )";
-        $this->setLog($phrase, $this->setModule($class));
+        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $this->setModule($class)]);
     }
 
     /**
@@ -103,6 +93,6 @@ class Rakuten_RakutenPay_Helper_Log
         $phrase = "Update( OrderStatusMagento: array (\n 'orderId' => ".$orderId.",\n ";
         $phrase .= "'transactionCode' => '".$transactionCode."',\n ";
         $phrase .= "'orderStatus' => '".$orderStatus."'\n ) )";
-        $this->setLog($phrase, $this->setModule($class));
+        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $this->setModule($class)]);
     }
 }
