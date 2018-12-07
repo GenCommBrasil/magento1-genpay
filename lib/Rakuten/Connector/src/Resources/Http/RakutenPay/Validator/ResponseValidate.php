@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Resources\Http\RakutenPay\Validator;
 
 use Rakuten\Connector\Resources\Log\Logger;
+use Rakuten\Connector\Exception\ConnectorException;
 use Mage;
 
 /**
@@ -33,7 +34,7 @@ class ResponseValidate
      * @param $info
      * @param $data
      * @param $secureGet
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public static function validateSignature($method, $info, $data, $secureGet)
     {
@@ -45,13 +46,13 @@ class ResponseValidate
 
             if ($info['signature'] !== $signatureBase64) {
                 Logger::error("Wrong signature from RakutenPay.");
-                throw new \Exception("Wrong signature from RakutenPay.");
+                throw new ConnectorException("Wrong signature from RakutenPay.");
             }
         }
 
         if ($secureGet && strtoupper($method) === 'GET') {
             Logger::error("No signature from RakutenPay.");
-            throw new \Exception("No signature from RakutenPay.");
+            throw new ConnectorException("No signature from RakutenPay.");
         }
         Logger::info('No signature in header.', ['service' => 'HTTP.Response.Signature']);
     }
@@ -62,7 +63,7 @@ class ResponseValidate
      * @param $error
      * @param $errorMessage
      * @return array
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public static function checkErrors($status, $response, $error, $errorMessage)
     {
@@ -77,7 +78,7 @@ class ResponseValidate
 
                 return $result;
             }
-            throw new \Exception("CURL can't connect: $errorMessage");
+            throw new ConnectorException("CURL can't connect: $errorMessage");
         }
 
         return $result;
@@ -86,7 +87,6 @@ class ResponseValidate
     /**
      * @param $errorMessage
      * @return bool
-     * @throws \Exception
      */
     private static function hasTransferClosed($errorMessage)
     {

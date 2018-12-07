@@ -155,9 +155,9 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         try {
             $this->webserviceHelper()->getTransactionsByDate(1, 1, $date);
             Mage::getConfig()->saveConfig('rakuten_rakutenpay/store/credentials', 1);
-        } catch (Exception $e) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
             Mage::getConfig()->saveConfig('rakuten_rakutenpay/store/credentials', 0);
-            throw new Exception($e->getMessage());
+            throw new \Rakuten\Connector\Exception\ConnectorException($e->getMessage());
         }
     }
 
@@ -468,8 +468,8 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             }
 
             $this->setTransactionRecord($orderId, $transactionCode, false, $amount);
-        } catch (Exception $pse) {
-            \Rakuten\Connector\Resources\Log\Logger::info("Exception: " . var_export($pse, true), ['service' => 'WEBHOOK']);
+        } catch (\Rakuten\Connector\Exception\ConnectorException $pse) {
+            \Rakuten\Connector\Resources\Log\Logger::error("Exception: " . var_export($pse, true), ['service' => 'WEBHOOK']);
             throw $pse;
         }
     }
@@ -502,7 +502,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             }
 
             $this->setTransactionRecord($orderId, $transactionCode);
-        } catch (Exception $pse) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $pse) {
             throw $pse;
         }
     }
@@ -518,7 +518,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             }
 
             $this->setTransactionRecord($orderId, $transactionCode);
-        } catch (Exception $pse) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $pse) {
             throw $pse;
         }
     }
@@ -662,7 +662,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
                 return ['number' => $documentNumbers, 'type' => 'CPF'];
                 break;
             default:
-                throw new Exception('Invalid document');
+                throw new \Rakuten\Connector\Exception\ConnectorException('Invalid document');
                 break;
         }
     }

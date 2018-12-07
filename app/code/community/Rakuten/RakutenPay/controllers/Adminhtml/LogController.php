@@ -32,7 +32,7 @@ class Rakuten_RakutenPay_AdminHtml_LogController extends Mage_Adminhtml_Controll
         if (Logger::active()) {
             try {
                 $this->_prepareDownloadResponse(Logger::filepath(), array('type' => 'filename', 'value' => $filepath));
-            } catch (Exception $e) {
+            } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
                 throw $e;
             }
         }

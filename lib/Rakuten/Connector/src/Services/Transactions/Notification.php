@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Services\Transactions;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
 use Rakuten\Connector\Resources\Log\Logger;
@@ -33,7 +34,7 @@ class Notification
 
     /**
      * @return mixed
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public static function check()
     {
@@ -59,7 +60,7 @@ class Notification
                 ['service' => 'Transactions.Notification']
             );
             return $response;
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Transactions.Notification']);
             throw $exception;
         }

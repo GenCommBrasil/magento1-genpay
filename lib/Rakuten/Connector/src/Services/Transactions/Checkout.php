@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Services\Transactions;
 
 use Rakuten\Connector\Enum\Properties\Current;
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Resources\Log\Logger;
 use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
@@ -32,6 +33,11 @@ use Rakuten\Connector\Parsers\Transaction\Checkout\Request;
  */
 class Checkout
 {
+    /**
+     * @param array $options
+     * @return mixed
+     * @throws ConnectorException
+     */
     public static function get(
         array $options
     )
@@ -50,7 +56,7 @@ class Checkout
                 new Request
             );            
         }
-        catch (\Exception $exception) {
+        catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Session']);
             throw $exception;
         }

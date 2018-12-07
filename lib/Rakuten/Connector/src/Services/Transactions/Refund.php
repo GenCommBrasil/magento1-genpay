@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Services\Transactions;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Parsers\Transaction\Refund\Request;
 use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
@@ -36,7 +37,7 @@ class Refund
      * @param \Rakuten\Connector\Domains\Requests\Payment $payment
      * @param bool $onlyCode
      * @return string
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public static function create($code, $value, $kind, $reason, $bankData, $paymentId)
     {
@@ -73,7 +74,7 @@ class Refund
 
             Logger::info(sprintf("Result: %s", current($response)), ['service' => 'Refund']);
             return $response;
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Refund']);
             throw $exception;
         }

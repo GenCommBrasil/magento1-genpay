@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Helpers;
 
 use Rakuten\Connector\Resources\Log\Logger;
+use Rakuten\Connector\Exception\ConnectorException;
 
 class Validate
 {
@@ -27,7 +28,7 @@ class Validate
     {
         Logger::info('Processing cUrl in Validate.');
         if (!function_exists('curl_init')) {
-            throw new \Exception(
+            throw new ConnectorException(
                 'RakutenPay Library cURL library is required.',
                 '[cURL]'
             );
@@ -38,7 +39,7 @@ class Validate
     {
         Logger::info('Processing simpleXml in Validate.');
         if (!extension_loaded('simplexml')) {
-            throw new \Exception(
+            throw new ConnectorException(
                 'RakutenConnector Library simple xml is required.',
                 '[SimpleXml]'
             );

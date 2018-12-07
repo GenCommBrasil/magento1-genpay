@@ -46,10 +46,9 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
     /**
      * Get the bigger installments list returned by the RakutenPay service
      *
-     * @param mixed  $amount
-     * @param string $brand
-     *
-     * @return array | false
+     * @param $amount
+     * @return bool|mixed
+     * @throws Exception
      */
     public function create($amount)
     {
@@ -63,7 +62,7 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
             $format = $this->output($installments, true);
 
             return $format['installments'];
-        } catch (Exception $exception) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
             Mage::log($exception->getMessage());
 
             return false;

@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Helpers\Validate;
 use Rakuten\Connector\Resources\Framework\ContentManagementSystems;
 use Rakuten\Connector\Resources\Framework\Language;
@@ -78,8 +79,8 @@ class Library
             Validate::cUrl();
             Validate::simpleXml();
             return true;
-        } catch (\Exception $exception) {
-            throw new \Exception(
+        } catch (ConnectorException $exception) {
+            throw new ConnectorException(
                 "RakutenPay Library PHP component exception",
                 ['PSLE'],
                 $exception

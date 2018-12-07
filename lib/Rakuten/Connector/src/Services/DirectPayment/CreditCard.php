@@ -26,6 +26,7 @@ use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
 use Rakuten\Connector\Resources\Log\Logger;
 use Rakuten\Connector\Resources\Responsibility;
+use Rakuten\Connector\Exception\ConnectorException;
 
 /**
  * Class CreditCard
@@ -37,7 +38,7 @@ class CreditCard
      * @param \Rakuten\Connector\Domains\Account\Credentials $credentials
      * @param \Rakuten\Connector\Domains\Requests\DirectPayment\OnlineDebit $payment
      * @return string
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public static function checkout(
         \Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard $payment
@@ -65,7 +66,7 @@ class CreditCard
             );
 
             return $response;
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'DirectPayment.CreditCard']);
             throw $exception;
         }

@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Services\Pooling;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
 use Rakuten\Connector\Resources\Log\Logger;
@@ -59,7 +60,7 @@ class OrderStatus
                 ['service' => 'Pooling']
             );
             return $response;
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Pooling']);
             throw $exception;
         }

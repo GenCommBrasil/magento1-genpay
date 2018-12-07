@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Resources\Http\RakutenLogistics;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Resources\Log\Logger;
 use Rakuten\Connector\Resources\Http\AbstractHttp;
 use Mage;
@@ -33,7 +34,7 @@ class Http extends AbstractHttp
      * @param array|null $data
      * @param bool $secureGet
      * @return bool|mixed
-     * @throws \Exception
+     * @throws ConnectorException
      */
     protected function curlConnection($method, $url, $timeout, $charset, array $data = null, $secureGet = true)
     {
@@ -78,7 +79,7 @@ class Http extends AbstractHttp
         Logger::info(sprintf('Response Status: %s' , $this->getStatus()), ['service' => 'HTTP.Response.Status']);
         if ($error) {
             Logger::error(sprintf('CURL Error: %s', $errorMessage), ['service' => 'RakutenLogistics']);
-            throw new \Exception("CURL can't connect: {$errorMessage}");
+            throw new ConnectorException("CURL can't connect: {$errorMessage}");
         } else {
             return true;
         }

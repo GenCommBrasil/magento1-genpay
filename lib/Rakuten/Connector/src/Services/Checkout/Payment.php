@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Services\Checkout;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Helpers\Crypto;
 use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
@@ -36,7 +37,7 @@ class Payment
      * @param \Rakuten\Connector\Domains\Requests\Payment $payment
      * @param bool $onlyCode
      * @return string
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public static function checkout(\Rakuten\Connector\Domains\Requests\Payment $payment, $onlyCode)
     {
@@ -73,7 +74,7 @@ class Payment
                 ['service' => 'Checkout']
             );
             return self::response($connection, $response);
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Session']);
             throw $exception;
         }
