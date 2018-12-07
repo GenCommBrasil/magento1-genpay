@@ -36,17 +36,19 @@ class ConnectorException extends \Exception
     public function __construct($message, $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
+
+        $this->writeLog();
     }
 
     /**
-     * @return string
+     * @return bool|int
      */
-    public function __toString()
+    protected function writeLog()
     {
         Logger::error($this->getMessage(), ['service' => 'Exception']);
         $file = Logger::location();
-        file_put_contents($file, Logger::getContent(), FILE_APPEND | LOCK_EX);
+        $isWrite = file_put_contents($file, Logger::getContent(), FILE_APPEND | LOCK_EX);
 
-        return $this->getMessage();
+        return $isWrite;
     }
 }
