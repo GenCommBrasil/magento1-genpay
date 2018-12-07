@@ -22,76 +22,6 @@ $installer->startSetup();
 
 // table prefix
 $tp = (string)Mage::getConfig()->getTablePrefix();
-$table = $tp . "sales_order_status";
-
-// Verifies that no record of the status RakutenPay created, if you have not created
-$sql = "INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'aguardando_pagamento_rp' AS STATUS, 'Aguardando Pagamento' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'aguardando_pagamento_rp') = 0;
-
-         INSERT INTO " . $table ." (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'em_analise_rp' AS STATUS, 'Em análise' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_analise_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'paga_rp' AS STATUS, 'Paga' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'paga_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'disponivel_rp' AS STATUS, 'Disponível' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'disponivel_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'em_disputa_rp' AS STATUS, 'Em Disputa' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_disputa_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'devolvida_rp' AS STATUS, 'Devolvida' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'devolvida_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'cancelada_rp' AS STATUS, 'Cancelada' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'cancelada_rp') = 0;";
-
-$table = $tp . "sales_order_status_state";
-
-// Verifies that no record of the status RakutenPay to be displayed on a new order if it has not created
-$sql .= "INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'devolvida_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'devolvida_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'cancelada_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'cancelada_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'em_disputa_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_disputa_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'disponivel_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'disponivel_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'paga_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'paga_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'em_analise_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_analise_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'aguardando_pagamento_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'aguardando_pagamento_rp') = 0;";
-
-$installer->run($sql);
 
 $new_table =  $tp . 'rakutenpay_orders';
 
@@ -105,57 +35,45 @@ $sql = "CREATE TABLE IF NOT EXISTS `" . $new_table . "` (
          PRIMARY KEY (`entity_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
-$table = $tp . "sales_order_status";
+$table = $installer->getTable('sales/quote_address');
 
-// Verifies that no record of the status RakutenPay created, if you have not created
-$sql .= "INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'chargeback_debitado_rp' AS STATUS, 'Chargeback Debitado' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_debitado_rp') = 0;
+$installer->getConnection()
+    ->addColumn($table, 'rakutenfee_amount', array(
+        'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
+        'scale' => 2,
+        'precision' => 14,
+        'unsigned' => true,
+        'nullable' => false,
+        'comment' => 'Fee Amount',
+    ));
+$installer->getConnection()
+    ->addColumn($table, 'base_rakutenfee_amount', array(
+        'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
+        'scale' => 2,
+        'precision' => 14,
+        'unsigned' => true,
+        'nullable' => false,
+        'comment' => 'Base Rakuten Fee Amount',
+    ));
+$table = $installer->getTable('sales/order');
 
-         INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'em_contestacao_rp' AS STATUS, 'Em Contestação' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_contestacao_rp') = 0;";
-
-$table = $tp . "sales_order_status_state";
-
-// Verifies that no record of the status RakutenPay to be displayed on a new order if it has not created
-$sql .= "INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'chargeback_debitado_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_debitado_rp') = 0;
-
-         INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'em_contestacao_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'em_contestacao_rp') = 0;";
-
-$table = $tp . "sales_order_status";
-
-$sql .= "INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'chargeback_parcial_debitado_rp' AS STATUS, 'Chargeback Parcial Debitado' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_parcial_debitado_rp') = 0;";
-
-$table = $tp . "sales_order_status_state";
-
-// Verifies that no record of the status RakutenPay to be displayed on a new order if it has not created
-$sql .= "INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'chargeback_parcial_debitado_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_parcial_debitado_rp') = 0;";
-
-$table = $tp . "sales_order_status";
-
-$sql .= "INSERT INTO `" . $table . "` (STATUS, label)
-         SELECT p.status, p.label FROM(SELECT 'chargeback_parcial_debitado_rp' AS STATUS, 'Chargeback Parcial Debitado' AS label) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_parcial_debitado_rp') = 0;";
-
-$table = $tp . "sales_order_status_state";
-
-// Verifies that no record of the status RakutenPay to be displayed on a new order if it has not created
-$sql .= "INSERT INTO `" . $table . "` (STATUS, state, is_default)
-         SELECT p.status, p.state, p.is_default FROM
-         (SELECT 'chargeback_parcial_debitado_rp' AS STATUS, 'new' AS state, '0' AS is_default) p
-         WHERE (SELECT COUNT(STATUS) FROM `" . $table . "` WHERE STATUS = 'chargeback_parcial_debitado_rp') = 0;";
-
+$installer->getConnection()
+    ->addColumn($table, 'rakutenfee_amount', array(
+        'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
+        'scale' => 2,
+        'precision' => 14,
+        'unsigned' => true,
+        'nullable' => false,
+        'comment' => 'Rakuten Fee Amount',
+    ));
+$installer->getConnection()
+    ->addColumn($table, 'base_rakutenfee_amount', array(
+        'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
+        'scale' => 2,
+        'precision' => 14,
+        'unsigned' => true,
+        'nullable' => false,
+        'comment' => 'Base Rakuten Fee Amount',
+    ));
 $installer->run($sql);
 $installer->endSetup();

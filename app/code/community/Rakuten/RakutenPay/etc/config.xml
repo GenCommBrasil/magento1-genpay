@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Rakuten_RakutenPay>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
         </Rakuten_RakutenPay>
     </modules>
     <global>
@@ -224,7 +224,7 @@
                     <cron_expr>*/1 * * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>rakuten_rakutenpay/cron_orderstatus::updateOrderStatus</model>
+                    <model>rakuten_rakutenpay/cron_orderStatus::updateOrderStatus</model>
                 </run>
             </rakuten_rakutenpay>
         </jobs>
