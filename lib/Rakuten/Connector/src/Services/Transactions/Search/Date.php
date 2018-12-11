@@ -25,6 +25,7 @@ use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
 use Rakuten\Connector\Resources\Log\Logger;
 use Rakuten\Connector\Resources\Responsibility;
+use Rakuten\Connector\Exception\ConnectorException;
 
 /**
  * Class Date
@@ -34,10 +35,9 @@ class Date
 {
 
     /**
-     * @param \Rakuten\Connector\Domains\Account\Credentials $credentials
-     * @param $options
-     * @return string
-     * @throws \Exception
+     * @param array $options
+     * @return mixed
+     * @throws ConnectorException
      */
     public static function search(
         array $options
@@ -72,7 +72,7 @@ class Date
                 ['service' => 'Transactions.Search.Date']
             );
             return $response;
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Transactions.Search.Date']);
             throw $exception;
         }

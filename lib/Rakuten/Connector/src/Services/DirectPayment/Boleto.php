@@ -25,6 +25,7 @@ use Rakuten\Connector\Resources\Log\Logger;
 use Rakuten\Connector\Resources\Responsibility;
 use Rakuten\Connector\Parsers\DirectPayment\Boleto\Request;
 use Rakuten\Connector\Helpers\Crypto;
+use Rakuten\Connector\Exception\ConnectorException;
 
 /**
  * Class Boleto
@@ -35,8 +36,8 @@ class Boleto
 
     /**
      * @param \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto $payment
-     * @return string
-     * @throws \Exception
+     * @return mixed
+     * @throws ConnectorException
      */
     public static function checkout(
         \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto $payment
@@ -70,7 +71,7 @@ class Boleto
             );
 
             return $response;
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Session']);
             throw $exception;
         }

@@ -36,15 +36,4 @@ class Wrapper
     {
         return Mage::getStoreConfig('payment/rakutenpay/environment');
     }
-
-    public static function get_log_active()
-    {
-        return Mage::getStoreConfig('payment/rakutenpay/log');
-    }
-
-    public static function get_log_location()
-    {
-        return Mage::getStoreConfig('payment/rakutenpay/log_file');
-    }
-
 }

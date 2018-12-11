@@ -64,7 +64,7 @@ class Rakuten_RakutenPay_Adminhtml_AjaxController extends Mage_Adminhtml_Control
             } else {
                 return 'run';
             }
-        } catch (Exception $e) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
             return trim($e->getMessage());
         }
     }

@@ -21,6 +21,7 @@ namespace Rakuten\Connector\Resources;
 
 use Rakuten\Connector\Configuration\Configure;
 use Rakuten\Connector\Resources\Log\Logger;
+use Rakuten\Connector\Exception\ConnectorException;
 
 /**
  * Class Builder
@@ -68,7 +69,7 @@ class Builder
      * @param $url
      * @param $service
      * @return string
-     * @throws \Exception
+     * @throws ConnectorException
      */
     protected static function getRequest($url, $service)
     {
@@ -80,7 +81,7 @@ class Builder
      * @param $url
      * @param $service
      * @return string
-     * @throws \Exception
+     * @throws ConnectorException
      */
     protected static function getResponse($url, $service)
     {
@@ -93,7 +94,7 @@ class Builder
      * @param $service
      * @param $http
      * @return string
-     * @throws \Exception
+     * @throws ConnectorException
      */
     protected static function getService($url, $service, $http)
     {
@@ -108,7 +109,7 @@ class Builder
             );
         else {
             Logger::error ('Cannot get service: ' . $service . ', http: ' . $http);
-            throw new \Exception('Cannot get service: ' . $service . ', http: ' . $http);
+            throw new ConnectorException('Cannot get service: ' . $service . ', http: ' . $http);
         }
     }
 

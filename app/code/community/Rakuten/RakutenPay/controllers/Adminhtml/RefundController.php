@@ -66,7 +66,7 @@ class Rakuten_RakutenPay_Adminhtml_RefundController extends Mage_Adminhtml_Contr
                 $this->refund->updateOrderStatusMagentoRefund($data['id'], $data['code'], $data['status'], floatval($data['value']),
                         $data['type'], $data['reason'], $bankData, $paymentId);
 
-            } catch (Exception $pse) {
+            } catch (\Rakuten\Connector\Exception\ConnectorException $pse) {
                 print json_encode(array(
                         "status" => false,
                         "err"    => trim($pse->getMessage()),
@@ -105,7 +105,7 @@ class Rakuten_RakutenPay_Adminhtml_RefundController extends Mage_Adminhtml_Contr
                     exit();
                 }
                 print $this->refund->getTransactionGrid($this->refund->getPaymentsArray());
-            } catch (Exception $e) {
+            } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
                 print json_encode(array(
                         "status" => false,
                         "err"    => trim($e->getMessage()),

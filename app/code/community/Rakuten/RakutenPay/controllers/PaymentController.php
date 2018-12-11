@@ -115,8 +115,8 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
              */
             $link = $this->payment->paymentRegister($payment);
             $order->sendNewOrderEmail();
-        } catch (Exception $exception) {
-            \Rakuten\Connector\Resources\Log\Logger::error($exception);
+        } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
+            \Rakuten\Connector\Resources\Log\Logger::error($exception->getMessage());
             Mage::logException($exception);
             $this->canceledStatus($order);
         }
@@ -193,7 +193,7 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             \Rakuten\Connector\Resources\Log\Logger::info('Redirect params: $redirect: ' . var_export($redirect, true) . '\n $redirectParams: ' . var_export($redirectParams, true));
             $order->sendNewOrderEmail();
 
-        } catch (\Exception $exception) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
             \Rakuten\Connector\Resources\Log\Logger::error('Got an exception: ' . var_export($exception, true));
             $this->canceledStatus($order);
             return Mage_Core_Controller_Varien_Action::_redirect('rakutenpay/payment/error', array('_secure'=> false));

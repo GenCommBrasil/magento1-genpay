@@ -41,8 +41,4 @@ class Environment extends Enum
 
     //Encoding
     const CHARSET = "RAKUTENPAY_CHARSET";
-
-    //Log
-    const LOG_ACTIVE = "RAKUTENPAY_LOG_ACTIVE";
-    const LOG_LOCATION = "RAKUTENPAY_LOG_LOCATION";
 }

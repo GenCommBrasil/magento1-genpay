@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Helpers;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Resources\Log\Logger;
 
 /**
@@ -72,7 +73,7 @@ class JsonFormat
             }
 
             return $jsonData;
-        } catch (\Exception $e) {
+        } catch (ConnectorException $e) {
             Logger::error($e->getMessage(), ['service' => 'json_encode']);
 
             return $jsonData;

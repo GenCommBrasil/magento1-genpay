@@ -23,6 +23,7 @@ use Rakuten\Connector\Resources\Http\AbstractHttp;
 use Rakuten\Connector\Resources\Log\Logger;
 use Rakuten\Connector\Helpers\JsonFormat;
 use Rakuten\Connector\Resources\Http\RakutenPay\Validator\ResponseValidate;
+use Rakuten\Connector\Exception\ConnectorException;
 use Mage;
 
 /**
@@ -78,7 +79,7 @@ class Http extends AbstractHttp
             Logger::info(sprintf('Response Status: %s', $this->getStatus()), ['service' => 'HTTP.Response.Status']);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (ConnectorException $e) {
             Logger::error($e->getMessage());
         }
     }

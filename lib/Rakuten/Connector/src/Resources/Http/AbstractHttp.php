@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Resources\Http;
 
 use Rakuten\Connector\Resources\Log\Logger;
+use Rakuten\Connector\Exception\ConnectorException;
 
 /**
  * Class AbstractHttp
@@ -29,13 +30,13 @@ abstract class AbstractHttp extends Response implements Method
 {
     /**
      * Http constructor.
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public function __construct()
     {
         Logger::info('Constructing Http in RakutenConnector.');
         if (!function_exists('curl_init')) {
-            throw new \Exception('RakutenConnector Library: cURL library is required.');
+            throw new ConnectorException('RakutenConnector Library: cURL library is required.');
         }
     }
 
@@ -56,7 +57,7 @@ abstract class AbstractHttp extends Response implements Method
      * @param int $timeout
      * @param string $charset
      * @return bool
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public function post($url, array $data = [], $timeout = 20, $charset = 'ISO-8859-1')
     {
@@ -69,7 +70,7 @@ abstract class AbstractHttp extends Response implements Method
      * @param int $timeout
      * @param string $charset
      * @return bool
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public function get($url, $timeout = 20, $charset = 'ISO-8859-1', $secureGet = true)
     {

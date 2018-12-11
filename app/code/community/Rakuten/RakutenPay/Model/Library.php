@@ -36,7 +36,6 @@ class Rakuten_RakutenPay_Model_Library
         \Rakuten\Connector\Configuration\Configure::setCharset('UTF-8');
         $this->setCharset();
         $this->setEnvironment();
-        $this->setLog();
     }
 
     /**
@@ -53,19 +52,6 @@ class Rakuten_RakutenPay_Model_Library
     private function setEnvironment()
     {
         \Rakuten\Connector\Configuration\Configure::setEnvironment(Mage::getStoreConfig('payment/rakutenpay/environment'));
-    }
-
-    /**
-     *
-     */
-    private function setLog()
-    {
-        if (Mage::getStoreConfig('payment/rakutenpay/log')) {
-            \Rakuten\Connector\Configuration\Configure::setLog(true,
-                Mage::getBaseDir().Mage::getStoreConfig('payment/rakutenpay/log_file'));
-        } else {
-            \Rakuten\Connector\Configuration\Configure::setLog(false, null);
-        }
     }
 
     /**

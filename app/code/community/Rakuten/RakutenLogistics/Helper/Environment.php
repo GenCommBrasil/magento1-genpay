@@ -55,7 +55,7 @@ class Rakuten_RakutenLogistics_Helper_Environment extends Rakuten_RakutenLogisti
             }
 
             return self::$endpointsSandboxMapping[$endpointName];
-        } catch (Exception $e) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
             \Rakuten\Connector\Resources\Log\Logger::error(sprintf('Environment Endpoint: %s', $e->getMessage()));
         }
     }

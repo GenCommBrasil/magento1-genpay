@@ -64,9 +64,9 @@ class Rakuten_RakutenPay_Helper_Webservice extends Rakuten_RakutenPay_Helper_Dat
             $response = \Rakuten\Connector\Services\Transactions\Search\Date::search(
                 array('initial_date' => $initialDate, 'page' => $page, 'max_per_page' => $maxPageResults)
             );
-        } catch (Exception $e) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
             if (trim($e->getMessage()) == '[HTTP 401] - UNAUTHORIZED') {
-                throw new Exception($e->getMessage());
+                throw new \Rakuten\Connector\Exception\ConnectorException($e->getMessage());
             }
         }
 
@@ -108,8 +108,8 @@ class Rakuten_RakutenPay_Helper_Webservice extends Rakuten_RakutenPay_Helper_Dat
             } elseif ($class == 'Rakuten_RakutenPay_Model_NotificationMethod') {
                 return \Rakuten\Connector\Services\Transactions\Notification::check();
             }
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
+            throw new \Rakuten\Connector\Exception\ConnectorException($e->getMessage());
         }
     }
 

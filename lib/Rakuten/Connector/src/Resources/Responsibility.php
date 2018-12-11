@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Resources;
 
 use Rakuten\Connector\Enum\Http\Status;
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Resources\Responsibility\Configuration\Environment;
 use Rakuten\Connector\Resources\Responsibility\Configuration\Extensible;
 use Rakuten\Connector\Resources\Responsibility\Configuration\File;
@@ -38,19 +39,19 @@ class Responsibility
                 return $class::success($http);
             case Status::BAD_REQUEST:
                 $error = $class::error($http);
-                throw new \Exception($error->getMessage(), $error->getCode());
+                throw new ConnectorException($error->getMessage(), $error->getCode());
             case Status::UNAUTHORIZED:
                 $error = $class::error($http);
-                throw new \Exception($error->getMessage(), $error->getCode());
+                throw new ConnectorException($error->getMessage(), $error->getCode());
             case Status::UNPROCESSABLE:
                 $error = $class::error($http);
-                throw new \Exception($error->getMessage(), $error->getCode());
+                throw new ConnectorException($error->getMessage(), $error->getCode());
             case Status::BAD_GATEWAY:
                 $error = $class::error($http);
-                throw new \Exception($error->getMessage(), $error->getCode());
+                throw new ConnectorException($error->getMessage(), $error->getCode());
             default:
                 unset($class);
-                throw new \ErrorException($http->getResponse(), $http->getStatus());
+                throw new ConnectorException($http->getResponse(), $http->getStatus());
         }
     }
 

@@ -19,6 +19,8 @@
 
 namespace Rakuten\Connector\Resources\Http;
 
+use Rakuten\Connector\Exception\ConnectorException;
+
 /**
  * Interface Method
  * @package Rakuten\Connector\Resources\Http
@@ -31,7 +33,7 @@ interface Method
      * @param int $timeout
      * @param string $charset
      * @return bool
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public function post($url, array $data = [], $timeout = 20, $charset = 'ISO-8859-1');
 
@@ -41,7 +43,7 @@ interface Method
      * @param string $charset
      * @param bool $secureGet
      * @return bool
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public function get($url, $timeout = 20, $charset = 'ISO-8859-1', $secureGet = true);
 }

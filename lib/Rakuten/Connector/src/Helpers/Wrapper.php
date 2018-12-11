@@ -77,18 +77,4 @@ class Wrapper
             'charset' => $config::CHARSET
         ];
     }
-
-    /**
-     * @param $config
-     * @return array
-     */
-    public static function log($config)
-    {
-        return [
-            'log' => [
-                'active' => $config::get_log_active(),
-                'location' => $config::get_log_location()
-            ]
-        ];
-    }
 }

@@ -299,8 +299,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
                 /** @var \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto $payment */
                 $response = $payment->register($this->library->getAccountCredentials());
             }
-        } catch (Exception $exception) {
-            \Rakuten\Connector\Resources\Log\Logger::error($exception);
+        } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
             Mage::logException($exception);
         }
 

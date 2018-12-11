@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Services\Transactions;
 
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Parsers\Transaction\Cancel\Request;
 use Rakuten\Connector\Resources\Connection;
 use Rakuten\Connector\Resources\Http\RakutenPay\Http;
@@ -53,7 +54,7 @@ class Cancel
 
             Logger::info(sprintf("Result: %s", current($response), ['service' => 'Cancel']));
             return $response;
-        } catch (\Exception $exception) {
+        } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Cancel']);
             throw $exception;
         }

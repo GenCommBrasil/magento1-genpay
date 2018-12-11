@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Helpers;
 
 use Mage;
+use Rakuten\Connector\Exception\ConnectorException;
 use Rakuten\Connector\Resources\Log\Logger;
 
 /**
@@ -92,7 +93,7 @@ class EnvironmentInformation
             }
 
             return $infoArray;
-        } catch (\Exception $e) {
+        } catch (ConnectorException $e) {
             Logger::error('Error in phpinfoToArray in EnvironmentInformation: ' . $e->getMessage());
             return $infoArray;
         }

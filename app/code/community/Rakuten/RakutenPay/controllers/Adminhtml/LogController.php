@@ -27,17 +27,17 @@ class Rakuten_RakutenPay_AdminHtml_LogController extends Mage_Adminhtml_Controll
 
     public function downloadAction()
     {
-        $filepath = Mage::getBaseDir('base') . '/' . Logger::filepath();
+        $filePath = Mage::getBaseDir('base') . '/' . Logger::DEFAULT_FILE;
 
-        if (Logger::active()) {
+        if (file_exists($filePath)) {
             try {
-                $this->_prepareDownloadResponse(Logger::filepath(), array('type' => 'filename', 'value' => $filepath));
-            } catch (Exception $e) {
+                $this->_prepareDownloadResponse(Logger::DEFAULT_FILE, ['type' => 'filename', 'value' => $filePath]);
+            } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
                 throw $e;
             }
         }
         else {
-            return false;
+            $this->_redirectReferer();
         }
     }
 }

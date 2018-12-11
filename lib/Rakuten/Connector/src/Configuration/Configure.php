@@ -22,7 +22,6 @@ namespace Rakuten\Connector\Configuration;
 use Rakuten\Connector\Domains\AccountCredentials;
 use Rakuten\Connector\Domains\Charset;
 use Rakuten\Connector\Domains\Environment;
-use Rakuten\Connector\Domains\Log;
 use Rakuten\Connector\Resources\Responsibility;
 
 /**
@@ -34,7 +33,6 @@ class Configure
     private static $accountCredentials;
     private static $charset;
     private static $environment;
-    private static $log;
 
     /**
      * @return AccountCredentials
@@ -105,31 +103,5 @@ class Configure
     {
         self::$charset = new Charset;
         self::$charset->setEncoding($charset);
-    }
-
-    /**
-     * @return Log
-     */
-    public static function getLog()
-    {
-        if (! isset(self::$log)) {
-            $configuration = Responsibility::configuration();
-            self::setLog(
-                $configuration['log']['active'],
-                $configuration['log']['location']
-            );
-        }
-        return self::$log;
-    }
-
-    /**
-     * @param boolean $active
-     * @param string $location
-     */
-    public static function setLog($active, $location)
-    {
-        self::$log = new Log;
-        self::$log->setActive($active)
-            ->setLocation($location);
     }
 }

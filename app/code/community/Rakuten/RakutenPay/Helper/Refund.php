@@ -95,7 +95,7 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
             if (!is_null($this->RakutenPayPaymentList) && $this->RakutenPayPaymentList->getTotalPages() > $page) {
                 $this->getRakutenPayPayments(++$page);
             }
-        } catch (Exception $pse) {
+        } catch (\Rakuten\Connector\Exception\ConnectorException $pse) {
             throw $pse;
         }
     }

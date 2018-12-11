@@ -198,6 +198,14 @@
                 <active>0</active>
             </update_order_status>
         </cron>
+        <log>
+            <file_write>
+                <active>0</active>
+            </file_write>
+            <configuration>
+                <active>0</active>
+            </configuration>
+        </log>
         <payment>
             <rakutenpay_credit_card>
                 <active>0</active>
