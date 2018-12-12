@@ -68,11 +68,13 @@ class Request extends Error implements Parser
         Logger::info($http->getResponse(), ["service" => "HTTP_RESPONSE"]);
         $data = json_decode($http->getResponse(), true);
 
+        $payment = $data["payments"][0];
         $charge_url = \Rakuten\Connector\Resources\Builder\DirectPayment\Payment::getRequestUrl() . '/' . $data['charge_uuid'];
 
         return (new Response)->setResult($data['result'])
                 ->setId($data['charge_uuid'])
-                ->setCharge($charge_url);
+                ->setCharge($charge_url)
+                ->setCreditCardNum($payment['credit_card']['number']);
     }
 
     /**

@@ -22,3 +22,7 @@
     <b>Alterações de status feitas nesta tela podem não ser refletidas para o sistema Rakuten Pay.</b>
 </p>
 <?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?>
+
+<?php if(!empty($this->getCreditCardNum())): ?>
+    <p><span><strong>Número: </strong><?php echo $this->getCreditCardNum(); ?></span></p>
+<?php endif;?>

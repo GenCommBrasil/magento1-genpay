@@ -16,14 +16,27 @@
  * limitations under the License.
  ************************************************************************
  */
+
 /**
- * Info block for boleto payment
+ * Class Rakuten_RakutenPay_Block_Info_CreditCard
+ *
+ * Info block for credit card payment
  */
 class Rakuten_RakutenPay_Block_Info_CreditCard extends Mage_Payment_Block_Info
 {
-  protected function _construct()
-  {
-    parent::_construct();
-    $this->setTemplate('rakuten/rakutenpay/info/credit_card.phtml');
-  }
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setTemplate('rakuten/rakutenpay/info/credit_card.phtml');
+    }
+
+    public function getCreditCardNum()
+    {
+        if (empty($this->getInfo())) {
+
+            return null;
+        }
+
+        return $this->getInfo()->getCcNumberEnc();
+    }
 }

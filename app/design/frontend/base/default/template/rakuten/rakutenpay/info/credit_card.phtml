@@ -19,3 +19,7 @@
 ?>
 
 <?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?>
+
+<?php if(!empty($this->getCreditCardNum())): ?>
+    <p><b>Número: </b><?php echo $this->getCreditCardNum(); ?></p>
+<?php endif;?>
