@@ -66,7 +66,12 @@ class Boleto
             );
 
             Logger::info(
-                sprintf("Boleto Payment Link URL: %s", $response->getBillet()),
+                sprintf("Boleto Payment URL: %s", $response->getBillet()),
+                ['service' => 'DirectPayment.Boleto']
+            );
+
+            Logger::info(
+                sprintf("Boleto Link URL: %s", $response->getBilletUrl()),
                 ['service' => 'DirectPayment.Boleto']
             );
 

@@ -75,7 +75,8 @@ class Request extends Error implements Parser
         return (new Response)->setResult($data['result'])
                 ->setId($data['charge_uuid'])
                 ->setCharge($charge_url)
-                ->setBillet($payment['billet']['download_url']);
+                ->setBillet($payment['billet']['download_url'])
+                ->setBilletUrl($payment['billet']['url']);
     }
 
     /**
