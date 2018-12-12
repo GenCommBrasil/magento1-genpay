@@ -136,7 +136,6 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
         $order          = null;
         $link           = null;
         $result         = null;
-        $json           = false;
         $redirect       = null;
 
         try {
@@ -172,19 +171,22 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             }
             /** controy redirect url according with payment return link **/
             if (method_exists($result, 'getBillet') && $result->getBillet()) {
-                $link     = $result->getBillet();
+                $billet = $result->getBillet();
+                $link = $result->getBilletUrl();
 
                 $payment = $order->getPayment();
                 $payment
+                    ->setAdditionalInformation('billet', $billet)
                     ->setAdditionalInformation('billet_url', $link)
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
                     ->save();
 
                 $redirect = 'rakutenpay/payment/success';
-                $redirectParams = array('_secure'=> false, '_query'=> array('billet' => $link));
+                $redirectParams = array('_secure'=> false, '_query'=> array('billet_url' => $link));
             } else {
                 $payment = $order->getPayment();
                 $payment
+                    ->setCcNumberEnc($result->getCreditCardNum())
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
                     ->save();
                 $redirect = 'rakutenpay/payment/success';

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Rakuten_RakutenPay>
-            <version>1.2.7</version>
+            <version>1.2.8</version>
         </Rakuten_RakutenPay>
     </modules>
     <global>
@@ -200,7 +200,7 @@
         </cron>
         <log>
             <file_write>
-                <active>0</active>
+                <active>1</active>
             </file_write>
             <configuration>
                 <active>0</active>
