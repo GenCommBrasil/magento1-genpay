@@ -110,7 +110,6 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
         return $order;
     }
 
-
     /**
      * @return Rakuten_RakutenPay_PaymentController
      */
