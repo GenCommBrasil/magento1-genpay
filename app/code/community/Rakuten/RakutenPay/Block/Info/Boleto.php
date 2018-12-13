@@ -16,22 +16,31 @@
  * limitations under the License.
  ************************************************************************
  */
+
 /**
  * Info block for boleto payment
  */
 class Rakuten_RakutenPay_Block_Info_Boleto extends Mage_Payment_Block_Info
 {
-  protected function _construct()
-  {
-    parent::_construct();
-    $this->setTemplate('rakuten/rakutenpay/info/boleto.phtml');
-  }
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setTemplate('rakuten/rakutenpay/info/boleto.phtml');
+    }
 
-  public function getBilletUrl()
-  {
-      if(empty($this->getInfo())){
-        return null;
-      }
-      return $this->getInfo()->getAdditionalInformation('billet_url');
-  }
+    public function getBilletUrl()
+    {
+        if (empty($this->getInfo())) {
+            return null;
+        }
+        return $this->getInfo()->getAdditionalInformation('billet_url');
+    }
+
+    public function getBillet()
+    {
+        if (empty($this->getInfo())) {
+            return null;
+        }
+        return $this->getInfo()->getAdditionalInformation('billet');
+    }
 }

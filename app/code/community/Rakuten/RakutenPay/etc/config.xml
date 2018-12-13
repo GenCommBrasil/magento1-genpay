@@ -200,7 +200,7 @@
         </cron>
         <log>
             <file_write>
-                <active>0</active>
+                <active>1</active>
             </file_write>
             <configuration>
                 <active>0</active>

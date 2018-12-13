@@ -198,17 +198,17 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             /** controy redirect url according with payment return link **/
             if (method_exists($result, 'getBillet') && $result->getBillet()) {
                 $billet = $result->getBillet();
-                $link = $result->getBilletUrl();
+                $billetUrl = $result->getBilletUrl();
 
                 $payment = $order->getPayment();
                 $payment
                     ->setAdditionalInformation('billet', $billet)
-                    ->setAdditionalInformation('billet_url', $link)
+                    ->setAdditionalInformation('billet_url', $billetUrl)
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
                     ->save();
 
                 $redirect = 'rakutenpay/payment/success';
-                $redirectParams = array('_secure'=> false, '_query'=> array('billet_url' => $link));
+                $redirectParams = array('_secure'=> false, '_query'=> array('billet_url' => $billetUrl, 'billet' => $billet));
             } else {
                 $payment = $order->getPayment();
                 $payment

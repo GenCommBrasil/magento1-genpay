@@ -18,6 +18,29 @@
  */
 ?>
 <script>
+    var startLoading = function() {
+        document.getElementById("open-billet-feedback").innerHTML = '<span style="font-weight: bold">(aguarde o carregamento...)</span>';
+    };
+    var stopLoading = function() {
+        document.getElementById("open-billet-feedback").innerHTML = '(<a href="#" onclick="popUp();">clique aqui</a> para visualizar)';
+    };
+    function popUp() {
+        startLoading();
+        var http = new XMLHttpRequest();
+        var url = "<?php echo $this->getUrl('rakutenpay/billet/getBillet'); ?>";
+        var params = "data=<?php echo $this->getBillet(); ?>";
+        http.open('POST', url, true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function () {
+            if (http.readyState == 4 && http.status == 200) {
+                stopLoading();
+                var w = window.open();
+                w.document.body.innerHTML = http.responseText;
+            }
+        }
+        http.send(params);
+    }
+
     function copyTextToClipboard(text) {
         var textArea = document.createElement("textarea");
 
@@ -58,10 +81,12 @@
 </script>
 
 <?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?>
-<?php if(!empty($this->getBilletUrl())): ?>
+<?php if (!empty($this->getBilletUrl())) { ?>
     <p>
         <button class="button" onclick="window.location.href='<?php echo $this->getBilletUrl(); ?>'">Visualizar Boleto</button>
         <button class="button" onclick="copyTextToClipboard('<?php echo $this->getBilletUrl(); ?>')">Copiar Link do Boleto</button>
     </p>
     <p><span id="link-message"></span></p>
-<?php endif;?>
+<?php } elseif (!empty($this->getBillet())) { ?>
+    <span id="open-billet-feedback">(<a href="#" onclick="popUp();">clique aqui</a> para visualizar)</span>
+<?php } ?>
