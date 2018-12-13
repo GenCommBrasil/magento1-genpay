@@ -91,6 +91,27 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
     }
 
     /**
+     * @param Mage_Sales_Model_Order $order
+     * @param $interestAmount
+     * @return Mage_Sales_Model_Order
+     */
+    private function setTotalWithoutInterest(Mage_Sales_Model_Order $order, $interestAmount)
+    {
+        if (!empty($interestAmount)) {
+            $grandBaseTotal = $order->getBaseGrandTotal();
+            $grandTotal = $order->getGrandTotal();
+
+            $order->setBaseGrandTotal($grandBaseTotal - floatval($interestAmount));
+            $order->setGrandTotal($grandTotal - floatval($interestAmount));
+
+            return $order->save();
+        }
+
+        return $order;
+    }
+
+
+    /**
      * @return Rakuten_RakutenPay_PaymentController
      */
     public function defaultAction()
@@ -163,6 +184,12 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
              */
             $result = $this->payment->paymentRegister($payment);
             \Rakuten\Connector\Resources\Log\Logger::info('Registered the payment.');
+
+            $paymentMethod = $order->getPayment()->getMethod();
+            if ($paymentMethod == 'rakutenpay_credit_card' && isset($customerPaymentData['creditCardInterestAmount'])) {
+                \Rakuten\Connector\Resources\Log\Logger::info('Setting grand base total without interest.');
+                $order = $this->setTotalWithoutInterest($order, $customerPaymentData['creditCardInterestAmount']);
+            }
 
             if ($result === false) {
                 \Rakuten\Connector\Resources\Log\Logger::error('Result is false...');
