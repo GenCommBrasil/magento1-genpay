@@ -103,8 +103,9 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
 
             $order->setBaseGrandTotal($grandBaseTotal - floatval($interestAmount));
             $order->setGrandTotal($grandTotal - floatval($interestAmount));
+            $order->save();
 
-            return $order->save();
+            return $order;
         }
 
         return $order;
