@@ -22,17 +22,17 @@ namespace Rakuten\Connector\Enum\DirectPayment;
 use Rakuten\Connector\Enum\Enum;
 
 /**
- * Class Status
+ * Class State
  * @package Rakuten\Connector\Enum\DirectPayment
  */
-class Status extends Enum
+class State extends Enum
 {
-    const APPROVED = "processing";
     const PENDING = "pending";
-    const AUTHORIZED = "payment_review";
+    const AUTHORIZED = "authorized";
+    const APPROVED = "approved";
     const COMPLETED = "completed";
-    const CANCELLED = "canceled";
-    const CHARGEBACK = "canceled";
-    const REFUNDED = "closed";
-    const PARTIAL_REFUNDED = "closed";
+    const CANCELLED = "cancelled";
+    const REFUNDED = "refunded";
+    const PARTIAL_REFUNDED = "partial_refunded";
+    const CHARGEBACK = "chargeback";
 }

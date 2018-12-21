@@ -67,21 +67,24 @@ class ResponseValidate
      */
     public static function checkErrors($status, $response, $error, $errorMessage)
     {
-        $result = [
-            'status' => (int) $status,
-            'response' => (string) $response,
-        ];
+        try {
+            $result = [
+                'status' => (int)$status,
+                'response' => (string)$response,
+            ];
 
-        if ($error) {
-            Logger::info(sprintf('Processing checkErrors in ResponseValidate'));
-            if (self::hasTransferClosed($errorMessage)) {
+            if ($error) {
+                Logger::info(sprintf('Processing checkErrors in ResponseValidate'));
+                if (self::hasTransferClosed($errorMessage)) {
 
-                return $result;
+                    return $result;
+                }
+                throw new ConnectorException("CURL can't connect: $errorMessage");
             }
-            throw new ConnectorException("CURL can't connect: $errorMessage");
+            return $result;
+        } catch (ConnectorException $e) {
+            Logger::error($e);
         }
-
-        return $result;
     }
 
     /**

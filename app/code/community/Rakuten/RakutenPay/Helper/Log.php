@@ -86,13 +86,13 @@ class Rakuten_RakutenPay_Helper_Log
      * @param $class
      * @param $orderId
      * @param $transactionCode
-     * @param $orderStatus
+     * @param $orderState
      */
-    public function setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus)
+    public function setUpdateOrderLog($class, $orderId, $transactionCode, $orderState)
     {
-        $phrase = "Update( OrderStatusMagento: array (\n 'orderId' => ".$orderId.",\n ";
+        $phrase = "Update( OrderStateMagento: array (\n 'orderId' => ".$orderId.",\n ";
         $phrase .= "'transactionCode' => '".$transactionCode."',\n ";
-        $phrase .= "'orderStatus' => '".$orderStatus."'\n ) )";
+        $phrase .= "'orderState' => '".$orderState."'\n ) )";
         \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $this->setModule($class)]);
     }
 }
