@@ -112,4 +112,10 @@ class Rakuten_RakutenPay_Model_Observer
             $result->isAvailable = false;
         }
     }
+
+    public function notificationChangeStatus(Varien_Event_Observer $observer)
+    {
+        $order = $observer->getEvent()->getOrder();
+        \Rakuten\Connector\Resources\Log\Logger::info("State: " . $order->getState() . " - Status: " . $order->getStatus(), ['service' => 'Change.Status']);
+    }
 }

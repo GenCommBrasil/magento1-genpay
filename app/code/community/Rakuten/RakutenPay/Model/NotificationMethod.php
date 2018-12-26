@@ -51,7 +51,9 @@ class Rakuten_RakutenPay_Model_NotificationMethod extends MethodAbstract
         $this->webhookReference = $this->post['reference'];
         if ($this->webhookStatus == 'approved') {
             $this->amount = $this->post['amount'];
-        } else if($this->webhookStatus == 'partial_refunded' || $this->webhookStatus == 'refunded') {
+        } else if (
+            $this->webhookStatus == \Rakuten\Connector\Enum\DirectPayment\State::PARTIAL_REFUNDED ||
+            $this->webhookStatus == \Rakuten\Connector\Enum\DirectPayment\State::REFUNDED) {
             $this->amount = -array_sum(array_column($this->post['refunds'], 'amount'));
         } else {
             $this->amount = false;
@@ -64,16 +66,16 @@ class Rakuten_RakutenPay_Model_NotificationMethod extends MethodAbstract
         \Rakuten\Connector\Resources\Log\Logger::info('Processing setNotificationUpdateOrder in ModelNotificationMethod.');
         $incrementId = $this->webhookReference;
         $transactionCode = $this->webhookStatus;
-        $orderStatus = $this->helper->getPaymentStatusFromKey($transactionCode);
+        $orderState = $this->helper->getPaymentStateFromKey($transactionCode);
         \Rakuten\Connector\Resources\Log\Logger::info("Processing webhook with transaction: " . $incrementId
-                    . "; Status: ". $orderStatus . "; Amount: " . $this->amount,
+                    . "; State: ". $orderState . "; Amount: " . $this->amount,
                     ['service' => 'WEBHOOK']);
-        if ($orderStatus == false) {
+        if ($orderState == false) {
             \Rakuten\Connector\Resources\Log\Logger::error("Cannot process webhook with transaction: " . $transactionCode,
                     ['service' => 'WEBHOOK']);
             return;
         }
         $class = null;
-        $this->helper->updateOrderStatusMagento($class, $incrementId, $transactionCode, $orderStatus, $this->amount);
+        $this->helper->updateOrderStateMagento($class, $incrementId, $transactionCode, $orderState, $this->amount);
     }
 }

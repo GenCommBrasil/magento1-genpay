@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Rakuten_RakutenPay>
-            <version>1.2.8</version>
+            <version>1.3.0</version>
         </Rakuten_RakutenPay>
     </modules>
     <global>
@@ -55,6 +55,14 @@
                     </rakuten_rakutenpay>
                 </observers>
             </resource_get_tablename>
+            <sales_order_save_after>
+                <observers>
+                    <rakuten_rakutenpay>
+                        <model>rakuten_rakutenpay/observer</model>
+                        <method>notificationChangeStatus</method>
+                    </rakuten_rakutenpay>
+                </observers>
+            </sales_order_save_after>
         </events>
         <template>
             <email>
@@ -194,9 +202,9 @@
     </frontend>
     <default>
         <cron>
-            <update_order_status>
+            <update_order_state>
                 <active>0</active>
-            </update_order_status>
+            </update_order_state>
         </cron>
         <log>
             <file_write>
@@ -232,7 +240,7 @@
                     <cron_expr>*/1 * * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>rakuten_rakutenpay/cron_orderStatus::updateOrderStatus</model>
+                    <model>rakuten_rakutenpay/cron_orderState::updateOrderState</model>
                 </run>
             </rakuten_rakutenpay>
         </jobs>

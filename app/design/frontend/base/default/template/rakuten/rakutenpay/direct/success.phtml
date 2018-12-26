@@ -17,53 +17,82 @@
  ************************************************************************
  */
 ?>
-<?php $billet = (array_key_exists('billet_url', $_GET)) ? $_GET['billet_url'] : false; ?>
+<?php $billetUrl = (array_key_exists('billet_url', $_GET)) ? $_GET['billet_url'] : false; ?>
+<?php $billet = (array_key_exists('billet', $_GET)) ? $_GET['billet'] : false; ?>
     <script>
-        function copyTextToClipboard(text) {
-            var textArea = document.createElement("textarea");
+    var startLoading = function() {
+        document.getElementById("open-billet").disabled = true;
+    };
+    var stopLoading = function() {
+        document.getElementById("open-billet").disabled = false;
+    };
 
-            textArea.style.position = 'fixed';
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-
-            // Ensure it has a small width and height. Setting to 1px / 1em
-            // doesn't work as this gives a negative w/h on some browsers.
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-
-            // We don't need padding, reducing the size if it does flash render.
-            textArea.style.padding = 0;
-
-            // Clean up any borders.
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-
-            // Avoid flash of white box if rendered for any reason.
-            textArea.style.background = 'transparent';
-
-
-            textArea.value = text;
-
-            document.body.appendChild(textArea);
-
-            textArea.select();
-
-            try {
-                var successful = document.execCommand('copy');
-                var msg = successful ? '*Link copiado com sucesso.' : '*Erro ao copiar link.';
-
-            } catch (err) {
-                console.log(msg);
+    function popUp() {
+        startLoading();
+        var http = new XMLHttpRequest();
+        var url = "<?php echo $this->getUrl('rakutenpay/billet/getBillet'); ?>";
+        var params = "data=<?php echo $billet; ?>";
+        http.open('POST', url, true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function () {
+            if (http.readyState == 4 && http.status == 200) {
+                stopLoading();
+                var w = window.open();
+                w.document.body.innerHTML = http.responseText;
             }
-
-            document.body.removeChild(textArea);
         }
+        http.send(params);
+    }
+
+    function copyTextToClipboard(text) {
+        var textArea = document.createElement("textarea");
+
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+
+        // Ensure it has a small width and height. Setting to 1px / 1em
+        // doesn't work as this gives a negative w/h on some browsers.
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+
+        // We don't need padding, reducing the size if it does flash render.
+        textArea.style.padding = 0;
+
+        // Clean up any borders.
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+
+        // Avoid flash of white box if rendered for any reason.
+        textArea.style.background = 'transparent';
+
+
+        textArea.value = text;
+
+        document.body.appendChild(textArea);
+
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? '*Link copiado com sucesso.' : '*Erro ao copiar link.';
+
+        } catch (err) {
+            console.log(msg);
+        }
+
+        document.body.removeChild(textArea);
+    }
     </script>
 
-<?php if ($billet != false) { ?>
+<?php if ($billetUrl != false) { ?>
     <div class="buttons-set">
-        <button class="button" onclick="copyTextToClipboard('<?php echo $billet; ?>')">Copiar Link do Boleto</button>
-        <button class="button" onclick="window.location.href='<?php echo $billet; ?>'">Visualizar Boleto</button>
+        <button class="button" onclick="copyTextToClipboard('<?php echo $billetUrl; ?>')">Copiar Link do Boleto</button>
+        <button class="button" onclick="window.location.href='<?php echo $billetUrl; ?>'">Visualizar Boleto</button>
+    </div>
+<?php } elseif ($billet != false) { ?>
+    <div class="buttons-set">
+        <input type="button" id="open-billet" class="button" onclick="popUp();" value="Clique aqui para imprimir seu Boleto" />
     </div>
 <?php } ?>

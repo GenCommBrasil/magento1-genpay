@@ -38,15 +38,15 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     /**
      * @var array
      */
-    private $arrayPaymentStatusList = array(
-        "pending" => "pending",
-        "authorized" => "payment_review",
-        "approved" => "processing",
-        "completed" => "complete",
-        "chargeback" => "canceled",
-        "cancelled" => "canceled",
-        "refunded" => "closed",
-        "partial_refunded" => "closed"
+    private $arrayPaymentStateList = array(
+        \Rakuten\Connector\Enum\DirectPayment\State::PENDING => Mage_Sales_Model_Order::STATE_NEW,
+        \Rakuten\Connector\Enum\DirectPayment\State::AUTHORIZED => Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+        \Rakuten\Connector\Enum\DirectPayment\State::APPROVED => Mage_Sales_Model_Order::STATE_PROCESSING,
+        \Rakuten\Connector\Enum\DirectPayment\State::COMPLETED => Mage_Sales_Model_Order::STATE_COMPLETE,
+        \Rakuten\Connector\Enum\DirectPayment\State::CHARGEBACK => Mage_Sales_Model_Order::STATE_CANCELED,
+        \Rakuten\Connector\Enum\DirectPayment\State::CANCELLED => Mage_Sales_Model_Order::STATE_CANCELED,
+        \Rakuten\Connector\Enum\DirectPayment\State::REFUNDED => Mage_Sales_Model_Order::STATE_CLOSED,
+        \Rakuten\Connector\Enum\DirectPayment\State::PARTIAL_REFUNDED => Mage_Sales_Model_Order::STATE_CLOSED,
     );
 
     /**
@@ -292,11 +292,11 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
      *
      * @return bool|mixed
      */
-    public function getPaymentStatusFromKey($key)
+    public function getPaymentStateFromKey($key)
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentStatusFromKey.');
-        if (array_key_exists($key, $this->arrayPaymentStatusList)) {
-            return $this->arrayPaymentStatusList[$key];
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentStateFromKey.');
+        if (array_key_exists($key, $this->arrayPaymentStateList)) {
+            return $this->arrayPaymentStateList[$key];
         }
 
         return false;
@@ -307,10 +307,10 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
      *
      * @return bool|int
      */
-    public function getPaymentStatusFromValue($value)
+    public function getPaymentStateFromValue($value)
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentStatusFromValue.');
-        $key = array_search($value, $this->arrayPaymentStatusList);
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentStateFromValue.');
+        $key = array_search($value, $this->arrayPaymentStateList);
         return $key;
     }
 
@@ -319,22 +319,24 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
      *
      * @return bool|string
      */
-    public function getPaymentStatusToString($key)
+    public function getPaymentStateToString($key)
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentStatusToString.');
-        if (array_key_exists($key, $this->arrayPaymentStatusList)) {
-            switch ($this->arrayPaymentStatusList[$key]) {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentStateToString.');
+        if (array_key_exists($key, $this->arrayPaymentStateList)) {
+            switch ($this->arrayPaymentStateList[$key]) {
                 case 'pending':
                     return $this->__('Pendente');
-                case 'payment_review':
+                case Mage_Sales_Model_Order::STATE_PENDING_PAYMENT:
+                    return $this->__('Pagamento Pendente');
+                case Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW:
                     return $this->__('Análise de Pagamento');
-                case 'processing':
+                case Mage_Sales_Model_Order::STATE_PROCESSING:
                     return $this->__('Processando');
-                case 'canceled':
+                case Mage_Sales_Model_Order::STATE_CANCELED:
                     return $this->__('Cancelado');
-                case 'complete':
+                case Mage_Sales_Model_Order::STATE_COMPLETE:
                     return $this->__('Completo');
-                case 'closed':
+                case Mage_Sales_Model_Order::STATE_CLOSED:
                     return $this->__('Fechado');
             }
         }
@@ -426,31 +428,32 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     }
 
 
-    public function updateOrderStatusMagento($class, $incrementId, $transactionCode, $orderStatus, $amount = false)
+    public function updateOrderStateMagento($class, $incrementId, $transactionCode, $orderState, $amount = false)
     {
         try {
             $orderId = $this->getOrderId($incrementId);
 
             \Rakuten\Connector\Resources\Log\Logger::info(
                 "Updating order with orderId: " . $orderId .
-                "; Status: "                    . $orderStatus .
+                "; State: "                    . $orderState .
                 "; Amount: "                    . $amount .
                 "; transactionCode: "           . $transactionCode,
                 ['service' => 'WEBHOOK']);
 
-            if ($this->getLastStatusOrder($orderId) != $orderStatus) {
+            if ($this->getLastStateOrder($orderId) != $orderState) {
                 \Rakuten\Connector\Resources\Log\Logger::info(
-                    "Order status has changed, so we notify the customer.",
+                    "Order state has changed, so we notify the customer.",
                     ['service' => 'WEBHOOK']
                 );
                 $this
-                    ->notifyCustomer($orderId, $orderStatus, $orderStatus == 'canceled');
+                    ->notifyCustomer($orderId, $orderState, $orderState == 'canceled');
 
                 Mage::helper('rakutenpay/log')
-                ->setUpdateOrderLog($class, $orderId, $transactionCode, $orderStatus);
+                ->setUpdateOrderLog($class, $orderId, $transactionCode, $orderState);
+                $this->setTransactionRecord($orderId, $transactionCode, false, $amount);
             } else {
                 \Rakuten\Connector\Resources\Log\Logger::info(
-                    "Order status has not changed.",
+                    "Order state has not changed.",
                     ['service' => 'WEBHOOK']
                 );
             }
@@ -461,8 +464,6 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             } else {
                 \Rakuten\Connector\Resources\Log\Logger::info("Amount has not changed.", ['service' => 'WEBHOOK']);
             }
-
-            $this->setTransactionRecord($orderId, $transactionCode, false, $amount);
         } catch (\Rakuten\Connector\Exception\ConnectorException $pse) {
             \Rakuten\Connector\Resources\Log\Logger::error("Exception: " . var_export($pse, true), ['service' => 'WEBHOOK']);
             throw $pse;
@@ -523,12 +524,12 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
      *
      * @return mixed
      */
-    protected function getLastStatusOrder($orderId)
+    protected function getLastStateOrder($orderId)
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getLastStatusOrder.');
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing getLastStateOrder.');
         $order = Mage::getModel('sales/order')->load($orderId);
 
-        return $order->getStatus();
+        return $order->getState();
     }
 
     protected function setOrderPaymentValue($orderId, $amount)
@@ -545,9 +546,11 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
 
     /**
      * @param $orderId
-     * @param $orderStatus
+     * @param $orderState
+     * @param bool $cancel
+     * @throws Exception
      */
-    private function notifyCustomer($orderId, $orderStatus, $cancel = false)
+    private function notifyCustomer($orderId, $orderState, $cancel = false)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing notifyCustomer.');
         if ($cancel) {
@@ -555,11 +558,15 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             $order->cancel();
             $order->save();
         }
-        $status = $orderStatus;
+        $status = $orderState;
         $comment = null;
         $notify = true;
         $order = Mage::getModel('sales/order')->load($orderId);
-        $order->addStatusToHistory($status, $comment, $notify);
+        if ($orderState == Mage_Sales_Model_Order::STATE_COMPLETE || $orderState == Mage_Sales_Model_Order::STATE_CLOSED) {
+            $order->addStatusToHistory($status, $comment, $notify);
+        } else {
+            $order->setState($orderState, $status, $comment, $notify);
+        }
         $order->sendOrderUpdateEmail($notify, $comment);
         // Makes the notification of the order of historic displays the correct date and time
         Mage::app()->getLocale()->date();

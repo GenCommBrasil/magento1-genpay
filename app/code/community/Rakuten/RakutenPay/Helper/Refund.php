@@ -120,7 +120,7 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
     }
 
     /**
-     * Build a array with RakutenPayTransaction where status is refundable
+     * Build a array with RakutenPayTransaction where state is refundable
      */
     private function requestTransactionsToRefund()
     {
@@ -132,7 +132,7 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
                 ) {
                     if (!is_null(Mage::getSingleton('core/session')->getData("store_id"))) {
                         if (Mage::getSingleton('core/session')->getData("store_id") == $orderHandler->getStoreId()) {
-                            if ($orderHandler->getStatus() == \Rakuten\Connector\Enum\DirectPayment\Status::APPROVED) {
+                            if ($orderHandler->getState() == Mage_Sales_Model_Order::STATE_PROCESSING) {
                                 $RakutenPaySummaryItem = $this->findRakutenPayTransactionByReference(
                                         $orderHandler->getEntityId()
                                 );
@@ -142,7 +142,7 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
                             }
                         }
                     } elseif ($orderHandler) {
-                        if ($orderHandler->getStatus() == \Rakuten\Connector\Enum\DirectPayment\Status::APPROVED) {
+                        if ($orderHandler->getState() == Mage_Sales_Model_Order::STATE_PROCESSING) {
                             $RakutenPaySummaryItem = $this->findRakutenPayTransactionByReference(
                                     $orderHandler->getEntityId()
                             );
@@ -197,10 +197,9 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
     public function build($RakutenPaySummaryItem, $order)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing build in HelperRefund.');
-        $RakutenPayStatusValue = $this->getPaymentStatusFromKey($RakutenPaySummaryItem->getStatus());
         $config = "class='action' data-config='" . $order->getId() . '/'
                 . $RakutenPaySummaryItem->getCode() . '/'
-                . $this->getPaymentStatusFromKey($RakutenPaySummaryItem->getStatus()) . '/'
+                . $this->getPaymentStateFromKey($RakutenPaySummaryItem->getState()) . '/'
                 . $RakutenPaySummaryItem->getNetAmount() . '/'
                 . $RakutenPaySummaryItem->getPaymentMethod()->getType() . '/'
                 . $RakutenPaySummaryItem->getPaymentId() . "'";
@@ -213,7 +212,7 @@ class Rakuten_RakutenPay_Helper_Refund extends Rakuten_RakutenPay_Helper_Data
             'date'           => $this->getOrderMagetoDateConvert($order->getCreatedAt()),
             'id_magento'     => $order->getIncrementId(),
             'id_rakutenpay'  => $RakutenPaySummaryItem->getCode(),
-            'status_magento' => $this->getPaymentStatusToString($this->getPaymentStatusFromValue($order->getStatus())),
+            'state_magento' => $this->getPaymentStateToString($this->getPaymentStateFromValue($order->getState())),
             'action'         => $actionOrder,
         );
     }
