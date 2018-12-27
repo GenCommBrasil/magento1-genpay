@@ -33,6 +33,8 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     private $creditCardNum;
 
+    private $brand;
+
     function getResult() {
         return $this->result;
     }
@@ -47,6 +49,10 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function getCreditCardNum() {
         return $this->creditCardNum;
+    }
+
+    function getBrand() {
+        return $this->brand;
     }
 
     function setResult($result) {
@@ -69,4 +75,8 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
         return $this;
     }
 
+    function setBrand($brand) {
+        $this->brand = $brand;
+        return $this;
+    }
 }

@@ -39,4 +39,41 @@ class Rakuten_RakutenPay_Block_Info_CreditCard extends Mage_Payment_Block_Info
 
         return $this->getInfo()->getCcNumberEnc();
     }
+
+    public function getBrand()
+    {
+        if (empty($this->getInfo())) {
+
+            return null;
+        }
+
+        return strtoupper($this->getInfo()->getCcType());
+    }
+
+    public function getInstallments()
+    {
+        if (empty($this->getInfo())) {
+
+            return null;
+        }
+
+        return $this->getInfo()->getAdditionalInformation('installments');
+    }
+
+    public function getApprovedDate()
+    {
+        if (empty($this->getInfo())) {
+
+            return null;
+        }
+
+        $date = $this->getInfo()->getAdditionalInformation('approved_date');
+        if (empty($date)) {
+
+            return null;
+        }
+        $date = new \DateTime($date);
+
+        return $date->format("d/m/Y H:i:s");
+    }
 }

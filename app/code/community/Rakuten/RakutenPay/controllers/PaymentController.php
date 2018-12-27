@@ -220,7 +220,9 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                 $payment = $order->getPayment();
                 $payment
                     ->setCcNumberEnc($result->getCreditCardNum())
+                    ->setCcType($customerPaymentData['creditCardBrand'])
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
+                    ->setAdditionalInformation('installments', $customerPaymentData['creditCardInstallment'])
                     ->save();
                 $redirect = 'rakutenpay/payment/success';
                 $redirectParams = array();

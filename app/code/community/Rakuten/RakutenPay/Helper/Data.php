@@ -428,7 +428,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     }
 
 
-    public function updateOrderStateMagento($class, $incrementId, $transactionCode, $orderState, $amount = false)
+    public function updateOrderStateMagento($class, $incrementId, $transactionCode, $orderState, $amount = false, $approvedDate = false)
     {
         try {
             $orderId = $this->getOrderId($incrementId);
@@ -446,7 +446,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
                     ['service' => 'WEBHOOK']
                 );
                 $this
-                    ->notifyCustomer($orderId, $orderState, $orderState == 'canceled');
+                    ->notifyCustomer($orderId, $orderState, $orderState == 'canceled', $approvedDate);
 
                 Mage::helper('rakutenpay/log')
                 ->setUpdateOrderLog($class, $orderId, $transactionCode, $orderState);
@@ -548,9 +548,10 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
      * @param $orderId
      * @param $orderState
      * @param bool $cancel
+     * @param string $approvedDate
      * @throws Exception
      */
-    private function notifyCustomer($orderId, $orderState, $cancel = false)
+    private function notifyCustomer($orderId, $orderState, $cancel, $approvedDate)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing notifyCustomer.');
         if ($cancel) {
@@ -561,6 +562,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         $status = $orderState;
         $comment = null;
         $notify = true;
+        /** @var $order Mage_Sales_Model_Order */
         $order = Mage::getModel('sales/order')->load($orderId);
         if ($orderState == Mage_Sales_Model_Order::STATE_COMPLETE || $orderState == Mage_Sales_Model_Order::STATE_CLOSED) {
             $order->addStatusToHistory($status, $comment, $notify);
@@ -571,6 +573,14 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         // Makes the notification of the order of historic displays the correct date and time
         Mage::app()->getLocale()->date();
         $order->save();
+
+        if ($approvedDate !== false) {
+            \Rakuten\Connector\Resources\Log\Logger::info("Setting Date for Approved Status.");
+            $payment = $order->getPayment();
+            $payment
+                ->setAdditionalInformation('approved_date', $approvedDate)
+                ->save();
+        }
     }
 
     /**
