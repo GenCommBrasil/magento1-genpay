@@ -27,7 +27,7 @@ class Rakuten_RakutenPay_AdminHtml_LogController extends Mage_Adminhtml_Controll
 
     public function downloadAction()
     {
-        $filePath = Mage::getBaseDir('base') . '/' . Logger::DEFAULT_FILE;
+        $filePath = Logger::location();
 
         if (file_exists($filePath)) {
             try {
