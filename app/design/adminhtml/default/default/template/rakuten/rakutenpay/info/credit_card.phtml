@@ -21,8 +21,18 @@
 <p>
     <b>Alterações de status feitas nesta tela podem não ser refletidas para o sistema Rakuten Pay.</b>
 </p>
-<?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?>
+<p><b><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></b></p>
 
 <?php if(!empty($this->getCreditCardNum())): ?>
-    <p><span><strong>Número: </strong><?php echo $this->getCreditCardNum(); ?></span></p>
+    <span><strong>Número: </strong><?php echo $this->getCreditCardNum(); ?></span><br>
 <?php endif;?>
+<?php if(!empty($this->getBrand())): ?>
+    <span><strong>Bandeira: </strong><?php echo $this->getBrand(); ?></span><br>
+<?php endif;?>
+<?php if(!empty($this->getInstallments())): ?>
+        <span><strong>Parcelas: </strong><?php echo $this->getInstallments(); ?>x</span><br>
+<?php endif;?>
+<?php if(!empty($this->getApprovedDate())): ?>
+    <span><strong>Data da Aprovação: </strong><?php echo $this->getApprovedDate(); ?></span><br>
+<?php endif;?>
+

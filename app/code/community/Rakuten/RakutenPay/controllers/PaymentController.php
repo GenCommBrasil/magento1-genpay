@@ -196,14 +196,18 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                 $this->canceledStatus($order);
                 return Mage_Core_Controller_Varien_Action::_redirect('rakutenpay/payment/error', array('_secure'=> false));
             }
+
+            if ($result->getResult() == 'declined' || $result->getResult() == \Rakuten\Connector\Enum\DirectPayment\State::CANCELLED) {
+                \Rakuten\Connector\Resources\Log\Logger::info(sprintf("Order has Canceled by Status: %s", $result->getResult()));
+                $this->canceledStatus($order);
+            }
+
             /** controy redirect url according with payment return link **/
             if (method_exists($result, 'getBillet') && $result->getBillet()) {
-                $billet = $result->getBillet();
                 $billetUrl = $result->getBilletUrl();
 
                 $payment = $order->getPayment();
                 $payment
-                    ->setAdditionalInformation('billet', $billet)
                     ->setAdditionalInformation('billet_url', $billetUrl)
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
                     ->save();
@@ -214,7 +218,9 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                 $payment = $order->getPayment();
                 $payment
                     ->setCcNumberEnc($result->getCreditCardNum())
+                    ->setCcType($customerPaymentData['creditCardBrand'])
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
+                    ->setAdditionalInformation('installments', $customerPaymentData['creditCardInstallment'])
                     ->save();
                 $redirect = 'rakutenpay/payment/success';
                 $redirectParams = array();

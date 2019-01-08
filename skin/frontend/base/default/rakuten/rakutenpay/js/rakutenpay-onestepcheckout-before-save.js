@@ -69,7 +69,11 @@ function addCardFieldsObserver() {
             Element.observe(creditCardMonth,'change',function(e){updateCreditCardToken(creditCardNum.value, creditCardMonth.value, creditCardYear.value);});
             Element.observe(creditCardYear,'change',function(e){updateCreditCardToken(creditCardNum.value, creditCardMonth.value, creditCardYear.value);});
         } else if (paymentMethod === "rakutenpay_boleto") {
-            updateBilletFingerprint();
+            var countFingerprint = document.getElementsByName("payment[fingerprint]").length;
+
+            if (countFingerprint === 0) {
+                updateBilletFingerprint();
+            }
         }
     } catch(e) {
         // console.error('Não foi possível adicionar observação aos cartões. ' + e.message);
@@ -146,6 +150,31 @@ function updateBilletFingerprint() {
         return true;
 }
 
+function forceTokenFingerprint() {
+
+    if (document.querySelector('#checkout-payment-method-load .radio:checked') != null) {
+        var paymentMethod = document.querySelector('#checkout-payment-method-load .radio:checked').value;
+
+        if (paymentMethod === "rakutenpay_credit_card") {
+            var creditCardToken = document.querySelector('#creditCardToken');
+
+            if (creditCardToken.value === "") {
+                var creditCardNum = document.querySelector('#creditCardNumVisible');
+                var creditCardMonth = document.querySelector('#creditCardExpirationMonth');
+                var creditCardYear = document.querySelector('#creditCardExpirationYear');
+
+                updateCreditCardToken(creditCardNum.value, creditCardMonth.value, creditCardYear.value);
+            }
+        } else if (paymentMethod === "rakutenpay_boleto") {
+            var countFingerprint = document.getElementsByName("payment[fingerprint]").length;
+
+            if (countFingerprint === 0) {
+                updateBilletFingerprint();
+            }
+        }
+    }
+}
+
 /**
  * Observer for checkout price modifications, like changes in shipment price or taxes
  * to call the installments value with the updated value
@@ -153,6 +182,8 @@ function updateBilletFingerprint() {
  *
  */
 OnestepcheckoutForm.prototype.hidePriceChangeProcess = OnestepcheckoutForm.prototype.hidePriceChangeProcess.wrap(function(hidePriceChangeProcess){
+
+    forceTokenFingerprint();
     var granTotalAmountUpdated = convertPriceStringToFloat(this.granTotalAmount.textContent);
 
     if (document.getElementById('grand_total') !== null && parseFloat(document.getElementById('grand_total').value) !== granTotalAmountUpdated) {
@@ -179,20 +210,7 @@ OnestepcheckoutShipment.prototype.switchToMethod = OnestepcheckoutShipment.proto
     });
 
 OnestepcheckoutForm.prototype.validate = OnestepcheckoutForm.prototype.validate.wrap(function (validate) {
-
-    if (typeof(document.querySelector('#checkout-payment-method-load .radio:checked').value) !== "undefined") {
-        var paymentMethod = document.querySelector('#checkout-payment-method-load .radio:checked').value;
-
-        if (paymentMethod === "rakutenpay_credit_card") {
-            var creditCardNum = document.querySelector('#creditCardNumVisible');
-            var creditCardMonth = document.querySelector('#creditCardExpirationMonth');
-            var creditCardYear = document.querySelector('#creditCardExpirationYear');
-
-            updateCreditCardToken(creditCardNum.value, creditCardMonth.value, creditCardYear.value);
-        } else if (paymentMethod === "rakutenpay_boleto") {
-            updateBilletFingerprint();
-        }
-    }
+    forceTokenFingerprint();
 
     return validate() && validateRakutenPayActiveMethod();
 });

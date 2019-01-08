@@ -18,32 +18,7 @@
  */
 ?>
 <?php $billetUrl = (array_key_exists('billet_url', $_GET)) ? $_GET['billet_url'] : false; ?>
-<?php $billet = (array_key_exists('billet', $_GET)) ? $_GET['billet'] : false; ?>
     <script>
-    var startLoading = function() {
-        document.getElementById("open-billet").disabled = true;
-    };
-    var stopLoading = function() {
-        document.getElementById("open-billet").disabled = false;
-    };
-
-    function popUp() {
-        startLoading();
-        var http = new XMLHttpRequest();
-        var url = "<?php echo $this->getUrl('rakutenpay/billet/getBillet'); ?>";
-        var params = "data=<?php echo $billet; ?>";
-        http.open('POST', url, true);
-        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        http.onreadystatechange = function () {
-            if (http.readyState == 4 && http.status == 200) {
-                stopLoading();
-                var w = window.open();
-                w.document.body.innerHTML = http.responseText;
-            }
-        }
-        http.send(params);
-    }
-
     function copyTextToClipboard(text) {
         var textArea = document.createElement("textarea");
 
@@ -90,9 +65,5 @@
     <div class="buttons-set">
         <button class="button" onclick="copyTextToClipboard('<?php echo $billetUrl; ?>')">Copiar Link do Boleto</button>
         <button class="button" onclick="window.location.href='<?php echo $billetUrl; ?>'">Visualizar Boleto</button>
-    </div>
-<?php } elseif ($billet != false) { ?>
-    <div class="buttons-set">
-        <input type="button" id="open-billet" class="button" onclick="popUp();" value="Clique aqui para imprimir seu Boleto" />
     </div>
 <?php } ?>

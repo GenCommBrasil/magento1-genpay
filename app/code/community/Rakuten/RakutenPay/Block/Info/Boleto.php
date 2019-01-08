@@ -43,4 +43,21 @@ class Rakuten_RakutenPay_Block_Info_Boleto extends Mage_Payment_Block_Info
         }
         return $this->getInfo()->getAdditionalInformation('billet');
     }
+
+    public function getApprovedDate()
+    {
+        if (empty($this->getInfo())) {
+
+            return null;
+        }
+
+        $date = $this->getInfo()->getAdditionalInformation('approved_date');
+        if (empty($date)) {
+
+            return null;
+        }
+        $date = new \DateTime($date);
+
+        return $date->format("d/m/Y H:i:s");
+    }
 }

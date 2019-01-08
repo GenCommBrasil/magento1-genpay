@@ -106,6 +106,8 @@ var x = document.getElementsByTagName("script");
 
 <?php if ($this->getHasOneStepCheckout()): ?>
     <script type="text/javascript">
-        addCardFieldsObserver();
+        if (typeof addCardFieldsObserver !== "undefined") {
+            addCardFieldsObserver();
+        }
     </script>
 <?php endif ?>

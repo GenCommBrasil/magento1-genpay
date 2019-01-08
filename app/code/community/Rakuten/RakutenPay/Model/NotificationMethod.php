@@ -26,6 +26,7 @@ class Rakuten_RakutenPay_Model_NotificationMethod extends MethodAbstract
     private $webhookStatus;
     private $amount;
     private $post;
+    private $approvedDate;
 
     /**
      * Construct
@@ -41,6 +42,7 @@ class Rakuten_RakutenPay_Model_NotificationMethod extends MethodAbstract
         \Rakuten\Connector\Resources\Log\Logger::info("Initializing the notification model.", ['service' => 'WEBHOOK']);
         $this->post = json_decode($post, true);
         $this->getNotificationPost();
+        $this->getApprovedDate();
         $this->setNotificationUpdateOrder();
     }
 
@@ -60,7 +62,6 @@ class Rakuten_RakutenPay_Model_NotificationMethod extends MethodAbstract
         }
     }
 
-
     private function setNotificationUpdateOrder()
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing setNotificationUpdateOrder in ModelNotificationMethod.');
@@ -76,6 +77,18 @@ class Rakuten_RakutenPay_Model_NotificationMethod extends MethodAbstract
             return;
         }
         $class = null;
-        $this->helper->updateOrderStateMagento($class, $incrementId, $transactionCode, $orderState, $this->amount);
+        $this->helper->updateOrderStateMagento($class, $incrementId, $transactionCode, $orderState, $this->amount, $this->approvedDate);
+    }
+
+    private function getApprovedDate()
+    {
+        $status = false;
+        $key = array_search(\Rakuten\Connector\Enum\DirectPayment\State::APPROVED, array_column($this->post['status_history'], 'status'));
+        if (false !== $key) {
+
+            $status = $this->post['status_history'][$key];
+        }
+
+        $this->approvedDate = $status['created_at'];
     }
 }

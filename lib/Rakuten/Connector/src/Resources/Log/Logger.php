@@ -21,6 +21,7 @@ namespace Rakuten\Connector\Resources\Log;
 
 use Rakuten\Connector\Enum\Log\Level;
 use Rakuten\Connector\Exception\ConnectorException;
+use Mage;
 
 /**
  * It simply delegates all log-level-specific methods to the `log` method to
@@ -30,7 +31,7 @@ use Rakuten\Connector\Exception\ConnectorException;
 class Logger implements LoggerInterface
 {
 
-    const DEFAULT_FILE = "RakutenConnector.Log";
+    const DEFAULT_FILE = "rakuten.log";
 
     /**
      * @var string
@@ -182,7 +183,10 @@ class Logger implements LoggerInterface
      */
     public static function location()
     {
-        return sprintf("%1s/../%1s", '', self::DEFAULT_FILE);
+        $logDir = Mage::getBaseDir('var') . DIRECTORY_SEPARATOR . 'log';
+        $logFile = $logDir . DIRECTORY_SEPARATOR . self::DEFAULT_FILE;
+
+        return $logFile;
     }
 
     /**

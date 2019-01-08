@@ -18,8 +18,18 @@
 */
 ?>
 
-<?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?>
+<p><b><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></b></p>
 
 <?php if(!empty($this->getCreditCardNum())): ?>
-    <p><b>Número: </b><?php echo $this->getCreditCardNum(); ?></p>
+    <b>Número: </b><?php echo $this->getCreditCardNum(); ?><br>
 <?php endif;?>
+<?php if(!empty($this->getBrand())): ?>
+    <b>Bandeira: </b><?php echo $this->getBrand(); ?><br>
+<?php endif;?>
+<?php if(!empty($this->getInstallments())): ?>
+    <b>Parcelas: </b><?php echo $this->getInstallments(); ?>x<br>
+<?php endif;?>
+<?php if(!empty($this->getApprovedDate())): ?>
+    <b>Data da Aprovação: </b><?php echo $this->getApprovedDate(); ?><br>
+<?php endif;?>
+
