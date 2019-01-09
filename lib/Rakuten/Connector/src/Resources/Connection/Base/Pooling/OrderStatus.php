@@ -30,7 +30,7 @@ trait OrderStatus
     /**
      * @param $chargeId
      * @return string
-     * @throws \Exception
+     * @throws \Rakuten\Connector\Exception\ConnectorException
      */
     public function buildOrderStatusRequestUrl($chargeId)
     {

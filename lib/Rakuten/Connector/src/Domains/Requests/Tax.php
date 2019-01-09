@@ -19,21 +19,32 @@
 
 namespace Rakuten\Connector\Domains\Requests;
 
-use Rakuten\Connector\Domains\Requests\Checkout\Payment\Request;
-
 /**
- * Class Payment
+ * Trait Tax
  * @package Rakuten\Connector\Domains\Requests
  */
-class Payment extends Request
+trait Tax
 {
     /**
-     * @param bool $onlyCode
-     * @return string
-     * @throws \Rakuten\Connector\Exception\ConnectorException
+     * @var float
      */
-    public function register($onlyCode = false)
+    private $taxAmount = 0.00;
+
+    /**
+     * @return float
+     */
+    public function getTaxAmount()
     {
-        return \Rakuten\Connector\Services\Checkout\Payment::checkout($this, $onlyCode);
+        return $this->taxAmount;
+    }
+
+    /**
+     * @param $taxAmount
+     */
+    public function setTaxAmount($taxAmount)
+    {
+        if (!empty($taxAmount)) {
+            $this->taxAmount = floatval($taxAmount);
+        }
     }
 }

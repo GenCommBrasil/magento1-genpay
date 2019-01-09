@@ -31,6 +31,7 @@ use Rakuten\Connector\Domains\Requests\Redirect;
 use Rakuten\Connector\Domains\Requests\Reference;
 use Rakuten\Connector\Domains\Requests\Requests;
 use Rakuten\Connector\Domains\Requests\Shipping;
+use Rakuten\Connector\Domains\Requests\Tax;
 
 /**
  * Class Request
@@ -39,9 +40,9 @@ use Rakuten\Connector\Domains\Requests\Shipping;
 class Request implements Requests
 {
     use BasicData;
+    use Discount;
     use Billing;
     use Item;
-    use Discount;
     use Mode;
     use Notification {
         Notification::getUrl as getNotificationUrl;
@@ -52,6 +53,7 @@ class Request implements Requests
     use ReceiverEmail;
     use Sender;
     use Shipping;
+    use Tax;
     use Reference;
     use Redirect {
         Redirect::getUrl as getRedirectUrl;

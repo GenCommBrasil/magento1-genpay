@@ -30,7 +30,7 @@ class OrderStatus extends Builder
     /**
      * @param $chargeId
      * @return string
-     * @throws \Exception
+     * @throws \Rakuten\Connector\Exception\ConnectorException
      */
     public static function getRequestUrl($chargeId)
     {

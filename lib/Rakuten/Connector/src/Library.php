@@ -46,7 +46,7 @@ class Library
     private static $cms;
 
     /**
-     * @throws \Exception
+     * @throws ConnectorException
      */
     final public static function initialize()
     {
@@ -71,7 +71,7 @@ class Library
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws ConnectorException
      */
     final public static function validate()
     {
