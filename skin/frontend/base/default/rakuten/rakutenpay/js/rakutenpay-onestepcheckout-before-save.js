@@ -147,7 +147,7 @@ function updateBilletFingerprint() {
     };
     rpay.generate(form);
 
-        return true;
+    return true;
 }
 
 function forceTokenFingerprint() {
@@ -156,15 +156,11 @@ function forceTokenFingerprint() {
         var paymentMethod = document.querySelector('#checkout-payment-method-load .radio:checked').value;
 
         if (paymentMethod === "rakutenpay_credit_card") {
-            var creditCardToken = document.querySelector('#creditCardToken');
+            var creditCardNum = document.querySelector('#creditCardNumVisible');
+            var creditCardMonth = document.querySelector('#creditCardExpirationMonth');
+            var creditCardYear = document.querySelector('#creditCardExpirationYear');
 
-            if (creditCardToken.value === "") {
-                var creditCardNum = document.querySelector('#creditCardNumVisible');
-                var creditCardMonth = document.querySelector('#creditCardExpirationMonth');
-                var creditCardYear = document.querySelector('#creditCardExpirationYear');
-
-                updateCreditCardToken(creditCardNum.value, creditCardMonth.value, creditCardYear.value);
-            }
+            updateCreditCardToken(creditCardNum.value, creditCardMonth.value, creditCardYear.value);
         } else if (paymentMethod === "rakutenpay_boleto") {
             var countFingerprint = document.getElementsByName("payment[fingerprint]").length;
 
