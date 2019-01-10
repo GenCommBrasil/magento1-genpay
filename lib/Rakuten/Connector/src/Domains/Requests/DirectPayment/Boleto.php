@@ -29,7 +29,7 @@ class Boleto extends Request
 {
     /**
      * @return string
-     * @throws \Exception
+     * @throws \Rakuten\Connector\Exception\ConnectorException
      */
     public function register()
     {

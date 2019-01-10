@@ -19,8 +19,6 @@
 
 namespace Rakuten\Connector\Domains\Requests;
 
-use Rakuten\Connector\Helpers\NumberFormat;
-
 /**
  * Trait Discount
  * @package Rakuten\Connector\Domains\Requests

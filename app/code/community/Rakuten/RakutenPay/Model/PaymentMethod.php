@@ -156,6 +156,8 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         \Rakuten\Connector\Resources\Log\Logger::info('Name set.');
         $payment->setDiscountAmount($this->order->getDiscountAmount());
         \Rakuten\Connector\Resources\Log\Logger::info('Discount Amount set.');
+        $payment->setTaxAmount($this->order->getTaxAmount());
+        \Rakuten\Connector\Resources\Log\Logger::info('Tax Amount set.');
         $payment->setSender()->setEmail($this->order->getCustomerEmail());
         \Rakuten\Connector\Resources\Log\Logger::info('Email set.');
         $phone = $this->helper->formatPhone($shippingAddress->getTelephone());

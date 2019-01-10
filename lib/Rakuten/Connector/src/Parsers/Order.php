@@ -52,9 +52,9 @@ trait Order
             }
         }
 
-        $taxesAmount = 0.0;
-        if (method_exists($request, 'getInstallment') and !is_null(current($request->getInstallment())) and !is_null(current($request->getInstallment())->getInterestAmount())) {
-            $taxesAmount = floatval(current($request->getInstallment())->getInterestAmount());
+        $taxesAmount = $request->getTaxAmount();
+        if (method_exists($request, 'getInstallment') && !is_null(current($request->getInstallment())) && !is_null(current($request->getInstallment())->getInterestAmount())) {
+            $taxesAmount += floatval(current($request->getInstallment())->getInterestAmount());
         }
 
         //items_amount

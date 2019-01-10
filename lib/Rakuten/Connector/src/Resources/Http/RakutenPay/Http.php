@@ -40,7 +40,6 @@ class Http extends AbstractHttp
      * @param array|null $data
      * @param bool $secureGet
      * @return bool|mixed
-     * @throws \Exception
      */
     protected function curlConnection($method, $url, $timeout, $charset, array $data = null, $secureGet = true)
     {

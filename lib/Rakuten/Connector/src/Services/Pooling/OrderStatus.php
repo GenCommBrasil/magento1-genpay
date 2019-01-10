@@ -32,11 +32,10 @@ use Rakuten\Connector\Parsers\Pooling\Request;
  */
 class OrderStatus
 {
-
     /**
      * @param $chargeId
      * @return mixed
-     * @throws \Exception
+     * @throws ConnectorException
      */
     public static function check($chargeId)
     {
@@ -70,7 +69,7 @@ class OrderStatus
      * @param Connection\Data $connection
      * @param $chargeId
      * @return string
-     * @throws \Exception
+     * @throws ConnectorException
      */
     private static function request(Connection\Data $connection, $chargeId)
     {
