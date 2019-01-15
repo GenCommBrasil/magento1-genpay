@@ -696,7 +696,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
 
     /**
      * @param Mage_Sales_Model_Order $order
-     * @return $this|bool
+     * @return bool
      * @throws Exception
      */
     protected function createInvoice(Mage_Sales_Model_Order $order)
