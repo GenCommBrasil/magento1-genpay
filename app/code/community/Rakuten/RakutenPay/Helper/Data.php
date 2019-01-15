@@ -565,7 +565,8 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         /** @var $order Mage_Sales_Model_Order */
         $order = Mage::getModel('sales/order')->load($orderId);
         if ($orderState == Mage_Sales_Model_Order::STATE_COMPLETE || $orderState == Mage_Sales_Model_Order::STATE_CLOSED) {
-            $order->addStatusToHistory($status, $comment, $notify);
+            $history = $order->addStatusHistoryComment($comment, $status);
+            $history->setIsCustomerNotified($notify);
         } else {
             $order->setState($orderState, $status, $comment, $notify);
         }
@@ -573,6 +574,10 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         // Makes the notification of the order of historic displays the correct date and time
         Mage::app()->getLocale()->date();
         $order->save();
+
+        if ($orderState == Mage_Sales_Model_Order::STATE_PROCESSING) {
+            $this->createInvoice($order);
+        }
 
         if ($approvedDate !== false) {
             \Rakuten\Connector\Resources\Log\Logger::info("Setting Date for Approved Status.");
@@ -687,5 +692,46 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         \Rakuten\Connector\Resources\Log\Logger::info(sprintf('incrementId: %s | orderId: %s', $incrementId, $orderId));
 
         return $orderId;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return bool
+     * @throws Exception
+     */
+    protected function createInvoice(Mage_Sales_Model_Order $order)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing createInvoice.', ['service' => 'Invoice']);
+        try {
+            if (!$order->canInvoice()) {
+                \Rakuten\Connector\Resources\Log\Logger::info('Order cannot be invoiced.', ['service' => 'Invoice']);
+                $order->addStatusHistoryComment('O pedido não pode ser faturado.', false);
+                $order->save();
+
+                return false;
+            }
+
+            \Rakuten\Connector\Resources\Log\Logger::info('Generate Invoice.', ['service' => 'Invoice']);
+            $order->getPayment()->setSkipTransactionCreation(false);
+            $invoice = $order->prepareInvoice();
+            $invoice->getOrder()->setCustomerNoteNotify(true);
+            $invoice->getOrder()->setIsInProcess(true);
+            $invoice->sendEmail(true, '');
+            $history = $order->addStatusHistoryComment('Fatura gerada pelo RakutenPay no Status Processing.', false);
+            $history->setIsCustomerNotified(true);
+            $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE);
+            $invoice->register();
+
+            Mage::getModel('core/resource_transaction')
+                ->addObject($invoice)
+                ->addObject($order)
+                ->save();
+
+            return true;
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
+            \Rakuten\Connector\Resources\Log\Logger::error(sprintf('Exception createInvoice: %s', $e->getMessage()), ['service' => 'Invoice']);
+            $order->addStatusHistoryComment('Invoice: Exception occurred during createInvoice. Exception message: '.$e->getMessage(), false);
+            $order->save();
+        }
     }
 }
