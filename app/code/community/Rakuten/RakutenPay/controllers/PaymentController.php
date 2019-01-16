@@ -213,7 +213,7 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                     ->save();
 
                 $redirect = 'rakutenpay/payment/success';
-                $redirectParams = array('_secure'=> false, '_query'=> array('billet_url' => $billetUrl, 'billet' => $billet));
+                $redirectParams = array('_secure'=> false, '_query'=> array('billet_url' => $billetUrl));
             } else {
                 $payment = $order->getPayment();
                 $payment
