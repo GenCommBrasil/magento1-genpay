@@ -226,60 +226,66 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
     * @param array $paymentData
     * @return \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto
     *           || \Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard $payment
+    * @throws \Rakuten\Connector\Exception\ConnectorException
     */
     public function paymentDirect($paymentMethod, $paymentData)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing payment for ' . $paymentMethod);
-        $payment = null;
+        try {
+            $payment = null;
 
-        switch ($paymentMethod) {
-            case 'rakutenpay_boleto':
-                $formatedDocument = $this->helper->formatDocument($paymentData['boletoDocument']);
-                $payment = new \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto();
-                $payment->setFingerprint($paymentData['fingerprint']);
-                $payment->setSender()->setDocument()->withParameters(
-                    $formatedDocument['type'],
-                    $formatedDocument['number']
-                );
-                $payment->setSender()->setHash($paymentData['boletoHash']);
-                break;
+            switch ($paymentMethod) {
+                case 'rakutenpay_boleto':
+                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($paymentData['boletoDocument']);
+                    $payment = new \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto();
+                    $payment->setFingerprint($paymentData['fingerprint']);
+                    $payment->setSender()->setDocument()->withParameters(
+                        $formatedDocument['type'],
+                        $formatedDocument['number']
+                    );
+                    $payment->setSender()->setHash($paymentData['boletoHash']);
+                    break;
 
-            case 'rakutenpay_credit_card':
-                $formatedDocument = $this->helper->formatDocument($paymentData['creditCardDocument']);
+                case 'rakutenpay_credit_card':
+                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($paymentData['creditCardDocument']);
 
-                $payment = new \Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard();
-                $payment->setFingerprint($paymentData['fingerprint']);
-                $payment->setToken($paymentData['creditCardToken']);
-                $payment->setCvv($paymentData['creditCardCode']);
-                $payment->setBrand($paymentData['creditCardBrand']);
-                $payment
-                ->setInstallment()
-                ->withParameters(
-                    $paymentData['creditCardInstallment'],
-                    number_format($paymentData['creditCardInstallmentValue'], 2, '.', ''),
-                    null,
-                    number_format($paymentData['creditCardInterestPercent'], 2, '.', ''),
-                    number_format($paymentData['creditCardInterestAmount'], 2, '.', ''),
-                    number_format($paymentData['creditCardInstallmentTotalValue'], 2, '.', '')
-                );
-                $payment->setHolder()->setBirthdate($paymentData['creditCardBirthdate']);
-                $payment->setHolder()->setName($paymentData['creditCardHolder']);
-                $payment->setHolder()->setDocument()->withParameters(
-                    $formatedDocument['type'],
-                    $formatedDocument['number']
-                );
-                $payment->setSender()->setDocument()->withParameters(
-                    $formatedDocument['type'],
-                    $formatedDocument['number']
-                );
-                $orderAddress = new Rakuten_RakutenPay_Model_OrderAddress($this->order);
-                $payment->setSender()->setHash($paymentData['creditCardHash']);
-                break;
+                    $payment = new \Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard();
+                    $payment->setFingerprint($paymentData['fingerprint']);
+                    $payment->setToken($paymentData['creditCardToken']);
+                    $payment->setCvv($paymentData['creditCardCode']);
+                    $payment->setBrand($paymentData['creditCardBrand']);
+                    $payment
+                        ->setInstallment()
+                        ->withParameters(
+                            $paymentData['creditCardInstallment'],
+                            number_format($paymentData['creditCardInstallmentValue'], 2, '.', ''),
+                            null,
+                            number_format($paymentData['creditCardInterestPercent'], 2, '.', ''),
+                            number_format($paymentData['creditCardInterestAmount'], 2, '.', ''),
+                            number_format($paymentData['creditCardInstallmentTotalValue'], 2, '.', '')
+                        );
+                    $payment->setHolder()->setBirthdate($paymentData['creditCardBirthdate']);
+                    $payment->setHolder()->setName($paymentData['creditCardHolder']);
+                    $payment->setHolder()->setDocument()->withParameters(
+                        $formatedDocument['type'],
+                        $formatedDocument['number']
+                    );
+                    $payment->setSender()->setDocument()->withParameters(
+                        $formatedDocument['type'],
+                        $formatedDocument['number']
+                    );
+                    $orderAddress = new Rakuten_RakutenPay_Model_OrderAddress($this->order);
+                    $payment->setSender()->setHash($paymentData['creditCardHash']);
+                    break;
+            }
+
+            /** @var \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto|\Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard $payment */
+            \Rakuten\Connector\Resources\Log\Logger::info('Processing done.');
+
+            return $this->payment($payment);
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
+            \Rakuten\Connector\Resources\Log\Logger::error(sprintf('Exeception: %s', $e->getMessage()), ['service' => 'PaymentMethod.paymentDirect']);
         }
-
-        /** @var \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto|\Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard $payment */
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing done.');
-        return $this->payment($payment);
     }
 
     /**

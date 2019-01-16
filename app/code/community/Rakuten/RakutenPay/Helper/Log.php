@@ -55,21 +55,6 @@ class Rakuten_RakutenPay_Helper_Log
 
     /**
      * @param $class
-     * @param $days
-     * @throws Exception
-     */
-    public function setSearchTransactionLog($class, $days)
-    {
-        $now = new \DateTime("now");
-        $initial = new \DateTime("now");
-        $initial->sub(new \DateInterval('P' . $days . 'D'));
-        $phrase = "Search( '".$days." days - Range of dates ";
-        $phrase .= $initial->format('Y-m-d')." until ".$now->format('Y-m-d')."' )";
-        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $this->setModule($class)]);
-    }
-
-    /**
-     * @param $class
      *
      * @return null|string
      */
