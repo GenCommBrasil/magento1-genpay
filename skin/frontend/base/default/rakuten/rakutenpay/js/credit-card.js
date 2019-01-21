@@ -92,14 +92,15 @@ function validateCreditCardYear(self) {
   }
 }
 
-function cardInstallmentOnChange(data) {
-  data = JSON.parse(data);
+function cardInstallmentOnChange(self) {
+  var data = JSON.parse(self.value);
   document.getElementById('creditCardInstallment').value = data.quantity;
   document.getElementById('creditCardInstallmentValue').value = data.amount;
   document.getElementById('card_total').innerHTML = 'R$ ' + data.totalAmount;
   document.getElementById('creditCardInterestAmount').value = data.interestAmount;
   document.getElementById('creditCardInterestPercent').value = data.interestPercent;
   document.getElementById('creditCardInstallmentTotalValue').value = data.totalAmount;
+  validateCreditCardInstallment(self);
 }
 
 function validateCreditCardInstallment(self) {
