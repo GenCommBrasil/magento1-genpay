@@ -61,7 +61,6 @@ function addCardFieldsObserver() {
     var creditCardNum = document.querySelector('#creditCardNumVisible');
     var creditCardMonth = document.querySelector('#creditCardExpirationMonth');
     var creditCardYear = document.querySelector('#creditCardExpirationYear');
-    var cardInstallmentOption = document.querySelector('#card_installment_option');
 
     var rpay = new RPay();
     generateFingerprint(rpay);
