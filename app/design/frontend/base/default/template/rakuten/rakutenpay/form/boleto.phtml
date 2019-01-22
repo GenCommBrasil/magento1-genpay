@@ -61,7 +61,7 @@ var x = document.getElementsByTagName("script");
 <div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <div id="rakutenpay-billet-method-div"></div>
     <div class="display-none validation-advice boletoHiddenFields-error-message">Ocorreu um problema ao validar o boleto. Por favor, tente novamente.</div>
-    <input type="hidden" id="boletoHash" value="" name="payment[boleto_hash]">
+    <input type="hidden" class="rakutenFingerprint" value="" name="payment[fingerprint]">
     <div style="float: left">
         <div class="rakutenpay-boleto-label-div">
             <label class="rakutenpay-required" ><?php echo $this->__('CPF ou CNPJ') ?></label>
