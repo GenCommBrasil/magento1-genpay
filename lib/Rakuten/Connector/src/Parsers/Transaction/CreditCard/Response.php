@@ -35,6 +35,8 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     private $brand;
 
+    private $resultMessage;
+
     function getResult() {
         return $this->result;
     }
@@ -53,6 +55,10 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function getBrand() {
         return $this->brand;
+    }
+
+    function getResultMessage() {
+        return $this->resultMessage;
     }
 
     function setResult($result) {
@@ -77,6 +83,11 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function setBrand($brand) {
         $this->brand = $brand;
+        return $this;
+    }
+
+    function setResultMessage($resultMessage) {
+        $this->resultMessage = $resultMessage;
         return $this;
     }
 }

@@ -59,4 +59,8 @@ class Status extends Enum
      * Http Method 502 - Bad gateway.
      */
     const BAD_GATEWAY = 502;
+    /**
+     * Http Method 4xx - Client Errors.
+     */
+    const CLIENT_ERRORS = 4;
 }

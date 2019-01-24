@@ -40,7 +40,13 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing canceledAction.');
         $order = Mage::getModel('sales/order')->load($this->getCheckout()->getLastOrderId());
-        $this->canceledStatus($order);
+        $this->canceledStatus(
+            $order,
+            true,
+            '',
+            true,
+            'Cancelado pelo Painel.'
+        );
 
         return $this->loadAndRenderLayout();
     }
@@ -58,11 +64,21 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
      * Cancel order
      *
      * @param $order
+     * @param bool $sendEmail
+     * @param string $emailMessage
+     * @param bool $notifyCustomer
+     * @param string $comment
      */
-    private function canceledStatus($order)
+    private function canceledStatus($order, $sendEmail = false, $emailMessage = '', $notifyCustomer = true, $comment = '')
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing canceledStatus.');
         $order->cancel();
+        $history = $order->addStatusHistoryComment($comment, false);
+        $history->setIsCustomerNotified($notifyCustomer);
+
+        if (true === $sendEmail) {
+            $order->sendOrderUpdateEmail($notifyCustomer, $emailMessage);
+        }
         $order->save();
     }
 
@@ -139,7 +155,13 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
         } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
             \Rakuten\Connector\Resources\Log\Logger::error($exception->getMessage());
             Mage::logException($exception);
-            $this->canceledStatus($order);
+            $this->canceledStatus(
+                $order,
+                false,
+                '',
+                false,
+                $exception->getMessage()
+            );
         }
 
         return $this->loadAndRenderLayout([
@@ -191,15 +213,28 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                 $order = $this->setTotalWithoutInterest($order, $customerPaymentData['creditCardInterestAmount']);
             }
 
-            if ($result === false) {
-                \Rakuten\Connector\Resources\Log\Logger::error('Result is false...');
-                $this->canceledStatus($order);
-                return Mage_Core_Controller_Varien_Action::_redirect('rakutenpay/payment/error', array('_secure'=> false));
+            if ($result->getResult() == \Rakuten\Connector\Enum\DirectPayment\Message::FAILURE) {
+                \Rakuten\Connector\Resources\Log\Logger::error('Result is failure...');
+                $this->canceledStatus(
+                    $order,
+                    false,
+                    '',
+                    false,
+                    $result->getResultMessage()
+                );
+                throw new \Rakuten\Connector\Exception\ConnectorException($result->getResultMessage());
             }
 
-            if ($result->getResult() == 'declined' || $result->getResult() == \Rakuten\Connector\Enum\DirectPayment\State::CANCELLED) {
-                \Rakuten\Connector\Resources\Log\Logger::info(sprintf("Order has Canceled by Status: %s", $result->getResult()));
-                $this->canceledStatus($order);
+            if ($result->getResult() == \Rakuten\Connector\Enum\DirectPayment\Message::DECLINED ||
+                $result->getResult() == \Rakuten\Connector\Enum\DirectPayment\State::CANCELLED) {
+                \Rakuten\Connector\Resources\Log\Logger::info(sprintf("Order has Canceled: %s", $result->getResultMessage()));
+                $this->canceledStatus(
+                    $order,
+                    true,
+                    \Rakuten\Connector\Enum\DirectPayment\Message::getMessages($result->getResult()),
+                    true,
+                    $result->getResultMessage()
+                );
             }
 
             /** controy redirect url according with payment return link **/
@@ -230,7 +265,14 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
 
         } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
             \Rakuten\Connector\Resources\Log\Logger::error('Got an exception: ' . var_export($exception, true));
-            $this->canceledStatus($order);
+            $this->canceledStatus(
+                $order,
+                false,
+                '',
+                false,
+                'Ocorreu uma Exception. Verifique o log (rakuten.log).'
+            );
+
             return Mage_Core_Controller_Varien_Action::_redirect('rakutenpay/payment/error', array('_secure'=> false));
         }
 

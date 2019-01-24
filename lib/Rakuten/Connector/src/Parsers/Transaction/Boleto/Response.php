@@ -35,6 +35,8 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     private $billetUrl;
 
+    private $resultMessage;
+
     function getResult() {
         return $this->result;
     }
@@ -53,6 +55,10 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function getBilletUrl() {
         return $this->billetUrl;
+    }
+
+    function getResultMessage() {
+        return $this->resultMessage;
     }
 
     function setResult($result) {
@@ -80,5 +86,8 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
         return $this;
     }
 
-
+    function setResultMessage($resultMessage) {
+        $this->resultMessage = $resultMessage;
+        return $this;
+    }
 }
