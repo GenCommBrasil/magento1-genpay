@@ -123,13 +123,8 @@
                     <rakutenpay_configuration translate="title" module="rakutenpay">
                         <title>Pay</title>
                         <action>adminhtml/system_config/edit/section/payment/</action>
-                        <sort_order>2000</sort_order>
+                        <sort_order>1000</sort_order>
                     </rakutenpay_configuration>
-                    <rakutenpay_refund translate="title" module="rakutenpay">
-                        <title>Estorno</title>
-                        <action>rakutenpay/adminhtml_refund</action>
-                        <sort_order>2100</sort_order>
-                    </rakutenpay_refund>
                 </children>
             </rakutenpay_menu>
         </menu>

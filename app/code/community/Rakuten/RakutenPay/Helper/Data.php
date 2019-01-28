@@ -156,7 +156,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             Mage::app()->getCacheInstance()->flush();
         }
         try {
-            $this->webserviceHelper()->getTransactionsByDate(1, 1, $date);
+                $this->webserviceHelper()->getTransactionsByDate(1, 1, $date);
             Mage::getConfig()->saveConfig('rakuten_rakutenpay/store/credentials', 1);
         } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
             Mage::getConfig()->saveConfig('rakuten_rakutenpay/store/credentials', 0);
@@ -171,33 +171,6 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing webserviceHelper.');
         return Mage::helper('rakutenpay/webservice');
-    }
-
-    /**
-     *
-     */
-    public function checkTransactionAccess()
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing checkTransactionAccess.');
-        $module = 'RakutenPay - ';
-        $configUrl = Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/system_config/edit/section/payment/');
-        $email = $this->paymentModel()->getConfigData('email');
-        $token = $this->paymentModel()->getConfigData('token');
-        if ($email) {
-            if (!$token) {
-                $message = $module.$this->__('Preencha o token.');
-                Mage::getSingleton('core/session')->addError($message);
-                Mage::app()->getResponse()->setRedirect($configUrl);
-            }
-        } else {
-            $message = $module.$this->__('Preencha o e-mail do vendedor.');
-            Mage::getSingleton('core/session')->addError($message);
-            if (!$token) {
-                $message = $module.$this->__('Preencha o token.');
-                Mage::getSingleton('core/session')->addError($message);
-            }
-            Mage::app()->getResponse()->setRedirect($configUrl);
-        }
     }
 
     /**
@@ -228,63 +201,6 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         }
 
         return array('areaCode' => $ddd, 'number' => $phone);
-    }
-
-    /**
-     * @param $paymentRequest
-     *
-     * @return mixed
-     */
-    public function getDiscount($paymentRequest)
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getDiscount.');
-        $storeId = Mage::app()->getStore()->getStoreId();
-        if (Mage::getStoreConfig('payment/rakutenpay/discount_credit_card', $storeId) == 1) {
-            $creditCard = (double)Mage::getStoreConfig('payment/rakutenpay/discount_credit_card_value', $storeId);
-            if ($creditCard && $creditCard != 0.00) {
-                $paymentRequest->addPaymentMethodConfig('CREDIT_CARD', $creditCard, 'DISCOUNT_PERCENT');
-            }
-        }
-        if (Mage::getStoreConfig('payment/rakutenpay/discount_electronic_debit', $storeId) == 1) {
-            $eft = (double)Mage::getStoreConfig('payment/rakutenpay/discount_electronic_debit_value', $storeId);
-            if ($eft && $eft != 0.00) {
-                $paymentRequest->addPaymentMethodConfig('EFT', $eft, 'DISCOUNT_PERCENT');
-            }
-        }
-        if (Mage::getStoreConfig('payment/rakutenpay/discount_boleto', $storeId) == 1) {
-            $boleto = (double)Mage::getStoreConfig('payment/rakutenpay/discount_boleto_value', $storeId);
-            if ($boleto && $boleto != 0.00) {
-                $paymentRequest->addPaymentMethodConfig('BOLETO', $boleto, 'DISCOUNT_PERCENT');
-            }
-        }
-        if (Mage::getStoreConfig('payment/rakutenpay/discount_deposit_account', $storeId)) {
-            $deposit = (double)Mage::getStoreConfig('payment/rakutenpay/discount_deposit_account_value', $storeId);
-            if ($deposit && $deposit != 0.00) {
-                $paymentRequest->addPaymentMethodConfig('DEPOSIT', $deposit, 'DISCOUNT_PERCENT');
-            }
-        }
-        if (Mage::getStoreConfig('payment/rakutenpay/discount_balance', $storeId)) {
-            $balance = (double)Mage::getStoreConfig('payment/rakutenpay/discount_balance_value', $storeId);
-            if ($balance && $balance != 0.00) {
-                $paymentRequest->addPaymentMethodConfig('BALANCE', $balance, 'DISCOUNT_PERCENT');
-            }
-        }
-
-        return $paymentRequest;
-    }
-
-    /**
-     * @param $idOrder
-     *
-     * @return mixed
-     */
-    public function getEditOrderUrl($idOrder)
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getEditOrderUrl.');
-        $adminhtmlUrl = Mage::getSingleton('adminhtml/url');
-        $url = $adminhtmlUrl->getUrl('adminhtml/sales_order/view', array('order_id' => $idOrder));
-
-        return $url;
     }
 
     /**
@@ -342,62 +258,6 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         }
 
         return false;
-    }
-
-    /**
-     * @param $reference
-     *
-     * @return bool|string
-     */
-    public function getReferenceDecrypt($reference)
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getReferenceDecrypt.');
-        return '';
-    }
-
-    /**
-     * @param $reference
-     *
-     * @return mixed
-     */
-    public function getReferenceDecryptOrderID($reference)
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getReferenceDecryptOrderID.');
-        return $reference;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStoreReference()
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getStoreReference.');
-        return Mage::getStoreConfig('rakuten_rakutenpay/store/reference');
-    }
-
-    /**
-     * @param $array
-     *
-     * @return string
-     */
-    public function getTransactionGrid($array)
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getTransactionGrid.');
-        $dataSet = '[';
-        $j = 1;
-        foreach ($array as $info) {
-            $i = 1;
-            $dataSet .= ($j > 1) ? ',[' : '[';
-            foreach ($info as $item) {
-                $dataSet .= (count($info) != $i) ? '"'.$item.'",' : '"'.$item.'"';
-                $i++;
-            }
-            $dataSet .= ']';
-            $j++;
-        }
-        $dataSet .= ']';
-
-        return $dataSet;
     }
 
     /**
@@ -504,18 +364,19 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     }
 
     public function updateOrderStatusMagentoCancel($orderId, $transactionCode, $orderStatus) {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing updateOrderStatusMagentoCancel.');
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing updateOrderStatusMagentoCancel.', ['service' => 'Cancel']);
         try {
-            \Rakuten\Connector\Services\Transactions\Cancel::create($transactionCode)
+            $result = \Rakuten\Connector\Services\Transactions\Cancel::create($transactionCode)
             ->getResult();
 
             if ($result['result'] === 'failure') {
-                Mage::throwException(Mage::helper('adminhtml')->__('Ocorreu uma falha na tentativa de cancelar o pedido de boleto.'));
+                \Mage::throwException(Mage::helper('adminhtml')->__('Ocorreu uma falha na tentativa de cancelar o pedido de boleto.'));
             }
 
             $this->setTransactionRecord($orderId, $transactionCode);
-        } catch (\Rakuten\Connector\Exception\ConnectorException $pse) {
-            throw $pse;
+        } catch (\Rakuten\Connector\Exception\ConnectorException $e) {
+            \Rakuten\Connector\Resources\Log\Logger::error(sprintf('Error for cancel Order: %s - Status: %s', $orderId, $orderStatus), ['service' => 'Cancel']);
+            throw $e;
         }
     }
 
@@ -639,17 +500,6 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         return $message;
     }
 
-    /**
-     * @param $date
-     *
-     * @return false|string
-     */
-    protected function getOrderMagetoDateConvert($date)
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getOrderMagetoDateConvert.');
-        return date("d/m/Y H:i:s", Mage::getModel("core/date")->timestamp($date));
-    }
-
     public function getRakutenPayDirectPaymentJs()
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getRakutenPayDirectPaymentJs.');
@@ -658,30 +508,6 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         }
 
         return 'https://static.rakutenpay.com.br/rpayjs/rpay-latest.dev.min.js';
-    }
-
-    /**
-     * Format original document and return it as an array, with it "washed" value
-     * and type
-     * @param string $document
-     * @return array
-     * @throws Exception
-     */
-    public function formatDocument($document)
-    {
-       \Rakuten\Connector\Resources\Log\Logger::info('Processing formatDocument.');
-       $documentNumbers = preg_replace('/[^0-9]/', '', $document);
-       switch (strlen($documentNumbers)) {
-            case 14:
-                return ['number' => $documentNumbers, 'type' => 'CNPJ'];
-                break;
-            case 11:
-                return ['number' => $documentNumbers, 'type' => 'CPF'];
-                break;
-            default:
-                throw new \Rakuten\Connector\Exception\ConnectorException('Invalid document');
-                break;
-        }
     }
 
     protected function getOrderId($incrementId)

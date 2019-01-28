@@ -52,7 +52,7 @@ class Cancel
                 new Request
             );
 
-            Logger::info(sprintf("Result: %s", current($response), ['service' => 'Cancel']));
+            Logger::info(sprintf("Result: %s", current($response)), ['service' => 'Cancel']);
             return $response;
         } catch (ConnectorException $exception) {
             Logger::error($exception->getMessage(), ['service' => 'Cancel']);

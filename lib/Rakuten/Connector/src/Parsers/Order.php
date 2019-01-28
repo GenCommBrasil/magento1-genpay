@@ -118,19 +118,22 @@ trait Order
         }
 
         //categories
+        $categories = [];
+        $category = [];
         if (!is_null($product) and $product->getCategoryIds() != null) {
-            $categories = [];
             $categoryIds = $product->getCategoryIds();
             foreach ($categoryIds as $categoryId) {
                 $_cat = Mage::getModel('catalog/category')->setStoreId(Mage::app()->getStore()->getId())->load($categoryId);
-                $category = [];
                 $category[$properties::NAME] = $_cat->getName();
                 $category[$properties::ID] = $categoryId;
                 $categories[] = $category;
             }
-
-            $data[$properties::CATEGORIES] = $categories;
+        } else {
+            $category[$properties::NAME] = 'Outros';
+            $category[$properties::ID] = 99;
+            $categories[] = $category;
         }
+        $data[$properties::CATEGORIES] = $categories;
 
         return $data;
     }

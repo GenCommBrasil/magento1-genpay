@@ -19,6 +19,7 @@
 
 namespace Rakuten\Connector\Parsers\DirectPayment\Boleto;
 
+use Rakuten\Connector\Enum\Http\Status;
 use Rakuten\Connector\Enum\Properties\Constants;
 use Rakuten\Connector\Parsers\Basic;
 use Rakuten\Connector\Parsers\Customer;
@@ -40,6 +41,47 @@ class Request extends Error implements Parser
     use Payment;
     use Customer;
     use Order;
+
+    /**
+     * @param Http $http
+     * @return Response
+     */
+    private static function processError(Http $http)
+    {
+        $response = self::getResponse();
+        $data = json_decode($http->getResponse(), true);
+
+        return $response->setResult($data['result'])
+            ->setResultMessage(implode(' - ', $data['result_messages']));
+    }
+
+    /**
+     * @param Http $http
+     * @return Response
+     */
+    private static function processSuccess(Http $http)
+    {
+        $response = self::getResponse();
+        $data = json_decode($http->getResponse(), true);
+
+        $payment = $data["payments"][0];
+        $chargeUrl = \Rakuten\Connector\Resources\Builder\DirectPayment\Payment::getRequestUrl() . '/' . $data['charge_uuid'];
+
+        return $response->setResult($data['result'])
+            ->setId($data['charge_uuid'])
+            ->setCharge($chargeUrl)
+            ->setBillet($payment['billet']['download_url'])
+            ->setBilletUrl($payment['billet']['url'])
+            ->setResultMessage(implode(' - ', $data['result_messages']));
+    }
+
+    /**
+     * @return Response
+     */
+    private static function getResponse()
+    {
+        return new Response();
+    }
 
     /**
      * @param Boleto $boleto
@@ -67,16 +109,12 @@ class Request extends Error implements Parser
     public static function success(Http $http)
     {
         Logger::info($http->getResponse(), ["service" => "HTTP_RESPONSE"]);
-        $data = json_decode($http->getResponse(), true);
+        if ($http->getStatus() == Status::OK) {
 
-        $payment = $data["payments"][0];
-        $charge_url = \Rakuten\Connector\Resources\Builder\DirectPayment\Payment::getRequestUrl() . '/' . $data['charge_uuid'];
+            return self::processSuccess($http);
+        }
 
-        return (new Response)->setResult($data['result'])
-                ->setId($data['charge_uuid'])
-                ->setCharge($charge_url)
-                ->setBillet($payment['billet']['download_url'])
-                ->setBilletUrl($payment['billet']['url']);
+        return self::processError($http);
     }
 
     /**

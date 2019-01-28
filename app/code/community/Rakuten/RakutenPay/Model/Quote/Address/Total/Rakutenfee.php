@@ -34,18 +34,7 @@ class Rakuten_RakutenPay_Model_Quote_Address_Total_Rakutenfee extends Mage_Sales
         }
 
         $quote = $address->getQuote();
-        $paymentMethod = $quote->getPayment()->getMethod();
-
-        $baseSubtotalWithDiscount = $address->getSubtotalWithDiscount();
-        $shippingAmount = $quote->getShippingAddress()->getShippingAmount();
-        $total = $baseSubtotalWithDiscount + $shippingAmount;
-
         $post = Mage::app()->getRequest()->getPost();
-
-        $paymentInstallment = 1;
-        if ($paymentMethod == 'rakutenpay_credit_card') {
-            $paymentInstallment = (int) $post['payment']['credit_card_installment'];
-        }
 
         if (isset($post['payment']['credit_card_interest_amount'])) {
             $interestAmount = (float) $post['payment']['credit_card_interest_amount'];
@@ -58,6 +47,7 @@ class Rakuten_RakutenPay_Model_Quote_Address_Total_Rakutenfee extends Mage_Sales
 
         $address->setGrandTotal($address->getGrandTotal() + $address->getRakutenfeeAmount());
         $address->setBaseGrandTotal($address->getBaseGrandTotal() + $address->getBaseRakutenfeeAmount());
+
         return $this;
     }
 
