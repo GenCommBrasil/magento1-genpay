@@ -166,11 +166,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         \Rakuten\Connector\Resources\Log\Logger::info('Phone set.');
         $orderAddress = new Rakuten_RakutenPay_Model_OrderAddress($this->order);
         \Rakuten\Connector\Resources\Log\Logger::info('Order address created.');
-        if (method_exists($orderAddress, 'getShippingAddress()')) {
-            $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
-        } else {
-            $payment->setShipping()->setAddress()->instance($orderAddress->getBillingAddress());
-        }
+        $payment->setShipping()->setAddress()->instance($orderAddress->getShippingAddress());
         \Rakuten\Connector\Resources\Log\Logger::info('Shipping set.');
         $payment->setBilling()->setAddress()->instance($orderAddress->getBillingAddress());
         \Rakuten\Connector\Resources\Log\Logger::info('Billing set.');
