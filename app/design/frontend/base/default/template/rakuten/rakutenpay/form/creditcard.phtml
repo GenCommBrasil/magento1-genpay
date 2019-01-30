@@ -199,7 +199,6 @@ var beforeSaveJsUrl = "<?php echo $this->getRakutenPayBeforeSaveJsSkinUrl() ?>";
     </div>
 
     <input type="hidden" id="creditCardNum" data-rkp="card-number">
-    <input type="hidden" id="creditCardHash" value="" name="payment[credit_card_hash]">
     <input type="hidden" id="creditCardToken" value="" name="payment[credit_card_token]">
     <input type="hidden" class="rakutenFingerprint" value="" name="payment[fingerprint]">
     <input type="hidden" id="creditCardBrand" name="payment[credit_card_brand]">
@@ -215,8 +214,14 @@ var beforeSaveJsUrl = "<?php echo $this->getRakutenPayBeforeSaveJsSkinUrl() ?>";
             <label class="rakutenpay-required" for="card_installments">Parcelas</label>
         </div>
         <div class="rakutenpay-cc-input-div">
-            <select class="rakutenpay-cc-select" id="card_installment_option" title="Nº de parcelas" required
-                    disabled onchange="cardInstallmentOnChange(this.value)" onclick="validateCreditCardInstallment(this)">
+            <select
+                class="rakutenpay-cc-select"
+                id="card_installment_option"
+                title="Nº de parcelas"
+                required
+                disabled
+                onchange="cardInstallmentOnChange(this)"
+                onclick="validateCreditCardInstallment(this)">
                 <option value="null" disabled selected>Escolha o N° de parcelas</option>
                 <?php
                     $helper = Mage::helper('rakutenpay');

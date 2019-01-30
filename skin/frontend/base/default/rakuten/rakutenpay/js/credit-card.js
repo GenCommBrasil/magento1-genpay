@@ -147,8 +147,26 @@ function getBrand(self) {
   }
 }
 
-function createCardToken(save) {
-  //Clears the div and adds the required RakutenPay method to the form
+
+function generateFingerprint(rpay) {
+  console.log("call generateFingerprint");
+  var fingerprintFields = document.querySelectorAll(".rakutenFingerprint");
+  rpay.fingerprint(function(error, fingerprint) {
+    if (error) {
+      console.log("Erro ao gerar fingerprint", error);
+      return;
+    }
+    console.log("complete generateFingerprint");
+    for (var i = 0; i < fingerprintFields.length; i++) {
+      fingerprintFields[i].value = fingerprint;
+    }
+  });
+}
+
+function createCardToken(save, rpay) {
+
+  console.log("call updateCreditCardToken");
+
   var container = document.getElementById("rakutenpay-cc-method-div");
   while (container.hasChildNodes()) {
     container.removeChild(container.lastChild);
@@ -162,23 +180,29 @@ function createCardToken(save) {
   //Gets the form element
   var form = rpay_method.form;
 
-  //Generates the fingerprint and token
-  var rpay = new RPay();
-  rpay.listeners = {
-    "result:success": function () {
-      //Hides the fingerprint and token fields (don't know why it isn't by default)
-      document.getElementsByName('rkp[fingerprint]')[0].type = "hidden";
-      document.getElementsByName('rkp[fingerprint]')[0].id = "fingerprint";
-      document.getElementsByName('rkp[fingerprint]')[0].name = "payment[fingerprint]";
-      document.getElementsByName('rkp[token]')[0].type = "hidden";
-      document.getElementById('creditCardToken').value = document.getElementsByName('rkp[token]')[0].value;
-      save();
-    },
-    "result:error": function (errors) {
-      console.log(errors);
-    }
+  //Generates the token
+  var creditCardTokenField = document.getElementById("creditCardToken");
+  var creditCardBrandField = document.getElementById('creditCardBrand');
+
+  var elements = {
+    "form": form,
+    "card-number": document.querySelector("#creditCardNum"),
+    "card-cvv": document.querySelector("#creditCardCode"),
+    "expiration-month": document.querySelector('#creditCardExpirationMonth'),
+    "expiration-year": document.querySelector('#creditCardExpirationYear')
   };
-  rpay.generate(form);
+
+  rpay.tokenize(elements, function(error, data) {
+    if (error) {
+      console.log("Dados de cartão inválidos", error);
+      return;
+    }
+    console.log("complete updateCreditCardToken");
+    creditCardTokenField.value = data.cardToken;
+    creditCardBrandField.value = rpay.cardBrand(elements["card-number"].value);
+  });
+  save();
+  return true;
 }
 
 function validateCreditCardCode(self) {
@@ -202,7 +226,9 @@ function validateCreditCardForm(save) {
      validateCreditCardInstallment(document.querySelector('#card_installment_option'))
   ) {
 
-    createCardToken(save);
+    var rpay = new RPay();
+    generateFingerprint(rpay);
+    createCardToken(save, rpay);
     return true;
   }
 

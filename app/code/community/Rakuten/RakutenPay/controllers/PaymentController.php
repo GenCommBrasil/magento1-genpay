@@ -213,7 +213,7 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                 $order = $this->setTotalWithoutInterest($order, $customerPaymentData['creditCardInterestAmount']);
             }
 
-            if ($result->getResult() == \Rakuten\Connector\Enum\DirectPayment\Message::FAILURE) {
+            if ($result === false || $result->getResult() == \Rakuten\Connector\Enum\DirectPayment\Message::FAILURE) {
                 \Rakuten\Connector\Resources\Log\Logger::error('Result is failure...');
                 $this->canceledStatus(
                     $order,
