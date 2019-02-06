@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard;
 
 use Rakuten\Connector\Domains\Requests\BasicData;
+use Rakuten\Connector\Domains\Requests\Commissioning;
 use Rakuten\Connector\Domains\Requests\Discount;
 use Rakuten\Connector\Domains\Requests\Tax;
 use Rakuten\Connector\Domains\Requests\DirectPayment\Mode;
@@ -40,6 +41,7 @@ class Request implements Requests
 {
     use Billing;
     use BasicData;
+    use Commissioning;
     use Discount;
     use Installment;
     use Holder;

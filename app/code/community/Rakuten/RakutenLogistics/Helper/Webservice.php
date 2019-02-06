@@ -75,6 +75,7 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
         $http = $this->getHttp();
         $http->post($url, $cartInfo, $timeout = 20);
         $response = json_decode($http->getResponse(), true);
+        \Rakuten\Connector\Resources\Log\Logger::info(sprintf('RakutenLogistics: %s', $response), ["service" => "HTTP_RESPONSE"]);
 
         return $response;
     }

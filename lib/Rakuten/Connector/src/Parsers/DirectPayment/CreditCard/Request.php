@@ -22,6 +22,7 @@ namespace Rakuten\Connector\Parsers\DirectPayment\CreditCard;
 use Rakuten\Connector\Enum\Http\Status;
 use Rakuten\Connector\Enum\Properties\Constants;
 use Rakuten\Connector\Parsers\Basic;
+use Rakuten\Connector\Parsers\Commissioning;
 use Rakuten\Connector\Parsers\Customer;
 use Rakuten\Connector\Parsers\Error;
 use Rakuten\Connector\Parsers\Order;
@@ -38,6 +39,7 @@ use Rakuten\Connector\Resources\Log\Logger;
 class Request extends Error implements Parser
 {
     use Basic;
+    use Commissioning;
     use Payment;
     use Customer;
     use Order;
@@ -94,6 +96,7 @@ class Request extends Error implements Parser
         return array_merge(
             $data,
             Basic::getData($creditCard, $properties),
+            Commissioning::getData($creditCard, $properties),
             Payment::getData($creditCard, $properties),
             Customer::getData($creditCard, $properties),
             Order::getData($creditCard, $properties)

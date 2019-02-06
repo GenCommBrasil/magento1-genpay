@@ -42,12 +42,13 @@ class Rakuten_RakutenLogistics_Model_Shipping_Carrier_RakutenLogistics
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
         $isActive = (bool) Mage::getStoreConfig('carriers/rakutenlogistics_settings/active');
+        \Rakuten\Connector\Resources\Log\Logger::info(sprintf('RakutenLogistics => %s', (int) $isActive), ['service' => 'RakutenLogistics']);
 
         if (false === $isActive) {
             return $isActive;
         }
 
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing collectRates in RakutenLogistics');
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing collectRates.', ['service' => 'RakutenLogistics']);
         $result = Mage::getModel('shipping/rate_result');
 
         $webserviceHelper = Mage::helper('rakutenlogistics/webservice');
@@ -77,7 +78,7 @@ class Rakuten_RakutenLogistics_Model_Shipping_Carrier_RakutenLogistics
      */
     public function getAllowedMethods()
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing getAllowedMethods in RakutenLogistics');
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing getAllowedMethods in RakutenLogistics', ['service' => 'RakutenLogistics']);
         $helper = Mage::helper('rakutenlogistics/webservice');
 
         $methods = $helper->getApiCarrierMethods();

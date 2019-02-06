@@ -25,11 +25,15 @@ class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
         return Mage::getConfig()->getModuleConfig("Rakuten_RakutenLogistics")->version;
     }
 
-    public function saveCalculationCode($code){
+    public function saveCalculationCode($code)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing saveCalculationCode in HelperData.');
         Mage::getSingleton('core/session')->setCalculationCode($code);
     }
 
-    public function getCalculationCode(){
+    public function getCalculationCode()
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing getCalculationCode in HelperData.');
        return Mage::getSingleton('core/session')->getCalculationCode();
     }
 
@@ -78,6 +82,7 @@ class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
 
     public function parseStreet($fullAddress)
     {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing parseStreet in HelperData');
         $fullAddress = explode(', ', $fullAddress);
         $street = $fullAddress[0];
         $number = isset($fullAddress[1]) ? $fullAddress[1] : '';

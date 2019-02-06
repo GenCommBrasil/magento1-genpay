@@ -27,16 +27,6 @@ class Constants
 {
 
     /**
-     *  Application ID
-     */
-    const APP_ID = "appId";
-
-    /**
-     *  Application Key
-     */
-    const APP_KEY = "appKey";
-
-    /**
      * Shipping address street
      */
     const BILLING_ADDRESS_STREET = "billingAddress.street";
@@ -571,4 +561,19 @@ class Constants
      * Installment amount
      */
     const INSTALLMENT_AMOUNT = "installment_amount";
+
+    /**
+     * Commissionings
+     */
+    const COMMISSIONINGS = "commissionings";
+
+    /**
+     * Calculation Code
+     */
+    const CALCULATION_CODE = "calculation_code";
+
+    /**
+     * Postage Service Code
+     */
+    const POSTAGE_SERVICE_CODE = "postage_service_code";
 }
