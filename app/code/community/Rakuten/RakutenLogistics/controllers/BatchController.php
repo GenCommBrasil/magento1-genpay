@@ -56,7 +56,7 @@ class Rakuten_RakutenLogistics_BatchController extends Mage_Adminhtml_Controller
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing generateBatch in BatchController.');
         $helper = Mage::helper('rakutenlogistics/webservice');
-        $bashData = $helper->createBash($order);
+        $bashData = $helper->createBatch($order);
 
         if ($bashData->status == 'OK') {
             $labelUrl = $bashData->content[0]->print_url;

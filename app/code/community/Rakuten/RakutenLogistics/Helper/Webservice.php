@@ -85,7 +85,7 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
      * @return stdClass|mixed
      * @throws Exception
      */
-    public function createBash($order)
+    public function createBatch($order)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing createBash in Webservice');
         $helper = Mage::helper('rakutenlogistics/data');

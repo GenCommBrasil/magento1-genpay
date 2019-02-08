@@ -95,16 +95,14 @@ class Http extends AbstractHttp
      */
     private function getHeader()
     {
-        $cnpj = Mage::getStoreConfig('payment/rakutenpay/cnpj');
+        $document = Mage::getStoreConfig('payment/rakutenpay/cnpj');
         $apiKey = Mage::getStoreConfig('payment/rakutenpay/api_key');
-        $auth = $cnpj . ':' . $apiKey;
-        $authBase64 = base64_encode($auth);
 
         $header = [
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
-                'Authorization: Basic ' . $authBase64,
-                'Cache-Control: no-cache'
+                'Authorization: Basic ' . base64_encode($document . ':' . $apiKey),
+                'Cache-Control: no-cache',
             ],
         ];
         return $header;
