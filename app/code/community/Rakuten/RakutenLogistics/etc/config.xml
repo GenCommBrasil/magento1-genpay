@@ -28,15 +28,6 @@
                     </rakuten_rakutenlogistics_model_observer>
                 </observers>
             </core_block_abstract_prepare_layout_before>
-            <sales_order_save_after>
-                <observers>
-                    <maddy_sendsms>
-                        <type>singleton</type>
-                        <class>Rakuten_RakutenLogistics_Model_Observer</class>
-                        <method>saveCalculationCode</method>
-                    </maddy_sendsms>
-                </observers>
-            </sales_order_save_after>
             <resource_get_tablename>
                 <observers>
                     <rakuten_rakutenlogistics>
@@ -84,7 +75,16 @@
         <models>
             <rakuten_rakutenlogistics>
                 <class>Rakuten_RakutenLogistics_Model</class>
+                <resourceModel>rakuten_rakutenlogistics_resource</resourceModel>
             </rakuten_rakutenlogistics>
+            <rakuten_rakutenlogistics_resource>
+                <class>Rakuten_RakutenLogistics_Model_Resource</class>
+                <entities>
+                    <order>
+                        <table>rakuten_order</table>
+                    </order>
+                </entities>
+            </rakuten_rakutenlogistics_resource>
         </models>
     </global>
     <admin>

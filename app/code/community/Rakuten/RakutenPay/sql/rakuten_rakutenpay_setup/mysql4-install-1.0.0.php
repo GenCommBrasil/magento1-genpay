@@ -23,10 +23,10 @@ $installer->startSetup();
 // table prefix
 $tp = (string)Mage::getConfig()->getTablePrefix();
 
-$new_table =  $tp . 'rakutenpay_orders';
+$newTable =  $tp . 'rakuten_order';
 
 // Checks for the rakutenpay_orders table if it does not exist is created
-$sql = "CREATE TABLE IF NOT EXISTS `" . $new_table . "` (
+$sql = "CREATE TABLE IF NOT EXISTS `" . $newTable . "` (
          `entity_id` int(11) NOT NULL AUTO_INCREMENT,
          `order_id` int(11),
          `transaction_code` varchar(80) NOT NULL,

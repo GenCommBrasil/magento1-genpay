@@ -39,7 +39,16 @@
         <models>
             <rakuten_rakutenpay>
                 <class>Rakuten_RakutenPay_Model</class>
+                <resourceModel>rakuten_rakutenpay_resource</resourceModel>
             </rakuten_rakutenpay>
+            <rakuten_rakutenpay_resource>
+                <class>Rakuten_RakutenPay_Model_Resource</class>
+                <entities>
+                    <order>
+                        <table>rakuten_order</table>
+                    </order>
+                </entities>
+            </rakuten_rakutenpay_resource>
         </models>
         <helpers>
             <rakutenpay>
