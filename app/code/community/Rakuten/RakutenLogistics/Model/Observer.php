@@ -46,6 +46,11 @@ class Rakuten_RakutenLogistics_Model_Observer
         return $this;
     }
 
+    /**
+     * Add button generate batch in Sales Order View and call action in BatchController
+     *
+     * @param $observer
+     */
     public function addGenerateBatchAction($observer)
     {
         $block = $observer->getEvent()->getBlock();
