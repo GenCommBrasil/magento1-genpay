@@ -17,26 +17,89 @@
  ************************************************************************
  */
 
+/**
+ * Class Rakuten_RakutenLogistics_Helper_Data
+ */
 class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
 {
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @param $batchCode
+     * @param $batchLabelUrl
+     * @param $trackingUrl
+     * @throws Mage_Core_Exception
+     */
+    private function saveBatch(Mage_Sales_Model_Order $order, $batchCode, $batchLabelUrl, $trackingUrl)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing saveBatch in HelperData.');
+        $order->setBatchLabelUrl($batchLabelUrl);
+        $order->addStatusHistoryComment($trackingUrl)->setIsCustomerNotified(true);
+        $payment = $order->getPayment();
+        $order->save();
+        $payment
+            ->setAdditionalInformation('batch_code', $batchCode)
+            ->setAdditionalInformation('batch_print_url', $batchLabelUrl)
+            ->setAdditionalInformation('batch_tracking_url', $trackingUrl)
+            ->save();
+    }
 
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return bool
+     * @throws Mage_Core_Exception
+     */
+    private function hasBatch(Mage_Sales_Model_Order $order)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing hasBatch in HelperData.');
+        $helper = Mage::helper('rakutenlogistics/webservice');
+        $result = $helper->orderDetail($order);
+        if ($result['status'] == 'OK') {
+            $content = $result['content'];
+            $batchCode = $content['batch_code'];
+            $batchLabelUrl = $content['batch_print_url'];
+            $trackingUrl = $content['tracking_print_url'];
+            $this->saveBatch($order, $batchCode, $batchLabelUrl, $trackingUrl);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getVersion()
     {
         return Mage::getConfig()->getModuleConfig("Rakuten_RakutenLogistics")->version;
     }
 
+    /**
+     * @param $code
+     */
     public function saveCalculationCode($code)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing saveCalculationCode in HelperData.');
         Mage::getSingleton('core/session')->setCalculationCode($code);
     }
 
-    public function getCalculationCode()
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return string|null
+     */
+    public function getCalculationCode(Mage_Sales_Model_Order $order)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getCalculationCode in HelperData.');
-       return Mage::getSingleton('core/session')->getCalculationCode();
+        $rakutenOrder = Mage::getModel('rakuten_rakutenlogistics/order')->load($order->getId(), 'order_id');
+
+        return $rakutenOrder->getCalculationCode();
     }
 
+    /**
+     * @param $order
+     * @param $request
+     * @return mixed
+     */
     public function insertInvoiceData($order, $request)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing insertInvoiceData in HelperData.');
@@ -60,7 +123,56 @@ class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
         return $request;
     }
 
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return mixed
+     * @throws Exception
+     */
+    public function generateBatch(Mage_Sales_Model_Order $order)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing generateBatch in HelperData.');
+        $hasBatch = $this->hasBatch($order);
+        if ($hasBatch) {
+            \Rakuten\Connector\Resources\Log\Logger::info(sprintf('Batch exists. #Order: %s', $order->getIncrementId()));
+            return $hasBatch;
+        }
 
+        \Rakuten\Connector\Resources\Log\Logger::info('Creating Batch in HelperData.');
+        $helper = Mage::helper('rakutenlogistics/webservice');
+        $bashData = $helper->createBatch($order);
+
+        if (false === $bashData) {
+            return $bashData;
+        }
+
+        if (isset($bashData['status']) && ($bashData['status'] == 'OK')) {
+            $content = array_shift($bashData['content']);
+            $trackingObjects = array_shift($content['tracking_objects']);
+            $labelUrl = $content['print_url'];
+            $batchCode = $content['code'];
+            $trackingUrl = $trackingObjects['tracking_url'];
+
+            $order->setBatchLabelUrl($labelUrl);
+            $order->addStatusHistoryComment($trackingUrl)->setIsCustomerNotified(true);
+            $payment = $order->getPayment();
+            $order->save();
+            $payment
+                ->setAdditionalInformation('batch_code', $batchCode)
+                ->setAdditionalInformation('print_url', $labelUrl)
+                ->setAdditionalInformation('tracking_url', $trackingUrl)
+                ->save();
+        }
+        else {
+            $messages = array_shift($bashData['messages']);
+            \Rakuten\Connector\Resources\Log\Logger::error('Error generating batch for Order #' . $order->getIncrementId() . ':<br> '. $messages['text']);
+            Mage::getSingleton('adminhtml/session')->addError('Error generating batch for Order #' . $order->getIncrementId() . ':<br> '. $messages['text']);
+        }
+    }
+
+    /**
+     * @param $shippingMethod
+     * @return bool
+     */
     public function isRakutenShippingMethod($shippingMethod)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing isRakutenShippingMethod in HelperData');
@@ -68,6 +180,10 @@ class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
         return count($shippingMethod) == 3 && $shippingMethod[0] == 'rakuten';
     }
 
+    /**
+     * @param $shippingMethod
+     * @return string
+     */
     public function getRakutenShippingMethodCode($shippingMethod)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getRakutenShippingMethodCode in HelperData');
@@ -80,6 +196,10 @@ class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
         return $emptyCode;
     }
 
+    /**
+     * @param $fullAddress
+     * @return array
+     */
     public function parseStreet($fullAddress)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing parseStreet in HelperData');

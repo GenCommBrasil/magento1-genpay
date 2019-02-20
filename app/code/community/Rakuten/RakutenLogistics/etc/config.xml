@@ -19,15 +19,6 @@
     </frontend>
     <global>
         <events>
-            <core_block_abstract_prepare_layout_before>
-                <observers>
-                    <rakuten_rakutenlogistics_model_observer>
-                        <type>singleton</type>
-                        <class>Rakuten_RakutenLogistics_Model_Observer</class>
-                        <method>createLogisticsBatchButton</method>
-                    </rakuten_rakutenlogistics_model_observer>
-                </observers>
-            </core_block_abstract_prepare_layout_before>
             <resource_get_tablename>
                 <observers>
                     <rakuten_rakutenlogistics>
@@ -106,10 +97,29 @@
                         <title>Logistics</title>
                         <action>adminhtml/system_config/edit/section/carriers/</action>
                         <sort_order>2000</sort_order>
+                        <children>
+                            <configuration>
+                                <title>Configuration</title>
+                                <sort_order>1</sort_order>
+                                <action>adminhtml/system_config/edit/section/carriers/</action>
+                            </configuration>
+                            <batch>
+                                <title>Generate Batch</title>
+                                <sort_order>2</sort_order>
+                                <action>rakutenlogistics/adminhtml_batch</action>
+                            </batch>
+                        </children>
                     </rakutenlogistics_configuration>
                 </children>
             </rakutenpay_menu>
         </menu>
+        <layout>
+            <updates>
+                <rakutenlogistics>
+                    <file>rakuten/rakutenlogistics.xml</file>
+                </rakutenlogistics>
+            </updates>
+        </layout>
     </adminhtml>
     <default>
          <carriers>

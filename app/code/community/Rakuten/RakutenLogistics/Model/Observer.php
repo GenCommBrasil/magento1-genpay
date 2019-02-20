@@ -45,33 +45,4 @@ class Rakuten_RakutenLogistics_Model_Observer
         include_once($this->libPath);
         return $this;
     }
-
-    public function saveCalculationCode(Varien_Event_Observer $observer)
-    {
-        $helper = Mage::helper('rakutenlogistics/data');
-        $order = $observer->getEvent()->getOrder();
-
-        if($helper->isRakutenShippingMethod($order->getShippingMethod())){
-            $calculationCode = Mage::getSingleton('core/session')->getCalculationCode();
-            $observer->getOrder()->setCalculationCode($calculationCode);
-        }
-
-        Mage::getSingleton('core/session')->setCalculationCode('');
-    }
-
-
-    public function createLogisticsBatchButton(Varien_Event_Observer $observer)
-    {
-        $block = $observer->getEvent()->getBlock();
-        if(get_class($block) =='Mage_Adminhtml_Block_Widget_Grid_Massaction'
-            && $block->getRequest()->getControllerName() == 'sales_order')
-        {
-            $block->addItem('rakutenlogistics', array(
-                'label' => 'Generate Batch',
-                'url' => Mage::app()->getStore()->getUrl('rakutenlogistics/batch/createBatch'),
-            ));
-        }
-
-        return $this;
-    }
 }

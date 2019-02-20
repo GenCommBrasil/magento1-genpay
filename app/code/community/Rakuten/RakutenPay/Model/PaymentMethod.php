@@ -62,20 +62,25 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
 
     /**
      * @param Mage_Sales_Model_Order $order
+     * @throws Exception
      */
-    public function addRakutenpayOrders(Mage_Sales_Model_Order $order)
+    public function addRakutenPayOrders(Mage_Sales_Model_Order $order)
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing addRakutenpayOrders.');
-        $orderId = $order->getEntityId();
-        $enviroment = $this->library->getEnvironment();
-        $table = Mage::getConfig()->getTablePrefix().'rakutenpay_orders';
-        $read = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $value = $read->query("SELECT `order_id` FROM `$table` WHERE `order_id` = $orderId");
-        if (!$value->fetch()) {
-            $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-            $sql = "INSERT INTO `$table` (`order_id`, `environment`) VALUES ('$orderId', '$enviroment')";
-            $connection->query($sql);
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing addRakutenPayOrders.');
+        $helper = Mage::helper('rakutenlogistics/data');
+        $calculationCode = null;
+        $environment = $this->library->getEnvironment();
+
+        if ($helper->isRakutenShippingMethod($order->getShippingMethod())) {
+            $calculationCode = Mage::getSingleton('core/session')->getCalculationCode();
+            Mage::getSingleton('core/session')->setCalculationCode('');
         }
+
+        $rakutenOrder = Mage::getModel('rakuten_rakutenpay/order')->load($order->getId(), 'order_id');
+        $rakutenOrder->setOrderId($order->getId());
+        $rakutenOrder->setCalculationCode($calculationCode);
+        $rakutenOrder->setEnvironment($environment);
+        $rakutenOrder->save();
     }
 
     /**
@@ -141,6 +146,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
     private function payment($payment)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing payment.');
+        $helper = Mage::helper('rakutenlogistics/data');
         $shippingAddress = $this->order->getShippingAddress();
         if ($shippingAddress === false) {
             $shippingAddress = $this->order->getBillingAddress();
@@ -183,7 +189,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         $payment->setSender()->setBirthdate($this->order->getCustomerDob());
         \Rakuten\Connector\Resources\Log\Logger::info('DOB set.');
 
-        if ($this->isRakutenLogistics($this->order->getShippingMethod())) {
+        if ($helper->isRakutenShippingMethod($this->order->getShippingMethod())) {
             \Rakuten\Connector\Resources\Log\Logger::info('ShippingMethod is RakutenLogistics.');
             $postageServiceCode = str_replace(self::RAKUTEN_LOGISTICS_CODE, '', $this->order->getShippingMethod());
 
@@ -191,7 +197,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
             \Rakuten\Connector\Resources\Log\Logger::info('Kind set.');
             $payment->setCommissioningAmount((float) $this->order->getBaseGrandTotal());
             \Rakuten\Connector\Resources\Log\Logger::info('Commissioning Amount set.');
-            $payment->setCalculationCode($this->order->getCalculationCode());
+            $payment->setCalculationCode(Mage::getSingleton('core/session')->getCalculationCode());
             \Rakuten\Connector\Resources\Log\Logger::info('Calculation Code set.');
             $payment->setPostageServiceCode($postageServiceCode);
             \Rakuten\Connector\Resources\Log\Logger::info('Postage Service Code Code set.');
@@ -360,20 +366,5 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
     public function hasOneStepCheckout()
     {
         return (Mage::getStoreConfig("onestepcheckout/general/is_enabled") == 1) ? true : false;
-    }
-
-    /**
-     * @param $shippingMethod
-     * @return bool
-     */
-    protected function isRakutenLogistics($shippingMethod)
-    {
-        $isActive = (bool) Mage::getStoreConfig('carriers/rakutenlogistics_settings/active');
-        if (true == $isActive && false !== strpos($shippingMethod, self::RAKUTEN_LOGISTICS_CODE)) {
-
-            return $isActive;
-        }
-
-        return false;
     }
 }

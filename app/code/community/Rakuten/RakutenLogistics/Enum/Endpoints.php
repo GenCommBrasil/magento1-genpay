@@ -26,6 +26,7 @@ class Rakuten_RakutenLogistics_Enum_Endpoints
      * Name for Endpoints
      */
     const NAME_BATCH = 'batch';
+    const NAME_BATCH_DETAIL = 'batchDetail';
     const NAME_CARRIER_METHODS = 'carrierMethods';
     const NAME_CARRIER_PRICES = 'carrierPrices';
 
@@ -33,6 +34,7 @@ class Rakuten_RakutenLogistics_Enum_Endpoints
      * Endpoints Sandbox
      */
     const SANDBOX_BATCH = "https://oneapi-sandbox.rakutenpay.com.br/logistics/batch";
+    const SANDBOX_BATCH_DETAIL = "https://oneapi-sandbox.rakutenpay.com.br/logistics/order/";
     const SANDBOX_CARRIER_METHODS = "https://oneapi-sandbox.rakutenpay.com.br/logistics/client/info";
     const SANDBOX_CARRIER_PRICES = "https://oneapi-sandbox.rakutenpay.com.br/logistics/calculation";
 
@@ -40,6 +42,7 @@ class Rakuten_RakutenLogistics_Enum_Endpoints
      * Endpoints Production
      */
     const PRODUCTION_BATCH = "https://api.rakuten.com.br/logistics/batch";
+    const PRODUCTION_BATCH_DETAIL = "https://api.rakuten.com.br/logistics/order/";
     const PRODUCTION_CARRIER_METHODS = "https://api.rakuten.com.br/logistics/client/info";
     const PRODUCTION_CARRIER_PRICES = "https://api.rakuten.com.br/logistics/calculation";
 }
