@@ -51,6 +51,20 @@ class Rakuten_RakutenLogistics_Adminhtml_BatchController extends Mage_Adminhtml_
     /**
      * @void
      */
+    public function indexAction()
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing indexAction in Admin BatchController.');
+        Mage::getSingleton('core/session')->setData(
+            'store_id',
+            Mage::app()->getRequest()->getParam('store')
+        );
+        $this->loadLayout();
+        $this->_setActiveMenu('rakutenpay_menu')->renderLayout();
+    }
+
+    /**
+     * @void
+     */
     public function doBatchAction()
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing doBatchAction in Admin BatchController.');
@@ -76,18 +90,31 @@ class Rakuten_RakutenLogistics_Adminhtml_BatchController extends Mage_Adminhtml_
         if ($this->days) {
             $this->batch->initialize($this->days);
             $this->getResponse()->setBody(
-            Mage::helper('core')->jsonEncode($this->batch->getOrdersLogistics()));
+                Mage::helper('core')->jsonEncode($this->batch->getOrdersLogistics()));
         }
     }
 
-    public function indexAction()
+    /**
+     * @void
+     */
+    public function doBatchAdminAction()
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing indexAction in Admin BatchController.');
-        Mage::getSingleton('core/session')->setData(
-            'store_id',
-            Mage::app()->getRequest()->getParam('store')
-        );
-        $this->loadLayout();
-        $this->_setActiveMenu('rakutenpay_menu')->renderLayout();
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing doBatchAdminAction in BatchController.');
+        $id = $this->getRequest()->getParam('order_id');
+        $helper = Mage::helper('rakutenlogistics/data');
+        $order = Mage::getModel('sales/order')->load($id);
+
+        if ($helper->isRakutenShippingMethod($order->getShippingMethod())) {
+            $helper->generateBatch($order);
+        }
+        else {
+            \Rakuten\Connector\Resources\Log\Logger::error('Order #' . $order->getIncrementId() .
+                ' Batch not created.');
+            Mage::getSingleton('adminhtml/session')->addError('Order #'. $order->getIncrementId() .
+                ' Batch not created.');
+        }
+        Mage::getSingleton('adminhtml/session')->addSuccess('Batch generated successfully!');
+
+        $this->_redirect('adminhtml/sales_order/index');
     }
 }

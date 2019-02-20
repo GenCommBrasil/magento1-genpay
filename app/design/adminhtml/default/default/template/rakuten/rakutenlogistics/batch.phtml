@@ -147,11 +147,6 @@ $helper = Mage::helper('rakutenlogistics/batch');
             });
         };
         var prepareTable = function () {
-            var flow = 0;
-            var totalRows = 0;
-            var page = 0;
-            var currentPage = 0;
-            var oTable;
             jQuery.fn.dataTableExt.oApi.fnStandingRedraw = function (oSettings) {
                 //redraw to account for filtering and sorting
                 // concept here is that (for client side) there is a row got inserted at the end (for an add)

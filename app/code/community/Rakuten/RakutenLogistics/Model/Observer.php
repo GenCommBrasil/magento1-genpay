@@ -45,4 +45,16 @@ class Rakuten_RakutenLogistics_Model_Observer
         include_once($this->libPath);
         return $this;
     }
+
+    public function addGenerateBatchAction($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View) {
+            $url = $block->getUrl('rakutenlogistics/adminhtml_batch/doBatchAdmin');
+
+            $block->addButton('generate_batch',
+                array('label' => Mage::helper('sales')->__('Generate Batch'),
+                    'onclick' => 'setLocation(\'' . $url . '\')'));
+        }
+    }
 }

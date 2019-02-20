@@ -120,6 +120,17 @@
                 </rakutenlogistics>
             </updates>
         </layout>
+        <events>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <orderstatus_core_block_abstract_prepare_layout_before>
+                        <type>model</type>
+                        <class>Rakuten_RakutenLogistics_Model_Observer</class>
+                        <method>addGenerateBatchAction</method>
+                    </orderstatus_core_block_abstract_prepare_layout_before>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
+        </events>
     </adminhtml>
     <default>
          <carriers>
