@@ -60,4 +60,23 @@ class Rakuten_RakutenPay_Block_Info_Boleto extends Mage_Payment_Block_Info
 
         return $date->format("d/m/Y H:i:s");
     }
+
+    public function getLabelUrl()
+    {
+        if (empty($this->getInfo())) {
+
+            return null;
+        }
+
+        return $this->getInfo()->getAdditionalInformation('print_url');
+    }
+
+    public function getTrackingUrl()
+    {
+        if (empty($this->getInfo())) {
+            return null;
+        }
+
+        return $this->getInfo()->getAdditionalInformation('tracking_url');
+    }
 }

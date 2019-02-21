@@ -38,8 +38,8 @@ class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
         $order->save();
         $payment
             ->setAdditionalInformation('batch_code', $batchCode)
-            ->setAdditionalInformation('batch_print_url', $batchLabelUrl)
-            ->setAdditionalInformation('batch_tracking_url', $trackingUrl)
+            ->setAdditionalInformation('print_url', $batchLabelUrl)
+            ->setAdditionalInformation('tracking_url', $trackingUrl)
             ->save();
     }
 
@@ -56,8 +56,8 @@ class Rakuten_RakutenLogistics_Helper_Data extends Mage_Shipping_Helper_Data
         if ($result['status'] == 'OK') {
             $content = $result['content'];
             $batchCode = $content['batch_code'];
-            $batchLabelUrl = $content['batch_print_url'];
-            $trackingUrl = $content['tracking_print_url'];
+            $batchLabelUrl = $content['print_url'];
+            $trackingUrl = $content['tracking_url'];
             $this->saveBatch($order, $batchCode, $batchLabelUrl, $trackingUrl);
 
             return true;
