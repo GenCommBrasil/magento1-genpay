@@ -100,7 +100,7 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
             $minimumValue = self::DEFAULT_MINIMUM_VALUE;
         }
         $installments = floor ($amount / (float) $minimumValue);
-        if ($amount <= (float) $minimumValue) {
+        if ($amount <= (float) $minimumValue || false === $this->isInstallment()) {
             return self::DEFAULT_INSTALLMENTS;
         }
 
@@ -291,11 +291,11 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
      * Check if installments show is enabled
      * @return bool
      */
-    public function enabled()
+    public function isInstallment()
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing enabled in ModelInstallmentsMethod.');
-        return (Mage::getStoreConfig('payment/rakutenpay/installments') == 1) ?
-            true :
-            false;
+        $isEnable = (int) Mage::getStoreConfig('payment/rakutenpay_credit_card/installments');
+
+        return ($isEnable == 1) ? true : false;
     }
 }
