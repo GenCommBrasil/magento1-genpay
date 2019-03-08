@@ -91,15 +91,13 @@ class Http extends AbstractHttp
      */
     protected function getCurlHeader($method, $url, $data = null)
     {
-        $cnpj = Mage::getStoreConfig('payment/rakutenpay/cnpj');
-        $apiKey = Mage::getStoreConfig('payment/rakutenpay/api_key');
-        $auth = $cnpj . ':' . $apiKey;
+        $credential = Mage::helper('rakutenpay/credential');
+        $auth = $credential->getDocument() . ':' . $credential->getApiKey();
         $authBase64 = base64_encode($auth);
 
         if (strtoupper($method) === 'POST') {
             Logger::info(sprintf("POST: %s", $data), ['service' => 'HTTP_POST']);
-            $sigKey = \Mage::getStoreConfig('payment/rakutenpay/signature_key');
-            $signature = hash_hmac('sha256', $data, $sigKey, true);
+            $signature = hash_hmac('sha256', $data, $credential->getSignatureKey(), true);
             $signatureBase64 = base64_encode($signature);
 
             return [

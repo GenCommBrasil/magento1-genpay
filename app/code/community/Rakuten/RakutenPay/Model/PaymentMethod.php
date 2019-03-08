@@ -64,13 +64,13 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing addRakutenpayOrders.');
         $orderId = $order->getEntityId();
-        $enviroment = $this->library->getEnvironment();
+        $environment = $this->library->getEnvironment();
         $table = Mage::getConfig()->getTablePrefix().'rakutenpay_orders';
         $read = Mage::getSingleton('core/resource')->getConnection('core_read');
         $value = $read->query("SELECT `order_id` FROM `$table` WHERE `order_id` = $orderId");
         if (!$value->fetch()) {
             $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-            $sql = "INSERT INTO `$table` (`order_id`, `environment`) VALUES ('$orderId', '$enviroment')";
+            $sql = "INSERT INTO `$table` (`order_id`, `environment`) VALUES ('$orderId', '$environment')";
             $connection->query($sql);
         }
     }
@@ -115,8 +115,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
     public function getPaymentSession()
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentSession.');
-        return \Mage::getSingleton('checkout/session');;
-//        return \Rakuten\Connector\Services\Session::create($this->library->getAccountCredentials());
+        return \Mage::getSingleton('checkout/session');
     }
 
     /**
@@ -298,10 +297,10 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         try {
             if ($code) {
                 /** @var \Rakuten\Connector\Domains\Requests\Payment $response */
-                $response = $payment->register($this->library->getAccountCredentials(), true)->getCode();
+                $response = $payment->register(true);
             } else {
                 /** @var \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto $payment */
-                $response = $payment->register($this->library->getAccountCredentials());
+                $response = $payment->register();
             }
         } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
             Mage::logException($exception);

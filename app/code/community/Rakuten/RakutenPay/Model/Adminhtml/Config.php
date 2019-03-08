@@ -53,6 +53,8 @@ class Rakuten_RakutenPay_Model_Adminhtml_Config
      */
     public function getCommentText()
     {
+        /** @var Rakuten_RakutenPay_Helper_Credential $credential */
+        $credential = Mage::helper('rakutenpay/credential');
         $helper = Mage::helper('rakutenpay');
         $redirect = Mage::getBaseUrl().'checkout/onepage/success/';
         $backgroundCss = '#fff';
@@ -65,10 +67,10 @@ class Rakuten_RakutenPay_Model_Adminhtml_Config
                         '.$html->getHeader($this->logo).'
                      </div>';
         $init = Mage::getStoreConfig('payment/rakutenpay/init');
-        $cnpj = Mage::getStoreConfig('payment/rakutenpay/cnpj');
-        $api_key = Mage::getStoreConfig('payment/rakutenpay/api_key');
-        $signature_key = Mage::getStoreConfig('payment/rakutenpay/signature_key');
-        $email = Mage::getStoreConfig('payment/rakutenpay/email');
+        $cnpj = $credential->getDocument();
+        $api_key = $credential->getApiKey();
+        $signature_key = $credential->getSignatureKey();
+        $email = $credential->getEmail();
         $comment = '<script src="'.$this->jquery.'"></script>';
         $comment .= '<script src="'.$this->js.'"></script>';
         $comment .= '<script src="'.$this->jsColorbox.'"></script>';

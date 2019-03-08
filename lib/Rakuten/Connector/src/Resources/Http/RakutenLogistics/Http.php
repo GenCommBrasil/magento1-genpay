@@ -90,8 +90,10 @@ class Http extends AbstractHttp
      */
     private function getHeader()
     {
-        $cnpj = Mage::getStoreConfig('payment/rakutenpay/cnpj');
-        $apiKey = Mage::getStoreConfig('payment/rakutenpay/api_key');
+        /** @var \Rakuten_RakutenPay_Helper_Credential $credential */
+        $credential = Mage::helper('rakutenpay/credential');
+        $cnpj = $credential->getDocument();
+        $apiKey = $credential->getApiKey();
         $auth = $cnpj . ':' . $apiKey;
         $authBase64 = base64_encode($auth);
 

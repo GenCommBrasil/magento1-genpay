@@ -38,9 +38,10 @@ class ResponseValidate
      */
     public static function validateSignature($method, $info, $data, $secureGet)
     {
+        $credential = Mage::helper('rakutenpay/credential');
         if (is_array($info) && array_key_exists('signature', $info)) {
             Logger::info('Checking response signature.', ['service' => 'HTTP.Response.Signature']);
-            $sigKey = Mage::getStoreConfig('payment/rakutenpay/signature_key');
+            $sigKey = $credential->getSignatureKey();
             $signature = hash_hmac('sha256', $data, $sigKey, true);
             $signatureBase64 = base64_encode($signature);
 
