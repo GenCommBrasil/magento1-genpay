@@ -19,7 +19,6 @@
 
 namespace Rakuten\Connector\Configuration;
 
-use Rakuten\Connector\Domains\AccountCredentials;
 use Rakuten\Connector\Domains\Charset;
 use Rakuten\Connector\Domains\Environment;
 use Rakuten\Connector\Resources\Responsibility;
@@ -30,38 +29,8 @@ use Rakuten\Connector\Resources\Responsibility;
  */
 class Configure
 {
-    private static $accountCredentials;
     private static $charset;
     private static $environment;
-
-    /**
-     * @return AccountCredentials
-     */
-    public static function getAccountCredentials()
-    {
-        if (! isset(self::$accountCredentials)) {
-            $configuration = Responsibility::configuration();
-            self::setAccountCredentials(
-                $configuration['credentials']['cnpj'],
-                $configuration['credentials']['api_key']['environment'][$configuration['environment']],
-                $configuration['credentials']['signature_key']['environment'][$configuration['environment']]
-            );
-        }
-
-        return self::$accountCredentials;
-    }
-
-    /**
-     * @param string $email
-     * @param string $token
-     */
-    public static function setAccountCredentials($cnpj, $api_key, $signature_key)
-    {
-        self::$accountCredentials = new AccountCredentials;
-        self::$accountCredentials->setCnpj($cnpj)
-            ->setApiKey($api_key)
-            ->setSignatureKey($signature_key);
-    }
 
     /**
      * @return Environment

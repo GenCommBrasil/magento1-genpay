@@ -41,12 +41,14 @@ class Rakuten_RakutenPay_Model_Observer
     */
     public function adminSystemConfigPaymentSave()
     {
+        /** @var Rakuten_RakutenPay_Helper_Credential $credential */
+        $credential = Mage::helper('rakutenpay/credential');
         if (!Mage::getStoreConfig("payment/rakutenpay/init")) {
             Mage::getConfig()->saveConfig('payment/rakutenpay/init', 1);
         }
 
-        if (Mage::getStoreConfig("payment/rakutenpay/email") && Mage::getStoreConfig("payment/rakutenpay/cnpj")
-            && Mage::getStoreConfig("payment/rakutenpay/api_key") && Mage::getStoreConfig("payment/rakutenpay/signature_key")) {
+        if ($credential->getEmail() && $credential->getDocument()
+            && $credential->getApiKey() && $credential->getSignatureKey()) {
             Mage::helper('rakutenpay')->checkCredentials();
         } else {
             throw new Exception("Certifique-se de que o e-mail e token foram preenchidos.");

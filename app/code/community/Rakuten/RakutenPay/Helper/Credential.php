@@ -17,21 +17,40 @@
  ************************************************************************
  */
 
-namespace Rakuten\Connector\Domains\Account;
-
 /**
- * Interface Credentials
- * @package Rakuten\Connector\Domains\Credentials
+ * Class Rakuten_RakutenPay_Helper_Credential
  */
-interface Credentials
+class Rakuten_RakutenPay_Helper_Credential extends Rakuten_RakutenPay_Helper_Data
 {
     /**
-     * @return array
+     * @return string
      */
-    public function getAttributesMap();
+    public function getDocument()
+    {
+        return Mage::getStoreConfig('payment/rakutenpay/cnpj');
+    }
 
     /**
      * @return string
      */
-    public function toString();
+    public function getApiKey()
+    {
+        return Mage::getStoreConfig('payment/rakutenpay/api_key');
+    }
+
+    /**
+     * @return string
+     */
+    public function getSignatureKey()
+    {
+        return Mage::getStoreConfig('payment/rakutenpay/signature_key');
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return Mage::getStoreConfig('payment/rakutenpay/email');
+    }
 }
