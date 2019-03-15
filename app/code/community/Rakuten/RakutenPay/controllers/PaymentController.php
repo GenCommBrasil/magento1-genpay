@@ -214,15 +214,16 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             }
 
             if ($result === false || $result->getResult() == \Rakuten\Connector\Enum\DirectPayment\Message::FAILURE) {
-                \Rakuten\Connector\Resources\Log\Logger::error('Result is failure...');
+                $message = method_exists($result,'getResultMessage') ? $result->getResultMessage() : 'Result is failure...';
                 $this->canceledStatus(
                     $order,
                     false,
                     '',
                     false,
-                    $result->getResultMessage()
+                    $message
                 );
-                throw new \Rakuten\Connector\Exception\ConnectorException($result->getResultMessage());
+                \Rakuten\Connector\Resources\Log\Logger::error($message);
+                throw new \Rakuten\Connector\Exception\ConnectorException($message);
             }
 
             if ($result->getResult() == \Rakuten\Connector\Enum\DirectPayment\Message::DECLINED ||
