@@ -34,15 +34,24 @@ class Responsibility
 {
     public static function http($http, $class)
     {
-        $firstDigit = substr($http->getStatus(), 0, 1);
-        switch (true) {
-            case ($http->getStatus() == Status::OK):
+        switch ($http->getStatus()) {
+            case Status::OK:
                 return $class::success($http);
-            case ($http->getStatus() == Status::BAD_GATEWAY):
+            case Status::UNPROCESSABLE:
+                /** returns success because only a few parameters  */
+                return $class::success($http);
+            case Status::BAD_REQUEST:
+                /** returns success because only a few parameters  */
+                return $class::success($http);
+            case Status::NOT_FOUND:
                 $error = $class::error($http);
                 throw new ConnectorException($error->getMessage(), $error->getCode());
-            case ($firstDigit == Status::CLIENT_ERRORS):
-                return $class::success($http);
+            case Status::UNAUTHORIZED:
+                $error = $class::error($http);
+                throw new ConnectorException($error->getMessage(), $error->getCode());
+            case Status::BAD_GATEWAY:
+                $error = $class::error($http);
+                throw new ConnectorException($error->getMessage(), $error->getCode());
             default:
                 unset($class);
                 throw new ConnectorException($http->getResponse(), $http->getStatus());
