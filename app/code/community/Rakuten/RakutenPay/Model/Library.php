@@ -39,7 +39,7 @@ class Rakuten_RakutenPay_Model_Library
     }
 
     /**
-     *
+     * @void
      */
     private function setCharset()
     {
@@ -47,25 +47,11 @@ class Rakuten_RakutenPay_Model_Library
     }
 
     /**
-     *
+     * @void
      */
     private function setEnvironment()
     {
         \Rakuten\Connector\Configuration\Configure::setEnvironment(Mage::getStoreConfig('payment/rakutenpay/environment'));
-    }
-
-    /**
-     * @return \Rakuten\Connector\Domains\AccountCredentials
-     */
-    public function getAccountCredentials()
-    {
-        \Rakuten\Connector\Configuration\Configure::setAccountCredentials(
-            Mage::getStoreConfig('payment/rakutenpay/cnpj'),
-            Mage::getStoreConfig('payment/rakutenpay/api_key'),
-            Mage::getStoreConfig('payment/rakutenpay/signature_key')
-        );
-
-        return \Rakuten\Connector\Configuration\Configure::getAccountCredentials();
     }
 
     /**

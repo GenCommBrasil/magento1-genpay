@@ -123,8 +123,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
     public function getPaymentSession()
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getPaymentSession.');
-        return \Mage::getSingleton('checkout/session');;
-//        return \Rakuten\Connector\Services\Session::create($this->library->getAccountCredentials());
+        return \Mage::getSingleton('checkout/session');
     }
 
     /**
@@ -322,10 +321,10 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         try {
             if ($code) {
                 /** @var \Rakuten\Connector\Domains\Requests\Payment $response */
-                $response = $payment->register($this->library->getAccountCredentials(), true)->getCode();
+                $response = $payment->register(true);
             } else {
                 /** @var \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto $payment */
-                $response = $payment->register($this->library->getAccountCredentials());
+                $response = $payment->register();
             }
         } catch (\Rakuten\Connector\Exception\ConnectorException $exception) {
             Mage::logException($exception);
