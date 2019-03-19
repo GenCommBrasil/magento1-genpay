@@ -124,22 +124,9 @@ $helper = Mage::helper('rakutenlogistics/batch');
                     xhrResult = JSON.parse(xhrResult);
                     if (xhrResult.status == false && xhrResult.err == true) {
                         jQuery('#batch-table').dataTable().fnClearTable(true);
-                        Modal.message('error', 'Não foi possível executar esta ação.');
-                    } else {
-                        jQuery('#batch-table').dataTable().fnClearTable(true);
-                        jQuery.each(xhrResult, function (key, item) {
-                            jQuery('#batch-table').dataTable().fnAddData([
-                                '<input type="checkbox" name="batch" class="batch" value="' + item.orderId + '" />',
-                                item.incrementId,
-                                item.billingName,
-                                item.createdAt,
-                                item.status
-                            ]);
-                        });
-                        jQuery('#batch-table').dataTable()._fnInitComplete();
-                        //After reassembling the table removes the modal of loading
-                        Modal.hideLoading();
+                        console.log('Error: Não foi possível executar esta ação.');
                     }
+                    requestTransactions();
                 },
                 error: function (xhrErr) {
                     console.log(xhrErr);

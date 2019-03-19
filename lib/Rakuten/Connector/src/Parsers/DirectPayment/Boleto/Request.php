@@ -91,18 +91,24 @@ class Request extends Error implements Parser
      */
     public static function getData(Boleto $boleto)
     {
+        Logger::info('Processing getData in trait Request.');
         $data = [];
-
         $properties = new Constants();
-
-        return array_merge(
+        $data = array_merge(
             $data,
             Basic::getData($boleto, $properties),
-            Commissioning::getData($boleto, $properties),
             Payment::getData($boleto, $properties),
             Customer::getData($boleto, $properties),
             Order::getData($boleto, $properties)
         );
+
+        $commissioning = Commissioning::getData($boleto, $properties);
+        if (!is_null($commissioning)) {
+
+            return array_merge($data, $commissioning);
+        }
+
+        return $data;
     }
 
     /**

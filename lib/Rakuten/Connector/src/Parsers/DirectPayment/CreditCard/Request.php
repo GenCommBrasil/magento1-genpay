@@ -93,14 +93,22 @@ class Request extends Error implements Parser
         Logger::info('Processing getData in trait Request.');
         $data = [];
         $properties = new Constants();
-        return array_merge(
+
+        $data = array_merge(
             $data,
             Basic::getData($creditCard, $properties),
-            Commissioning::getData($creditCard, $properties),
             Payment::getData($creditCard, $properties),
             Customer::getData($creditCard, $properties),
             Order::getData($creditCard, $properties)
         );
+
+        $commissioning = Commissioning::getData($creditCard, $properties);
+        if (!is_null($commissioning)) {
+
+            return array_merge($data, $commissioning);
+        }
+
+        return $data;
     }
 
     /**

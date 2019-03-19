@@ -45,7 +45,7 @@
                 <class>Rakuten_RakutenPay_Model_Resource</class>
                 <entities>
                     <order>
-                        <table>rakuten_order</table>
+                        <table>rakutenpay_orders</table>
                     </order>
                 </entities>
             </rakuten_rakutenpay_resource>

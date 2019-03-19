@@ -194,7 +194,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
 
             $payment->setKind(self::RAKUTEN_LOGISTICS_KIND);
             \Rakuten\Connector\Resources\Log\Logger::info('Kind set.');
-            $payment->setCommissioningAmount((float) $this->order->getBaseGrandTotal());
+            $payment->setCommissioningAmount((float) $this->order->getShippingAmount());
             \Rakuten\Connector\Resources\Log\Logger::info('Commissioning Amount set.');
             $payment->setCalculationCode(Mage::getSingleton('core/session')->getCalculationCode());
             \Rakuten\Connector\Resources\Log\Logger::info('Calculation Code set.');

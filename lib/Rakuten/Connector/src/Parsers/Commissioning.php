@@ -31,7 +31,7 @@ trait Commissioning
     /**
      * @param Requests $request
      * @param $properties
-     * @return array
+     * @return array|null
      */
     public static function getData(Requests $request, $properties)
     {
@@ -58,6 +58,6 @@ trait Commissioning
             $commissionings[$properties::COMMISSIONINGS][] = $data;
         }
 
-        return $commissionings;
+        return count($commissionings) ? $commissionings : null;
     }
 }

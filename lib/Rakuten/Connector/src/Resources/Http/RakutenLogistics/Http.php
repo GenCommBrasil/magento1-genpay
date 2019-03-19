@@ -57,7 +57,7 @@ class Http extends AbstractHttp
             }
             Logger::info(sprintf("%s: %s", strtoupper($method), $url), ['service' => 'HTTP_URI']);
             $header = $header + $methodOptions;
-            Logger::info(sprintf('Headers RakutenLogistics: %s', json_encode($header)), ['service' => 'HTTP.HEADER']);
+            Logger::info(sprintf('Headers RakutenLogistics: %s', json_encode($header)), ['service' => 'HTTP_HEADER']);
             $options = [
                 CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
@@ -78,7 +78,8 @@ class Http extends AbstractHttp
 
             $this->setStatus((int) $info['http_code']);
             $this->setResponse((string) $response);
-            Logger::info(sprintf('Response Status: %s' , $this->getStatus()), ['service' => 'HTTP.Response.Status']);
+            Logger::info(sprintf('Response Status: %s' , $this->getStatus()), ['service' => 'HTTP_RESPONSE_STATUS']);
+            Logger::info(sprintf('Response: %s', $this->getResponse()), ["service" => "HTTP_RESPONSE"]);
             if ($error) {
                 Logger::error(sprintf('CURL Error: %s', $errorMessage), ['service' => 'RakutenLogistics']);
                 throw new ConnectorException("CURL can't connect: {$errorMessage}");

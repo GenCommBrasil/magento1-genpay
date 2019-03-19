@@ -57,7 +57,8 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
         $url = Rakuten_RakutenLogistics_Helper_Environment::getEndpoint(Rakuten_RakutenLogistics_Enum_Endpoints::NAME_CARRIER_PRICES);
 
         $cart = Mage::getModel('checkout/cart')->getQuote();
-        $cartInfo['destination_zipcode'] = $cart->getShippingAddress()->getPostcode();
+        $zipCode = $cart->getShippingAddress()->getPostcode();
+        $cartInfo['destination_zipcode'] = \Rakuten\Connector\Helpers\StringFormat::getOnlyNumbers($zipCode);
         $cartInfo['postage_service_codes'] = array();
         $cartInfo['products'] = array();
         foreach ($cart->getAllItems() as $item) {
@@ -75,7 +76,6 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
         $http = $this->getHttp();
         $http->post($url, $cartInfo, $timeout = 20);
         $response = json_decode($http->getResponse(), true);
-        \Rakuten\Connector\Resources\Log\Logger::info(sprintf('RakutenLogistics: %s', $response), ["service" => "HTTP_RESPONSE"]);
 
         return $response;
     }
