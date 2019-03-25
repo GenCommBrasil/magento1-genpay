@@ -1,16 +1,16 @@
-# Extensão Magento 1 para [Rakuten Connector](https://digitalcommerce.rakuten.com.br/solucoes/rakuten-connector/){:target="_blank"} Payment Gateway (Magento CE 1.7+) 
+# Extensão Magento 1 para [Rakuten Connector](https://digitalcommerce.rakuten.com.br/solucoes/rakuten-connector/) Payment Gateway (Magento CE 1.7+) 
 
 Bem vindo ao repositório da extensão Magento para o Rakuten Connector
 
 Esta extensão está pronta para integrar com os serviços:
 
-![Rakuten Pay](https://raw.githubusercontent.com/RakutenBrasil/magento1-rakuten-pay/master/images/logo-rakuten-pay.png){:target="_blank"}
+![Rakuten Pay](https://raw.githubusercontent.com/RakutenBrasil/magento1-rakuten-pay/master/images/logo-rakuten-pay.png)
    
-   Conheça mais a respeito de nossa solução de pagamentos [Rakuten Pay](https://digitalcommerce.rakuten.com.br/produtos/pagamentos-rakuten-pay/) e sobre o programa de parceria para desenvolvedores e agências [Rakuten Pay para Devs](https://digitalcommerce.rakuten.com.br/rakuten-pay-dev/){:target="_blank"}
+   Conheça mais a respeito de nossa solução de pagamentos [Rakuten Pay](https://digitalcommerce.rakuten.com.br/produtos/pagamentos-rakuten-pay/) e sobre o programa de parceria para desenvolvedores e agências [Rakuten Pay para Devs](https://digitalcommerce.rakuten.com.br/rakuten-pay-dev/)
 
-![Rakuten Log](https://raw.githubusercontent.com/RakutenBrasil/magento1-rakuten-pay/master/images/logo-rakuten-log.png){:target="_blank"}
+![Rakuten Log](https://raw.githubusercontent.com/RakutenBrasil/magento1-rakuten-pay/master/images/logo-rakuten-log.png)
    
-   Conheça mais a respeito de nossa solução de Logística [Rakuten Log](https://digitalcommerce.rakuten.com.br/rakuten-log/){:target="_blank"}
+   Conheça mais a respeito de nossa solução de Logística [Rakuten Log](https://digitalcommerce.rakuten.com.br/rakuten-log/)
 
 
 ## Requisitos
@@ -21,10 +21,10 @@ Esta extensão está pronta para integrar com os serviços:
 
 ## Instalação
 
-  Para instalar o Rakuten Connector [consulte nossa documentação](https://developers.rakuten.com.br/production/developer/plugins_and_extensions/magento-1){:target="_blank"}
+  Para instalar o Rakuten Connector [consulte nossa documentação](https://developers.rakuten.com.br/production/developer/plugins_and_extensions/magento-1)
 
 
 ## Suporte
 
 
-Dúvidas ou deseja implementar  o serviço Rakuten Connector acesse [Rakuten Digital Commerce](https://digitalcommerce.rakuten.com.br){:target="_blank"}
+Dúvidas ou deseja implementar  o serviço Rakuten Connector acesse [Rakuten Digital Commerce](https://digitalcommerce.rakuten.com.br)
