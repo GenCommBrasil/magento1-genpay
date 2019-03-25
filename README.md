@@ -27,4 +27,4 @@ Esta extensão está pronta para integrar com os serviços:
 ## Suporte
 
 
-Dúvidas ou deseja implementar  o serviço Rakuten Connector acesse [Rakuten Digital Commerce](https://digitalcommerce.rakuten.com.br" target="_blank)
+Dúvidas ou deseja implementar  o serviço Rakuten Connector acesse [Rakuten Digital Commerce](https://digitalcommerce.rakuten.com.br)
