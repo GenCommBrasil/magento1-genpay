@@ -130,7 +130,7 @@ trait Order
             }
         } else {
             $category[$properties::NAME] = 'Outros';
-            $category[$properties::ID] = 99;
+            $category[$properties::ID] = '99';
             $categories[] = $category;
         }
         $data[$properties::CATEGORIES] = $categories;
