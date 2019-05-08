@@ -10,7 +10,7 @@ Esta extensão está pronta para integrar com os serviços:
 
 ![Rakuten Log](https://raw.githubusercontent.com/RakutenBrasil/magento1-rakuten-pay/master/images/logo-rakuten-log.png)
    
-   Conheça mais a respeito de nossa solução de Logística [Rakuten Log](https://digitalcommerce.rakuten.com.br/rakuten-log/) 
+   Conheça mais a respeito de nossa solução de Logística [Rakuten Log](https://digitalcommerce.rakuten.com.br/rakuten-log/)
 
 
 ## Requisitos
@@ -21,7 +21,7 @@ Esta extensão está pronta para integrar com os serviços:
 
 ## Instalação
 
-  Para instalar o Rakuten Connector [consulte nossa Wiki](https://github.com/RakutenBrasil/magento1-rakuten-pay/wiki)
+  Para instalar o Rakuten Connector [consulte nossa documentação](https://developers.rakuten.com.br/production/developer/plugins_and_extensions/magento-1)
 
 
 ## Suporte
