@@ -32,4 +32,11 @@
 <?php if(!empty($this->getApprovedDate())): ?>
     <b>Data da Aprovação: </b><?php echo $this->getApprovedDate(); ?><br>
 <?php endif;?>
+<?php if(!empty($this->getTrackingUrl())): ?>
+    <br><p><b>Rakuten Logistics</b></p>
+    <p>
+        <button class="button" onclick="window.location.href='<?php echo $this->getTrackingUrl(); ?>'">Rastreamento</button>
+    </p>
+<?php endif;?>
+
 

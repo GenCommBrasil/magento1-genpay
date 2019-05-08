@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<layout>
+    <rakutenlogistics_adminhtml_batch_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>rakuten/rakutenpay/css/rakutenpay-module.css</stylesheet></action>
+            <action method="addCss"><stylesheet>rakuten/rakutenpay/css/rakutenpay-modal.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><name>rakuten/rakutenpay/js/jquery-1.11.1.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>rakuten/rakutenpay/js/jquery.inputmask.bundle.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>rakuten/rakutenpay/js/rakutenpay-module.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>rakuten/rakutenpay/js/jquery.colorbox-min.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_js</type><name>rakuten/rakutenpay/js/jquery.dataTables.js</name><params/><if/></action>
+        </reference>
+        <reference name="content">
+            <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
+            <block type="adminhtml/template" name="batch" template="rakuten/rakutenlogistics/batch.phtml"/>
+        </reference>
+    </rakutenlogistics_adminhtml_batch_index>
+</layout>

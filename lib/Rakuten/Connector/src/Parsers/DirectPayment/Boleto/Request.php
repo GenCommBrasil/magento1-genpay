@@ -22,6 +22,7 @@ namespace Rakuten\Connector\Parsers\DirectPayment\Boleto;
 use Rakuten\Connector\Enum\Http\Status;
 use Rakuten\Connector\Enum\Properties\Constants;
 use Rakuten\Connector\Parsers\Basic;
+use Rakuten\Connector\Parsers\Commissioning;
 use Rakuten\Connector\Parsers\Customer;
 use Rakuten\Connector\Parsers\Error;
 use Rakuten\Connector\Parsers\Order;
@@ -37,6 +38,7 @@ use Rakuten\Connector\Resources\Log\Logger;
  */
 class Request extends Error implements Parser
 {
+    use Commissioning;
     use Basic;
     use Payment;
     use Customer;
@@ -89,17 +91,24 @@ class Request extends Error implements Parser
      */
     public static function getData(Boleto $boleto)
     {
+        Logger::info('Processing getData in trait Request.');
         $data = [];
-
         $properties = new Constants();
-
-        return array_merge(
+        $data = array_merge(
             $data,
             Basic::getData($boleto, $properties),
             Payment::getData($boleto, $properties),
             Customer::getData($boleto, $properties),
             Order::getData($boleto, $properties)
         );
+
+        $commissioning = Commissioning::getData($boleto, $properties);
+        if (!is_null($commissioning)) {
+
+            return array_merge($data, $commissioning);
+        }
+
+        return $data;
     }
 
     /**

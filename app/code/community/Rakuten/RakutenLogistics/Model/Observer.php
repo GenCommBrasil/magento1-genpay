@@ -46,32 +46,20 @@ class Rakuten_RakutenLogistics_Model_Observer
         return $this;
     }
 
-    public function saveCalculationCode(Varien_Event_Observer $observer)
-    {
-        $helper = Mage::helper('rakutenlogistics/data');
-        $order = $observer->getEvent()->getOrder();
-
-        if($helper->isRakutenShippingMethod($order->getShippingMethod())){
-            $calculationCode = Mage::getSingleton('core/session')->getCalculationCode();
-            $observer->getOrder()->setCalculationCode($calculationCode);
-        }
-
-        Mage::getSingleton('core/session')->setCalculationCode('');
-    }
-
-
-    public function createLogisticsBatchButton(Varien_Event_Observer $observer)
+    /**
+     * Add button generate batch in Sales Order View and call action in BatchController
+     *
+     * @param $observer
+     */
+    public function addGenerateBatchAction($observer)
     {
         $block = $observer->getEvent()->getBlock();
-        if(get_class($block) =='Mage_Adminhtml_Block_Widget_Grid_Massaction'
-            && $block->getRequest()->getControllerName() == 'sales_order')
-        {
-            $block->addItem('rakutenlogistics', array(
-                'label' => 'Generate Batch',
-                'url' => Mage::app()->getStore()->getUrl('rakutenlogistics/batch/createBatch'),
-            ));
-        }
+        if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View) {
+            $url = $block->getUrl('rakutenlogistics/adminhtml_batch/doBatchAdmin');
 
-        return $this;
+            $block->addButton('generate_batch',
+                array('label' => Mage::helper('sales')->__('Generate Batch'),
+                    'onclick' => 'setLocation(\'' . $url . '\')'));
+        }
     }
 }

@@ -44,44 +44,50 @@ class Http extends AbstractHttp
             CURLOPT_HTTPGET => true,
         ];
 
-        if (strtoupper($method) === 'POST') {
-            $postData = json_encode($data);
-            Logger::info('curlConnection POST in RakutenLogistics.', ['service' => $postData]);
+        try {
+            if (strtoupper($method) === 'POST') {
 
-            $methodOptions = [
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => $postData,
+                $postData = json_encode($data);
+                Logger::info(sprintf("POST: %s", $postData), ['service' => 'HTTP_POST']);
+
+                $methodOptions = [
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => $postData,
+                ];
+            }
+            Logger::info(sprintf("%s: %s", strtoupper($method), $url), ['service' => 'HTTP_URI']);
+            $header = $header + $methodOptions;
+            Logger::info(sprintf('Headers RakutenLogistics: %s', json_encode($header)), ['service' => 'HTTP_HEADER']);
+            $options = [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_CONNECTTIMEOUT => $timeout,
             ];
-        }
 
-        $header = $header + $methodOptions;
-        Logger::info(sprintf('Headers RakutenLogistics: %s', json_encode($header)), ['service' => 'HTTP.HEADER']);
-        $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER => false,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_CONNECTTIMEOUT => $timeout,
-        ];
+            $options = $header + $options;
+            $curl = curl_init();
+            curl_setopt_array($curl, $options);
+            $response = curl_exec($curl);
+            $info = curl_getinfo($curl);
 
-        $options = $header + $options;
-        $curl = curl_init();
-        curl_setopt_array($curl, $options);
-        $response = curl_exec($curl);
-        $info = curl_getinfo($curl);
+            $error = curl_errno($curl);
+            $errorMessage = curl_error($curl);
+            curl_close($curl);
 
-        $error = curl_errno($curl);
-        $errorMessage = curl_error($curl);
-        curl_close($curl);
+            $this->setStatus((int) $info['http_code']);
+            $this->setResponse((string) $response);
+            Logger::info(sprintf('Response Status: %s' , $this->getStatus()), ['service' => 'HTTP_RESPONSE_STATUS']);
+            Logger::info(sprintf('Response: %s', $this->getResponse()), ["service" => "HTTP_RESPONSE"]);
+            if ($error) {
+                Logger::error(sprintf('CURL Error: %s', $errorMessage), ['service' => 'RakutenLogistics']);
+                throw new ConnectorException("CURL can't connect: {$errorMessage}");
+            }
 
-        $this->setStatus((int) $info['http_code']);
-        $this->setResponse((string) $response);
-        Logger::info(sprintf('Response Status: %s' , $this->getStatus()), ['service' => 'HTTP.Response.Status']);
-        if ($error) {
-            Logger::error(sprintf('CURL Error: %s', $errorMessage), ['service' => 'RakutenLogistics']);
-            throw new ConnectorException("CURL can't connect: {$errorMessage}");
-        } else {
             return true;
+        } catch (ConnectorException $e) {
+            Logger::error($e->getMessage());
         }
     }
 
@@ -101,7 +107,7 @@ class Http extends AbstractHttp
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $authBase64,
-                'Cache-Control: no-cache'
+                'Cache-Control: no-cache',
             ],
         ];
         return $header;

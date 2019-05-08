@@ -68,3 +68,10 @@
     </p>
     <p><span id="link-message"></span></p>
 <?php } ?>
+
+<?php if(!empty($this->getTrackingUrl())) { ?>
+    <br><p><b>Rakuten Logistics</b></p>
+    <p>
+        <button class="button" onclick="window.location.href='<?php echo $this->getTrackingUrl(); ?>'">Rastreamento</button>
+    </p>
+<?php } ?>

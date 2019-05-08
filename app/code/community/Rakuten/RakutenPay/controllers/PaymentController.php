@@ -145,7 +145,7 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
 
             $payment = $this->payment->paymentDefault();
 
-            $this->payment->addRakutenpayOrders($order);
+            $this->payment->addRakutenPayOrders($order);
             $this->payment->clearCheckoutSession($order);
             /**
              * @var \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto|\Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard $result
@@ -197,7 +197,7 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             \Rakuten\Connector\Resources\Log\Logger::info('Getting the payment data.');
             $payment = $this->payment->paymentDirect($order->getPayment()->getMethod(), $customerPaymentData);
             \Rakuten\Connector\Resources\Log\Logger::info('Got the payment data.');
-            $this->payment->addRakutenpayOrders($order);
+            $this->payment->addRakutenPayOrders($order);
             \Rakuten\Connector\Resources\Log\Logger::info('Added the orders.');
             $this->payment->clearCheckoutSession($order);
             \Rakuten\Connector\Resources\Log\Logger::info('Cleared checkout session.');

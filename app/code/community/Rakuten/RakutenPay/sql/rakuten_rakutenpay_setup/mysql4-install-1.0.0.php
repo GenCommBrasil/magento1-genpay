@@ -23,15 +23,26 @@ $installer->startSetup();
 // table prefix
 $tp = (string)Mage::getConfig()->getTablePrefix();
 
-$new_table =  $tp . 'rakutenpay_orders';
+$newTable =  $tp . 'rakutenpay_orders';
 
 // Checks for the rakutenpay_orders table if it does not exist is created
-$sql = "CREATE TABLE IF NOT EXISTS `" . $new_table . "` (
+$sql = "CREATE TABLE IF NOT EXISTS `" . $newTable . "` (
          `entity_id` int(11) NOT NULL AUTO_INCREMENT,
          `order_id` int(11),
          `transaction_code` varchar(80) NOT NULL,
          `sent` int DEFAULT 0,
          `environment` varchar(40),
+         `batch_label_url` TEXT DEFAULT NULL,
+         `calculation_code` TEXT DEFAULT NULL,
+         `order_invoice_serie` TEXT DEFAULT NULL,
+         `order_invoice_number` TEXT DEFAULT NULL,
+         `order_invoice_key` TEXT DEFAULT NULL,
+         `order_invoice_cfop` TEXT DEFAULT NULL,
+         `order_invoice_date` DATE DEFAULT NULL,
+         `order_invoice_value_base_icms` TEXT DEFAULT NULL,
+         `order_invoice_value_icms` TEXT DEFAULT NULL,
+         `order_invoice_value_base_icms_st` TEXT DEFAULT NULL,
+         `order_invoice_value_icms_st` TEXT DEFAULT NULL,
          PRIMARY KEY (`entity_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 

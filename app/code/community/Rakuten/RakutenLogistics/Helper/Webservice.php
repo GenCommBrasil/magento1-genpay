@@ -57,7 +57,8 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
         $url = Rakuten_RakutenLogistics_Helper_Environment::getEndpoint(Rakuten_RakutenLogistics_Enum_Endpoints::NAME_CARRIER_PRICES);
 
         $cart = Mage::getModel('checkout/cart')->getQuote();
-        $cartInfo['destination_zipcode'] = $cart->getShippingAddress()->getPostcode();
+        $zipCode = $cart->getShippingAddress()->getPostcode();
+        $cartInfo['destination_zipcode'] = \Rakuten\Connector\Helpers\StringFormat::getOnlyNumbers($zipCode);
         $cartInfo['postage_service_codes'] = array();
         $cartInfo['products'] = array();
         foreach ($cart->getAllItems() as $item) {
@@ -80,11 +81,11 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
     }
 
     /**
-     * @param $order
-     * @return stdClass|mixed
-     * @throws Exception
+     * @param Mage_Sales_Model_Order $order
+     * @return bool|mixed
+     * @throws \Rakuten\Connector\Exception\ConnectorException
      */
-    public function createBash($order)
+    public function createBatch(Mage_Sales_Model_Order $order)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing createBash in Webservice');
         $helper = Mage::helper('rakutenlogistics/data');
@@ -94,27 +95,39 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
         if (empty($rakutenShippingMethodCode)) {
             return false;
         }
+
+        $calculationCode = $helper->getCalculationCode($order);
+        if (!$calculationCode) {
+            return false;
+        }
+
+        if ($order->getState() != Mage_Sales_Model_Order::STATE_PROCESSING) {
+            return false;
+        }
+
         $shippingAddress = $order->getShippingAddress();
         $street = $helper->parseStreet($shippingAddress->getStreetFull());
 
         $request = [
-            'calculation_code' => $order->getCalculationCode(),
+            'calculation_code' => $calculationCode,
             'postage_service_code' => $rakutenShippingMethodCode,
             'order' => [
-                'code' => $order->getId(),
+                'code' => $order->getIncrementId(),
                 'customer_order_number' => $order->getIncrementId(),
+                'charge_external_payments' => false,
                 'total_value' => $order->getGrandTotal(),
 
                 'customer' => [
                     'first_name' => $order->getCustomerFirstname(),
                     'last_name' => $order->getCustomerLastname(),
+                    'cpf' => $order->getCustomerTaxvat(),
                 ],
                 'delivery_address' => [
                     'first_name' => $order->getCustomerFirstname(),
                     'last_name' => $order->getCustomerLastname(),
                     'street' => $street['street'],
                     'number' => $street['number'],
-                    'complement' => 'TODO',
+                    'complement' => '___',
                     'city' => $shippingAddress->getCity(),
                     'zipcode' => $shippingAddress->getPostcode(),
                     'email' => $order->getCustomerEmail(),
@@ -137,7 +150,23 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
         $url = Rakuten_RakutenLogistics_Helper_Environment::getEndpoint(Rakuten_RakutenLogistics_Enum_Endpoints::NAME_BATCH);
         $http = $this->getHttp();
         $http->post($url, [$request]);
-        $response = json_decode($http->getResponse());
+        $response = json_decode($http->getResponse(), true);
+
+        return $response;
+    }
+
+    /**
+     * @param Mage_Sales_Model_Order $order
+     * @return mixed
+     * @throws \Rakuten\Connector\Exception\ConnectorException
+     */
+    public function orderDetail(Mage_Sales_Model_Order $order)
+    {
+        $url = Rakuten_RakutenLogistics_Helper_Environment::getEndpoint(Rakuten_RakutenLogistics_Enum_Endpoints::NAME_BATCH_DETAIL);
+        $parameter = $order->getIncrementId();
+        $http = $this->getHttp();
+        $http->get($url . $parameter);
+        $response = json_decode($http->getResponse(), true);
 
         return $response;
     }

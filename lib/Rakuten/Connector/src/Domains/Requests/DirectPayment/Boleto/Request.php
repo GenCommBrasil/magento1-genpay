@@ -20,6 +20,7 @@
 namespace Rakuten\Connector\Domains\Requests\DirectPayment\Boleto;
 
 use Rakuten\Connector\Domains\Requests\BasicData;
+use Rakuten\Connector\Domains\Requests\Commissioning;
 use Rakuten\Connector\Domains\Requests\Discount;
 use Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard\Billing;
 use Rakuten\Connector\Domains\Requests\DirectPayment\Mode;
@@ -40,6 +41,7 @@ use Rakuten\Connector\Domains\Requests\Tax;
 class Request implements Requests
 {
     use BasicData;
+    use Commissioning;
     use Discount;
     use Billing;
     use Item;

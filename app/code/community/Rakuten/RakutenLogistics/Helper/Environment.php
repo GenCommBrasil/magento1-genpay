@@ -27,6 +27,7 @@ class Rakuten_RakutenLogistics_Helper_Environment extends Rakuten_RakutenLogisti
      */
     private static $endpointsProductionMapping = [
         self::NAME_BATCH => self::PRODUCTION_BATCH,
+        self::NAME_BATCH_DETAIL => self::PRODUCTION_BATCH_DETAIL,
         self::NAME_CARRIER_METHODS => self::PRODUCTION_CARRIER_METHODS,
         self::NAME_CARRIER_PRICES => self::PRODUCTION_CARRIER_PRICES,
     ];
@@ -36,6 +37,7 @@ class Rakuten_RakutenLogistics_Helper_Environment extends Rakuten_RakutenLogisti
      */
     private static $endpointsSandboxMapping = [
         self::NAME_BATCH => self::SANDBOX_BATCH,
+        self::NAME_BATCH_DETAIL => self::SANDBOX_BATCH_DETAIL,
         self::NAME_CARRIER_METHODS => self::SANDBOX_CARRIER_METHODS,
         self::NAME_CARRIER_PRICES => self::SANDBOX_CARRIER_PRICES,
 
