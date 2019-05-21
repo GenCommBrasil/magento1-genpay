@@ -203,6 +203,15 @@
                 </rakutenpay>
             </updates>
         </layout>
+        <translate>
+            <modules>
+                <Rakuten_RakutenPay>
+                    <files>
+                        <default>Rakuten_RakutenPay_Frontend.csv</default>
+                    </files>
+                </Rakuten_RakutenPay>
+            </modules>
+        </translate>
     </frontend>
     <default>
         <cron>
