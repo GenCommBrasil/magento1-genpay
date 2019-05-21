@@ -133,6 +133,16 @@
         <reference name="head">
             <block type="rakuten_rakutenpay/payment" name="loading" template="rakuten/rakutenpay/loading.phtml"/>
         </reference>
+        <reference name="checkout.onepage.billing">
+            <action method="setTemplate">
+                <template>rakuten/rakutenpay/checkout/onepage/billing.phtml</template>
+            </action>
+        </reference>
+        <reference name="checkout.onepage.shipping">
+            <action method="setTemplate">
+                <template>rakuten/rakutenpay/checkout/onepage/shipping.phtml</template>
+            </action>
+        </reference>
     </checkout_onepage_index>
 
     <!-- Inovarti OneStepCheckout compatibility -->
