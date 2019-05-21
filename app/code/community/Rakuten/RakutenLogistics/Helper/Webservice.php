@@ -116,7 +116,6 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
                 'customer_order_number' => $order->getIncrementId(),
                 'charge_external_payments' => false,
                 'total_value' => $order->getGrandTotal(),
-
                 'customer' => [
                     'first_name' => $order->getCustomerFirstname(),
                     'last_name' => $order->getCustomerLastname(),
@@ -125,9 +124,10 @@ class Rakuten_RakutenLogistics_Helper_Webservice extends Mage_Core_Helper_Abstra
                 'delivery_address' => [
                     'first_name' => $order->getCustomerFirstname(),
                     'last_name' => $order->getCustomerLastname(),
-                    'street' => $street['street'],
-                    'number' => $street['number'],
-                    'complement' => '___',
+                    'street' => $order->getShippingAddress()->getStreet1(),
+                    'number' => $order->getShippingAddress()->getStreet2(),
+                    'complement' => $order->getShippingAddress()->getStreet3(),
+                    'district' => $order->getShippingAddress()->getStreet4(),
                     'city' => $shippingAddress->getCity(),
                     'zipcode' => $shippingAddress->getPostcode(),
                     'email' => $order->getCustomerEmail(),
