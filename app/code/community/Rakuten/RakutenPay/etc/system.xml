@@ -67,11 +67,51 @@
                                 <email translate="label">
                                     <label>E-MAIL</label>
                                     <frontend_type>text</frontend_type>
-                                    <sort_order>45</sort_order>
+                                    <sort_order>43</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>1</show_in_store>
                                 </email>
+                                <address_street_attribute>
+                                    <label>Atributo Rua de entrega</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>rakuten_rakutenpay/customer_address_attributes</source_model>
+                                    <sort_order>50</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[Caso sua loja utilize um atributo personalizado para a Rua de entrega, selecione aqui.]]></comment>
+                                </address_street_attribute>
+                                <address_number_attribute>
+                                    <label>Atributo Número</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>rakuten_rakutenpay/customer_address_attributes</source_model>
+                                    <sort_order>51</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[Caso sua loja utilize um atributo personalizado para o campo 'Número' de entrega, selecione aqui.]]></comment>
+                                </address_number_attribute>
+                                <address_complement_attribute>
+                                    <label>Atributo Complemento</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>rakuten_rakutenpay/customer_address_attributes</source_model>
+                                    <sort_order>52</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[Caso sua loja utilize um atributo personalizado para o campo 'Complemento' de entrega, selecione aqui. Você pode omitir esta informação ao PagSeguro.]]></comment>
+                                </address_complement_attribute>
+                                <address_neighborhood_attribute>
+                                    <label>Atributo Bairro</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>rakuten_rakutenpay/customer_address_attributes</source_model>
+                                    <sort_order>53</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[Caso sua loja utilize um atributo personalizado para o campo 'Bairro' de entrega, selecione aqui.]]></comment>
+                                </address_neighborhood_attribute>
                                 <log_download translate="label">
                                     <label>DOWNLOAD DO LOG</label>
                                     <frontend_type>button</frontend_type>
