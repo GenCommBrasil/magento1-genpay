@@ -119,21 +119,47 @@ trait Order
 
         //categories
         $categories = [];
-        $category = [];
+
         if (!is_null($product) and $product->getCategoryIds() != null) {
             $categoryIds = $product->getCategoryIds();
             foreach ($categoryIds as $categoryId) {
                 $_cat = Mage::getModel('catalog/category')->setStoreId(Mage::app()->getStore()->getId())->load($categoryId);
-                $category[$properties::NAME] = $_cat->getName();
-                $category[$properties::ID] = $categoryId;
-                $categories[] = $category;
+                $categories[] = self::getCategories($categoryId, $_cat, $properties);
             }
-        } else {
-            $category[$properties::NAME] = 'Outros';
-            $category[$properties::ID] = '99';
-            $categories[] = $category;
+            $data[$properties::CATEGORIES] = $categories;
+
+            return $data;
         }
+        $categories[] = self::getCategories(null, false, $properties);
         $data[$properties::CATEGORIES] = $categories;
+
+        return $data;
+
+    }
+
+    /**
+     *
+     * @param $categoryId
+     * @param $category
+     * @param $properties
+     * @return array
+     */
+    private static function getCategories($categoryId, $category, $properties)
+    {
+        $data = [
+            $properties::NAME => 'Outros',
+            $properties::ID => '99',
+        ];
+
+        if (false === $category) {
+            return $data;
+        }
+
+        if (!is_null($category->getName()) && !empty($category->getName())) {
+            $data[$properties::NAME] = $category->getName();
+            $data[$properties::ID] = $categoryId;
+            return $data;
+        }
 
         return $data;
     }
