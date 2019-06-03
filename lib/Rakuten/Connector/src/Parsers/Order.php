@@ -155,7 +155,7 @@ trait Order
             return $data;
         }
 
-        if (!is_null($category->getName()) || !empty($category->getName())) {
+        if (!is_null($category->getName()) && !empty($category->getName())) {
             $data[$properties::NAME] = $category->getName();
             $data[$properties::ID] = $categoryId;
             return $data;
