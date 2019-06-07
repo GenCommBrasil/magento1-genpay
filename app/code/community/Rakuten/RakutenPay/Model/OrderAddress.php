@@ -77,11 +77,11 @@ class Rakuten_RakutenPay_Model_OrderAddress
             $name .= ' ' . $address->getLastname();
         }
         $response = new \Rakuten\Connector\Domains\Address();
-        $parse = $this->parseStreet($address->getStreet1());
         $response->setName($name);
-        $response->setStreet($parse['street']);
-        $response->setNumber($parse['number']);
-        $response->setDistrict($address->getStreet2());
+        $response->setStreet($address->getStreet1());
+        $response->setNumber($address->getStreet2());
+        $response->setComplement($address->getStreet3());
+        $response->setDistrict($address->getStreet4());
         $response->setCity($address->getCity());
         $response->setPostalCode($address->getPostcode());
         $response->setState($this->getRegionAbbreviation($address));
