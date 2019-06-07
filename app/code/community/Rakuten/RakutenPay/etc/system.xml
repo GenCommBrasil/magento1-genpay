@@ -100,7 +100,7 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>1</show_in_store>
-                                    <comment><![CDATA[Caso sua loja utilize um atributo personalizado para o campo 'Complemento' de entrega, selecione aqui. Você pode omitir esta informação ao PagSeguro.]]></comment>
+                                    <comment><![CDATA[Caso sua loja utilize um atributo personalizado para o campo 'Complemento' de entrega, selecione aqui.]]></comment>
                                 </address_complement_attribute>
                                 <address_neighborhood_attribute>
                                     <label>Atributo Bairro</label>
