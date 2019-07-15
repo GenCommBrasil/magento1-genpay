@@ -214,9 +214,6 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                 $order = $this->setTotalWithoutInterest($order, $customerPaymentData['creditCardInterestAmount']);
             }
 
-            //TODO remove file
-            file_put_contents('filename.txt', var_export($result,true));
-
             if ($result->getCode() == \Rakuten\Connector\Enum\DirectPayment\CodeError::CODE_CHARGE_ALREADY_EXISTS) {
 
                 if ($order->getPayment()->getMethod() == 'rakutenpay_boleto') {
