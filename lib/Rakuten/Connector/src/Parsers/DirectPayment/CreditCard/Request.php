@@ -53,7 +53,11 @@ class Request extends Error implements Parser
         $response = self::getResponse();
         $data = json_decode($http->getResponse(), true);
 
-        return $response->setResult($data['result'])
+        $code = isset($data['result_code']['code']) ? $data['result_code']['code'] : "";
+
+        return $response
+            ->setCode($code)
+            ->setResult($data['result'])
             ->setResultMessage(implode(' - ', $data['result_messages']));
     }
 

@@ -179,7 +179,8 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
         $order          = null;
         $link           = null;
         $result         = null;
-        $redirect       = null;
+        $redirect       = 'rakutenpay/payment/success';
+        $redirectParams = array();
 
         try {
             \Rakuten\Connector\Resources\Log\Logger::info('Processing directAction in PaymentController.');
@@ -211,6 +212,21 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             if ($paymentMethod == 'rakutenpay_credit_card' && isset($customerPaymentData['creditCardInterestAmount'])) {
                 \Rakuten\Connector\Resources\Log\Logger::info('Setting grand base total without interest.');
                 $order = $this->setTotalWithoutInterest($order, $customerPaymentData['creditCardInterestAmount']);
+            }
+
+            //TODO remove file
+            file_put_contents('filename.txt', var_export($result,true));
+
+            if ($result->getCode() == \Rakuten\Connector\Enum\DirectPayment\CodeError::CODE_CHARGE_ALREADY_EXISTS) {
+
+                if ($order->getPayment()->getMethod() == 'rakutenpay_boleto') {
+                    $redirectParams = ['_secure'=> false, '_query'=> array('billet_url' => $order->getPayment()->getAdditionalInformation('billet_url'))];
+                }
+
+                return  Mage_Core_Controller_Varien_Action::_redirect(
+                    $redirect,
+                    $redirectParams
+                );
             }
 
             if ($result === false || $result->getResult() == \Rakuten\Connector\Enum\DirectPayment\Message::FAILURE) {
@@ -248,7 +264,6 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
                     ->save();
 
-                $redirect = 'rakutenpay/payment/success';
                 $redirectParams = array('_secure'=> false, '_query'=> array('billet_url' => $billetUrl));
             } else {
                 $payment = $order->getPayment();
@@ -258,8 +273,6 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
                     ->setAdditionalInformation('installments', $customerPaymentData['creditCardInstallment'])
                     ->save();
-                $redirect = 'rakutenpay/payment/success';
-                $redirectParams = array();
             }
             \Rakuten\Connector\Resources\Log\Logger::info('Redirect params: $redirect: ' . var_export($redirect, true) . '\n $redirectParams: ' . var_export($redirectParams, true));
             $order->sendNewOrderEmail();
