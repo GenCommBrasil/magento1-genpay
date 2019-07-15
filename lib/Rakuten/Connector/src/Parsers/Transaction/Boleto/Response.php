@@ -37,6 +37,8 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     private $resultMessage;
 
+    private $code;
+
     function getResult() {
         return $this->result;
     }
@@ -59,6 +61,10 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function getResultMessage() {
         return $this->resultMessage;
+    }
+
+    function getCode() {
+        return $this->code;
     }
 
     function setResult($result) {
@@ -88,6 +94,11 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function setResultMessage($resultMessage) {
         $this->resultMessage = $resultMessage;
+        return $this;
+    }
+
+    function setCode($code) {
+        $this->code = $code;
         return $this;
     }
 }

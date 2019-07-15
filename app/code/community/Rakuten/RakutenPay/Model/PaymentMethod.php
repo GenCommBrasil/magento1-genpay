@@ -214,7 +214,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         \Rakuten\Connector\Resources\Log\Logger::info('Processing setItems.');
         foreach ($this->order->getAllVisibleItems() as $product) {
             $payment->addItems()->withParameters(
-                'SKU' . $product->getSku(),
+                'SKU' . \Rakuten\Connector\Helpers\StringFormat::removeAccents($product->getSku()),
                 $product->getProduct()->getId(),
                 substr($product->getName(), 0, 254),
                 (float)$product->getQtyOrdered(),
@@ -255,7 +255,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
 
             switch ($paymentMethod) {
                 case 'rakutenpay_boleto':
-                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($paymentData['boletoDocument']);
+                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($this->order->getCustomerTaxvat());
                     $payment = new \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto();
                     $payment->setFingerprint($paymentData['fingerprint']);
                     $payment->setSender()->setDocument()->withParameters(
