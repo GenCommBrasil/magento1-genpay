@@ -44,31 +44,54 @@ class Rakuten_RakutenPay_Model_Cron_OrderState
     /**
      * @return array
      */
-    protected function getFilterState()
+    protected function getIgnoreState()
     {
         return [
-            Mage_Sales_Model_Order::STATE_NEW,
-            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-            Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW,
+            Mage_Sales_Model_Order::STATE_CANCELED,
+            Mage_Sales_Model_Order::STATE_CLOSED,
         ];
     }
 
     /**
-     * return @void
+     * @void
      */
     public function updateOrderState()
     {
-        if ($this->isActive()) {
-            \Rakuten\Connector\Resources\Log\Logger::info("Processing updateOrderState in OrderState", ['service' => 'Pooling']);
-            $orderCollection = Mage::getModel('sales/order')->getCollection()
-                ->addAttributeToFilter('state', ['in' => $this->getFilterState()]);
-            \Rakuten\Connector\Resources\Log\Logger::info("Count Orders: " . count($orderCollection), ['service' => 'Pooling']);
+        \Rakuten\Connector\Resources\Log\Logger::info("Processing updateOrderState in OrderState", ['service' => 'Pooling']);
+        $dir = Mage::getBaseDir('var') . DIRECTORY_SEPARATOR . 'cache';
+        $lockFile = $dir . DIRECTORY_SEPARATOR . 'lock';
+        $f = fopen($lockFile, 'w') or die ('Cannot create lock file');
+        if (flock($f, LOCK_EX | LOCK_NB)) {
+            $this->execute();
+        }
+    }
 
-            foreach ($orderCollection as $order) {
-                $addtionalInformation = $order->getPayment()->getAdditionalInformation();
-                if (isset($addtionalInformation[ 'rakutenpay_id']) && !empty($addtionalInformation[ 'rakutenpay_id'])) {
-                    $response = $this->webservice->poolingRequest($addtionalInformation['rakutenpay_id']);
+    /**
+     * @void
+     */
+    protected function execute()
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info("Processing execute in OrderState", ['service' => 'Pooling']);
+        if ($this->isActive() && $this->getDays()) {
+            $rakutenOrders = $this->getOrders();
+            foreach ($rakutenOrders as $rakutenOrder) {
+                $chargeId = $rakutenOrder['charge_uuid'];
+                if ($chargeId) {
+                    $response = $this->webservice->poolingRequest($chargeId);
                     $this->helper->notificationModel()->initialize(json_encode($response->getResult()), false);
+                    //TODO remove ELSE New Release
+                } else {
+                    $order = $this->getOrderById($rakutenOrder['order_id']);
+                    $addtionalInformation = $order->getPayment()->getAdditionalInformation();
+                    if (isset($addtionalInformation[ 'rakutenpay_id']) && !empty($addtionalInformation['rakutenpay_id'])) {
+                        $this->updateRakutenPayOrder(
+                            $rakutenOrder['order_id'],
+                            $addtionalInformation['rakutenpay_id'],
+                            $order->getIncrementId()
+                        );
+                        $response = $this->webservice->poolingRequest($addtionalInformation['rakutenpay_id']);
+                        $this->helper->notificationModel()->initialize(json_encode($response->getResult()), false);
+                    }
                 }
             }
         }
@@ -77,7 +100,7 @@ class Rakuten_RakutenPay_Model_Cron_OrderState
     /**
      * @return bool
      */
-    public function isActive()
+    protected function isActive()
     {
         $isActive = (int) Mage::getConfig()->getNode('default/cron/update_order_state/active');
         \Rakuten\Connector\Resources\Log\Logger::info('updateOrderState => ' . $isActive, ['service' => 'Pooling']);
@@ -86,5 +109,69 @@ class Rakuten_RakutenPay_Model_Cron_OrderState
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getDays()
+    {
+        $days = Mage::getConfig()->getNode('default/cron/update_order_state/days');
+        \Rakuten\Connector\Resources\Log\Logger::info('updateOrderState days: ' . $days, ['service' => 'Pooling']);
+
+        return $days;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getOrders()
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing getOrders in OrderState.', ['service' => 'Pooling']);
+        $resource = Mage::getSingleton('core/resource');
+        $environment = Mage::getStoreConfig('payment/rakutenpay/environment');
+        $read = $resource->getConnection('core_read');
+        $order = $resource->getTableName('sales/order');
+        $rakutenOrder = $resource->getTableName('rakuten_rakutenpay/order');
+        $select = $read->select()
+            ->from(['order' => $order], ['entity_id', 'increment_id', 'state', 'created_at'])
+            ->join(['rakutenOrder' => $rakutenOrder], 'order.entity_id = rakutenOrder.order_id', ['order_id', 'transaction_code', 'charge_uuid'])
+            ->where('order.state NOT IN (?)', $this->getIgnoreState())
+            ->where('rakutenOrder.environment = ?', $environment)
+            ->where('DATEDIFF(NOW(), order.created_at) <= ?', $this->getDays());
+
+        return $read->fetchAll($select);
+    }
+
+    /**
+     * TODO remove implementation in new Release
+     *
+     * @param $orderId
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function getOrderById($orderId)
+    {
+        $order = Mage::getModel('sales/order')->load($orderId);
+
+        return $order;
+    }
+
+    /**
+     * TODO remove implementation in new Release
+     *
+     * @param $orderId
+     * @param $chargeId
+     * @param $incrementId
+     */
+    protected function updateRakutenPayOrder($orderId, $chargeId, $incrementId)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info(sprintf(
+            ' orderId: %s; charge_uuid: %s; incProcessing updateRakutenPayOrder;rementId: %s',
+            $orderId, $chargeId, $incrementId
+        ));
+        $rakutenOrder = Mage::getModel('rakuten_rakutenpay/order')->load($orderId, 'order_id');
+        $rakutenOrder->setChargeUuid($chargeId);
+        $rakutenOrder->setIncrementId($incrementId);
+        $rakutenOrder->save();
     }
 }

@@ -23,37 +23,6 @@
 class Rakuten_RakutenPay_Helper_Log
 {
     /**
-     * @param $orderId
-     * @param $recoveryCode
-     */
-    public function setAbandonedSendEmailLog($orderId, $recoveryCode)
-    {
-        $module = 'RakutenPayAbandoned.';
-        $phrase = "Mail( SendEmailAbandoned: array (\n 'orderId' => ".$orderId.",\n ";
-        $phrase .= "'recoveryCode' => '".$recoveryCode."'\n) )";
-        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $module]);
-    }
-
-    /**
-     * @param $orderId
-     * @param $sent
-     */
-    public function setAbandonedSentEmailUpdateLog($orderId, $sent)
-    {
-        $module = 'RakutenPayAbandoned.';
-        $phrase = "SentEmailUpdate( Has been updated to ".$sent." the number of emails sent,";
-        $phrase .= " belonging to order ".$orderId." )";
-        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $module]);
-    }
-
-    public function setRequirementsLog()
-    {
-        $module = 'RakutenPayRequirements.';
-        $phrase = "Verification ( Checked requirements )";
-        \Rakuten\Connector\Resources\Log\Logger::info($phrase, ['service' => $module]);
-    }
-
-    /**
      * @param $class
      *
      * @return null|string

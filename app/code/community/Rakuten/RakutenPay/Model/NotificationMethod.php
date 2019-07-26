@@ -52,11 +52,11 @@ class Rakuten_RakutenPay_Model_NotificationMethod extends MethodAbstract
         $this->webhookStatus = $this->post['status'];
         $this->webhookReference = $this->post['reference'];
         if ($this->webhookStatus == 'approved') {
-            $this->amount = $this->post['amount'];
+            $this->amount = (float) $this->post['amount'];
         } else if (
             $this->webhookStatus == \Rakuten\Connector\Enum\DirectPayment\State::PARTIAL_REFUNDED ||
             $this->webhookStatus == \Rakuten\Connector\Enum\DirectPayment\State::REFUNDED) {
-            $this->amount = -array_sum(array_column($this->post['refunds'], 'amount'));
+            $this->amount = (float) -array_sum(array_column($this->post['refunds'], 'amount'));
         } else {
             $this->amount = false;
         }

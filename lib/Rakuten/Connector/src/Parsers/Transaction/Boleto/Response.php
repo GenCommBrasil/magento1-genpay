@@ -31,6 +31,8 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     private $charge;
 
+    private $orderStatus;
+
     private $billet;
 
     private $billetUrl;
@@ -49,6 +51,10 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function getCharge() {
         return $this->charge;
+    }
+
+    function getOrderStatus() {
+        return $this->orderStatus;
     }
 
     function getBillet() {
@@ -79,6 +85,11 @@ class Response extends \Rakuten\Connector\Parsers\Transaction\Response
 
     function setCharge($charge) {
         $this->charge = $charge;
+        return $this;
+    }
+
+    function setOrderStatus($orderStatus) {
+        $this->orderStatus = $orderStatus;
         return $this;
     }
 
