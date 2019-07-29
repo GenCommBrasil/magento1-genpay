@@ -22,7 +22,6 @@
  */
 class Rakuten_RakutenPay_Block_Info_Boleto extends Mage_Payment_Block_Info
 {
-    const DASHBOARD_LINK = 'https://dashboard.rakutenpay.com.br/sales/';
 
     protected function _construct()
     {
