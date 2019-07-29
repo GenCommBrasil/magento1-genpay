@@ -76,6 +76,7 @@ class Request extends Error implements Parser
         return $response->setResult($data['result'])
             ->setId($data['charge_uuid'])
             ->setCharge($chargeUrl)
+            ->setOrderStatus($payment['status'])
             ->setCreditCardNum($payment['credit_card']['number'])
             ->setResultMessage(implode(' - ', $payment['result_messages']));
     }

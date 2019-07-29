@@ -29,8 +29,9 @@ $newTable =  $tp . 'rakutenpay_orders';
 $sql = "CREATE TABLE IF NOT EXISTS `" . $newTable . "` (
          `entity_id` int(11) NOT NULL AUTO_INCREMENT,
          `order_id` int(11),
+         `increment_id` varchar(80),
+         `charge_uuid` varchar(80),
          `transaction_code` varchar(80) NOT NULL,
-         `sent` int DEFAULT 0,
          `environment` varchar(40),
          `batch_label_url` TEXT DEFAULT NULL,
          `calculation_code` TEXT DEFAULT NULL,

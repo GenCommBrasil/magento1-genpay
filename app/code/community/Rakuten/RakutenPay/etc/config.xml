@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Rakuten_RakutenPay>
-            <version>1.4.2</version>
+            <version>1.5.0</version>
         </Rakuten_RakutenPay>
     </modules>
     <global>
@@ -217,6 +217,7 @@
         <cron>
             <update_order_state>
                 <active>0</active>
+                <days>30</days>
             </update_order_state>
         </cron>
         <log>

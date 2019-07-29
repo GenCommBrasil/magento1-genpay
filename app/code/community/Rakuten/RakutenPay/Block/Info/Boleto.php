@@ -22,6 +22,7 @@
  */
 class Rakuten_RakutenPay_Block_Info_Boleto extends Mage_Payment_Block_Info
 {
+
     protected function _construct()
     {
         parent::_construct();
@@ -78,5 +79,15 @@ class Rakuten_RakutenPay_Block_Info_Boleto extends Mage_Payment_Block_Info
         }
 
         return $this->getInfo()->getAdditionalInformation('tracking_url');
+    }
+
+    public function getDashboardLink()
+    {
+        $environment = Mage::getStoreConfig('payment/rakutenpay/environment');
+        if (empty($this->getInfo())) {
+            return null;
+        }
+
+        return \Rakuten\Connector\Enum\DirectPayment\Link::getDashboardLink($environment) . $this->getInfo()->getAdditionalInformation('rakutenpay_id');
     }
 }

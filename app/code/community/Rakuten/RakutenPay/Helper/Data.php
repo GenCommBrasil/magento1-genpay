@@ -40,13 +40,13 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
      */
     private $arrayPaymentStateList = array(
         \Rakuten\Connector\Enum\DirectPayment\State::PENDING => Mage_Sales_Model_Order::STATE_NEW,
-        \Rakuten\Connector\Enum\DirectPayment\State::AUTHORIZED => Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+        \Rakuten\Connector\Enum\DirectPayment\State::AUTHORIZED => Mage_Sales_Model_Order::STATE_NEW,
         \Rakuten\Connector\Enum\DirectPayment\State::APPROVED => Mage_Sales_Model_Order::STATE_PROCESSING,
         \Rakuten\Connector\Enum\DirectPayment\State::COMPLETED => Mage_Sales_Model_Order::STATE_COMPLETE,
         \Rakuten\Connector\Enum\DirectPayment\State::CHARGEBACK => Mage_Sales_Model_Order::STATE_CANCELED,
         \Rakuten\Connector\Enum\DirectPayment\State::CANCELLED => Mage_Sales_Model_Order::STATE_CANCELED,
         \Rakuten\Connector\Enum\DirectPayment\State::REFUNDED => Mage_Sales_Model_Order::STATE_CLOSED,
-        \Rakuten\Connector\Enum\DirectPayment\State::PARTIAL_REFUNDED => Mage_Sales_Model_Order::STATE_CLOSED,
+        \Rakuten\Connector\Enum\DirectPayment\State::PARTIAL_REFUNDED => Mage_Sales_Model_Order::STATE_PROCESSING,
     );
 
     /**
@@ -306,16 +306,20 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
                     ['service' => 'WEBHOOK']
                 );
                 $this
-                    ->notifyCustomer($orderId, $orderState, $orderState == 'canceled', $approvedDate);
+                    ->notifyCustomer($orderId, $orderState, $transactionCode, $orderState == 'canceled', $approvedDate);
 
                 Mage::helper('rakutenpay/log')
                 ->setUpdateOrderLog($class, $orderId, $transactionCode, $orderState);
-                $this->setTransactionRecord($orderId, $transactionCode, false, $amount);
+                $this->setTransactionRecord($orderId, $transactionCode);
             } else {
                 \Rakuten\Connector\Resources\Log\Logger::info(
                     "Order state has not changed.",
                     ['service' => 'WEBHOOK']
                 );
+            }
+
+            if ($transactionCode == \Rakuten\Connector\Enum\DirectPayment\State::PARTIAL_REFUNDED) {
+                $this->updateOrderStatusPartialRefunded($orderId, $orderState, $transactionCode, $amount);
             }
 
             if ($amount) {
@@ -382,6 +386,39 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
 
     /**
      * @param $orderId
+     * @param $orderState
+     * @param $transactionCode
+     * @param $amount
+     * @throws Exception
+     */
+    protected function updateOrderStatusPartialRefunded($orderId, $orderState, $transactionCode, $amount)
+    {
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing updateOrderStatusPartialRefunded.', ['service' => 'WEBHOOK']);
+        /** @var Mage_Sales_Model_Order $order */
+        $order = Mage::getModel('sales/order')->load($orderId);
+        if ($amount != (float) $order->getTotalRefunded()) {
+
+            $amountRefunded = abs($amount);
+            $comment = "Estorno Parcial no RakutenPay - Valor: R$ " . number_format($amountRefunded, 2, ',', '.');
+            if (!is_null($order->getTotalRefunded() || !empty($order->getTotalRefunded()))) {
+                $totalRefunded = abs($order->getTotalRefunded());
+                $amountRefunded = (float) $amountRefunded - $totalRefunded;
+                $comment = "Estorno Parcial no RakutenPay no Valor: R$ "
+                    . number_format($amountRefunded, 2, ',', '.') .
+                    " - Estorno anterior: R$ " .
+                    number_format($totalRefunded, 2, ',', '.');
+            }
+            \Rakuten\Connector\Resources\Log\Logger::info($comment, ['service' => 'WEBHOOK']);
+            $history = $order->addStatusHistoryComment($comment, $orderState);
+            $history->setIsCustomerNotified(true);
+            $order->sendOrderUpdateEmail(true, $comment);
+            $order->save();
+            $this->setTransactionRecord($orderId, $transactionCode);
+        }
+    }
+
+    /**
+     * @param $orderId
      *
      * @return mixed
      */
@@ -408,11 +445,13 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     /**
      * @param $orderId
      * @param $orderState
+     * @param $transactionCode
+     * @param $amount
      * @param bool $cancel
      * @param string $approvedDate
      * @throws Exception
      */
-    private function notifyCustomer($orderId, $orderState, $cancel, $approvedDate)
+    private function notifyCustomer($orderId, $orderState, $transactionCode, $cancel, $approvedDate)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing notifyCustomer.');
         if ($cancel) {
@@ -423,14 +462,18 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         $status = $orderState;
         $comment = null;
         $notify = true;
+        if ($transactionCode == \Rakuten\Connector\Enum\DirectPayment\State::REFUNDED) {
+            $comment = "Estorno total do pedido no RakutenPay";
+        }
+
         /** @var $order Mage_Sales_Model_Order */
         $order = Mage::getModel('sales/order')->load($orderId);
-        if ($orderState == Mage_Sales_Model_Order::STATE_COMPLETE || $orderState == Mage_Sales_Model_Order::STATE_CLOSED) {
-            $history = $order->addStatusHistoryComment($comment, $status);
-            $history->setIsCustomerNotified($notify);
-        } else {
-            $order->setState($orderState, $status, $comment, $notify);
-        }
+
+        $history = $order->addStatusHistoryComment($comment, $status);
+        $history->setIsCustomerNotified($notify);
+
+        /** @see https://github.com/r-martins/PagSeguro-Magento-Transparente/pull/180  setData() */
+        $order->setData('state', $orderState);
         $order->sendOrderUpdateEmail($notify, $comment);
         // Makes the notification of the order of historic displays the correct date and time
         Mage::app()->getLocale()->date();
@@ -450,54 +493,43 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     }
 
     /**
-     * @param      $orderId
+     * @param $orderId
      * @param bool $transactionCode
-     * @param bool $send
+     * @param bool $chargeId
+     * @param bool $incrementId
      */
-    final public function setTransactionRecord($orderId, $transactionCode = false, $send = false)
+    final public function setTransactionRecord($orderId, $transactionCode = null, $chargeId = null, $incrementId = null)
     {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing setTransactionRecord.');
+        \Rakuten\Connector\Resources\Log\Logger::info('Processing setTransactionRecord. With: ' . $transactionCode);
         $resource = Mage::getSingleton('core/resource');
-        $readConnection = $resource->getConnection('core_read');
-        $writeConnection = $resource->getConnection('core_write');
+        $read = $resource->getConnection('core_read');
+        $write = $resource->getConnection('core_write');
         $table = $resource->getTableName(self::TABLE_NAME);
-        //Select sent column from rakutenpay_orders to verify if exists a register
-        $query = "SELECT `order_id`, `sent` FROM `$table` WHERE `order_id` = $orderId";
-        $result = $readConnection->fetchAll($query);
-        if (!empty($result)) {
-            if ($send == true) {
-                $sent = $result[0]['sent'] + 1;
-                $value = "sent = '".$sent."'";
-            } else {
-                $value = "transaction_code = '".$transactionCode."'";
+        $fields = [];
+
+        $select = $read->select()
+            ->from(['rakutenOrder' => $table])
+            ->where('rakutenOrder.order_id = ?', $orderId);
+        $result = $read->fetchAll($select);
+        if (count($result)) {
+            $fields['transaction_code'] = $transactionCode;
+            if ($chargeId != null) {
+                $fields['charge_uuid'] = $chargeId;
             }
-            $sql = "UPDATE `".$table."` SET ".$value." WHERE order_id = ".$orderId;
+            $where = $write->quoteInto('order_id = ? ', $orderId);
+            $write->update($table, $fields, $where);
         } else {
             $environment = ucfirst(Mage::getStoreConfig('payment/rakutenpay/environment'));
-            if ($send == true) {
-                $column = " (`order_id`, `sent`, `environment`) ";
-                $values = " (`$orderId`, 1, `$environment`) ";
-            } else {
-                $column = " (order_id, transaction_code, environment) ";
-                $values = " (`$orderId', `$transactionCode`, `$environment`) ";
-            }
-            $sql = "INSERT INTO $table $column VALUES $values";
+            $write->insert(
+                $table, [
+                    'order_id' => $orderId,
+                    'charge_uuid' => $chargeId,
+                    'increment_id' => $incrementId,
+                    'transaction_code' => $transactionCode,
+                    'environment' => $environment,
+                ]
+            );
         }
-        $writeConnection->query($sql);
-    }
-
-    /**
-     * @param $action
-     *
-     * @return string
-     */
-    protected function alertConciliation($action)
-    {
-        \Rakuten\Connector\Resources\Log\Logger::info('Processing alertConciliation.');
-        $message = $this->__('Não foi possível executar esta ação. Utilize a conciliação de transações primeiro');
-        $message .= $this->__(' ou tente novamente mais tarde.');
-
-        return $message;
     }
 
     public function getRakutenPayDirectPaymentJs()
@@ -510,6 +542,10 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         return 'https://static.rakutenpay.com.br/rpayjs/rpay-latest.dev.min.js';
     }
 
+    /**
+     * @param $incrementId
+     * @return mixed
+     */
     protected function getOrderId($incrementId)
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getOrderId.');

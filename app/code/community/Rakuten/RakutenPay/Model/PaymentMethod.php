@@ -62,6 +62,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
 
     /**
      * @param Mage_Sales_Model_Order $order
+     * @param $chargeId
      * @throws Exception
      */
     public function addRakutenPayOrders(Mage_Sales_Model_Order $order)
@@ -80,6 +81,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         $rakutenOrder->setOrderId($order->getId());
         $rakutenOrder->setCalculationCode($calculationCode);
         $rakutenOrder->setEnvironment($environment);
+        $rakutenOrder->setIncrementId($order->getIncrementId());
         $rakutenOrder->save();
     }
 

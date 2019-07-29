@@ -181,6 +181,7 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
         $result         = null;
         $redirect       = 'rakutenpay/payment/success';
         $redirectParams = array();
+        $helper         = Mage::helper('rakutenpay');
 
         try {
             \Rakuten\Connector\Resources\Log\Logger::info('Processing directAction in PaymentController.');
@@ -250,7 +251,10 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
                     $result->getResultMessage()
                 );
             }
-
+            \Rakuten\Connector\Resources\Log\Logger::info('Setting orderStatus in setTransactionRecord.');
+            $helper->setTransactionRecord($order->getId(), $result->getOrderStatus(), $result->getId(), $order->getIncrementId());
+            \Rakuten\Connector\Resources\Log\Logger::info('Got the payment data.');
+            $this->payment->addRakutenPayOrders($order);
             /** controy redirect url according with payment return link **/
             if (method_exists($result, 'getBillet') && $result->getBillet()) {
                 $billetUrl = $result->getBilletUrl();

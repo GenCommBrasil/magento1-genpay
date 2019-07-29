@@ -68,7 +68,9 @@
     </p>
     <p><span id="link-message"></span></p>
 <?php } ?>
-
+<?php if(!empty($this->getDashboardLink())): ?>
+    <p><button class="button" onclick="window.location.href='<?php echo $this->getDashboardLink(); ?>'">Dashboard RakutenPay</button><br></p>
+<?php endif;?>
 <?php if(!empty($this->getLabelUrl()) && !empty($this->getTrackingUrl())) { ?>
 <br><p><b>Rakuten Logistics</b></p>
 <p>
