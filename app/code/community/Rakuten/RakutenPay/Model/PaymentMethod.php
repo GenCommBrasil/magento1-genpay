@@ -74,7 +74,6 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
 
         if ($helper->isRakutenShippingMethod($order->getShippingMethod())) {
             $calculationCode = Mage::getSingleton('core/session')->getCalculationCode();
-            Mage::getSingleton('core/session')->setCalculationCode('');
         }
 
         $rakutenOrder = Mage::getModel('rakuten_rakutenpay/order')->load($order->getId(), 'order_id');
