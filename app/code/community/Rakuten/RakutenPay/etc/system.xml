@@ -64,10 +64,18 @@
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>1</show_in_store>
                                 </signature_key>
+                                <validate_crendential translate="label">
+                                    <frontend_type>button</frontend_type>
+                                    <frontend_model>rakuten_rakutenpay/adminhtml_validateCredential</frontend_model>
+                                    <sort_order>44</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                </validate_crendential>
                                 <email translate="label">
                                     <label>E-MAIL</label>
                                     <frontend_type>text</frontend_type>
-                                    <sort_order>43</sort_order>
+                                    <sort_order>44</sort_order>
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                     <show_in_store>1</show_in_store>
