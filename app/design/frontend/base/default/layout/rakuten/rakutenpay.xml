@@ -41,7 +41,7 @@
         </reference>
     </rakutenpay_payment_direct>
 
-    <rakutenpay_payment_success>
+    <checkout_onepage_success>
         <remove name="left"/>
         <reference name="root">
             <action method="setTemplate">
@@ -49,10 +49,9 @@
             </action>
         </reference>
         <reference name="content">
-            <block type="checkout/onepage_success" name="checkout.success" template="checkout/success.phtml"/>
             <block type="page/html" name="direct" template="rakuten/rakutenpay/direct/success.phtml"/>
         </reference>
-    </rakutenpay_payment_success>
+    </checkout_onepage_success>
 
     <rakutenpay_payment_error>
         <remove name="left"/>
