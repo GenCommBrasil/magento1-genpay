@@ -179,7 +179,7 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
         $order          = null;
         $link           = null;
         $result         = null;
-        $redirect       = 'rakutenpay/payment/success';
+        $redirect       = 'checkout/onepage/success';
         $redirectParams = array();
         $helper         = Mage::helper('rakutenpay');
 
