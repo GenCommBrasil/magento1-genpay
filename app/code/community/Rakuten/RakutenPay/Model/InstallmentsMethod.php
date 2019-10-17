@@ -99,7 +99,7 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
         if (is_null($minimumValue) || is_nan($minimumValue) || $minimumValue < 0) {
             $minimumValue = self::DEFAULT_MINIMUM_VALUE;
         }
-        $installments = floor ($amount / (float) $minimumValue);
+        $installments = $amount / (float) $minimumValue;
         if ($amount <= (float) $minimumValue || false === $this->isInstallment()) {
             return self::DEFAULT_INSTALLMENTS;
         }
@@ -127,7 +127,7 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
             $minimumInstallment = (int)Mage::getStoreConfig('payment/rakutenpay_credit_card/customer_interest_minimum_installments');
             foreach($checkout->getCreditCardPayment()->getInstallments() as $customerInterestInstallment) {
                 $installment = new Rakuten\Connector\Domains\Responses\Installment;
-                if ((int)$customerInterestInstallment->getQuantity() >= $minimumInstallment){
+                if ((int)$customerInterestInstallment->getQuantity() > $minimumInstallment){
                     $installment
                     ->setAmount($customerInterestInstallment->getInstallmentAmount())
                     ->setQuantity($customerInterestInstallment->getQuantity())
@@ -138,9 +138,8 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
                 }
                 else {
                     $value = $amount / $customerInterestInstallment->getQuantity();
-                    $value = ceil($value * 100) / 100;// rounds up to the nearest cent
+                    $value = ($value * 100) / 100;
                     $total = $value * $customerInterestInstallment->getQuantity();
-                    $total = ceil($total * 100) / 100;
                     $installment
                     ->setAmount($value)
                     ->setQuantity($customerInterestInstallment->getQuantity())
@@ -156,9 +155,8 @@ class Rakuten_RakutenPay_Model_InstallmentsMethod extends MethodAbstract
             $maxNoInstallments = self::getMaxNoInstallments($amount, $minimumValue, $maximumInstallments);
             for ($mo = 1; $mo <= $maxNoInstallments; $mo++) {
                 $value = $amount / $mo;
-                $value = ceil($value * 100) / 100;// rounds up to the nearest cent
+                $value = ($value * 100) / 100;
                 $total = $value * $mo;
-                $total = ceil($total * 100) / 100;
                 $installment = new Rakuten\Connector\Domains\Responses\Installment;
                 $installment
                 ->setAmount($value)

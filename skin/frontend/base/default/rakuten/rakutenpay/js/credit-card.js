@@ -200,8 +200,8 @@ function createCardToken(save, rpay) {
     console.log("complete updateCreditCardToken");
     creditCardTokenField.value = data.cardToken;
     creditCardBrandField.value = rpay.cardBrand(elements["card-number"].value);
+    save();
   });
-  save();
   return true;
 }
 
