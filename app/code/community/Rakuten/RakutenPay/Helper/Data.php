@@ -73,7 +73,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         //Define table name with their prefix
         $tp = (string)Mage::getConfig()->getTablePrefix();
         $table = $tp.'adminnotification_inbox';
-        $sql = "SELECT notification_id  FROM `".$table."` WHERE title LIKE '%[Rakuten_RakutenPay]%'";
+        $sql = "SELECT notification_id  FROM `".$table."` WHERE title LIKE '%[GenPay]%'";
         $readConnection = Mage::getSingleton('core/resource')->getConnection('core_read');
         $results = $readConnection->fetchOne($sql);
         //Verify the environment
@@ -103,7 +103,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         // force default time zone
         Mage::app()->getLocale()->date();
         $date = date("Y-m-d H:i:s");
-        $title = $this->__("[Rakuten_RakutenPay] Suas transações serão feitas em um ambiente de testes.");
+        $title = $this->__("[GenPay] Suas transações serão feitas em um ambiente de testes.");
         $description = $this->__("Nenhuma das transações realizadas nesse ambiente tem valor monetário.");
         $sql = "INSERT INTO `".$table."` (severity, date_added, title, description, is_read, is_remove)
                 VALUES (4, '$date', '$title', '$description', 0, 0)";
@@ -342,7 +342,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             $order = Mage::getModel('sales/order')->load($orderId);
             $paymentMethod = $order->getPayment()->getMethod();
             if ($paymentMethod === 'rakutenpay_boleto' && $bankData == null) {
-                Mage::throwException(Mage::helper('adminhtml')->__('Use o menu de estorno do RakutenPay para estornos de boleto'));
+                Mage::throwException(Mage::helper('adminhtml')->__('Use o menu de estorno do GenPay para estornos de boleto'));
             }
 
             $result =
@@ -399,11 +399,11 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         if ($amount != (float) $order->getTotalRefunded()) {
 
             $amountRefunded = abs($amount);
-            $comment = "Estorno Parcial no RakutenPay - Valor: R$ " . number_format($amountRefunded, 2, ',', '.');
+            $comment = "Estorno Parcial no GenPay - Valor: R$ " . number_format($amountRefunded, 2, ',', '.');
             if (!is_null($order->getTotalRefunded() || !empty($order->getTotalRefunded()))) {
                 $totalRefunded = abs($order->getTotalRefunded());
                 $amountRefunded = (float) $amountRefunded - $totalRefunded;
-                $comment = "Estorno Parcial no RakutenPay no Valor: R$ "
+                $comment = "Estorno Parcial no GenPay no Valor: R$ "
                     . number_format($amountRefunded, 2, ',', '.') .
                     " - Estorno anterior: R$ " .
                     number_format($totalRefunded, 2, ',', '.');
@@ -463,7 +463,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
         $comment = null;
         $notify = true;
         if ($transactionCode == \Rakuten\Connector\Enum\DirectPayment\State::REFUNDED) {
-            $comment = "Estorno total do pedido no RakutenPay";
+            $comment = "Estorno total do pedido no GenPay";
         }
 
         /** @var $order Mage_Sales_Model_Order */
@@ -536,10 +536,10 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getRakutenPayDirectPaymentJs.');
          if (Mage::getStoreConfig('payment/rakutenpay/environment') === 'production') {
-            return 'https://static.rakutenpay.com.br/rpayjs/rpay-latest.min.js';
+            return 'https://static.genpay.com.br/rpayjs/rpay-latest.min.js';
         }
 
-        return 'https://static.rakutenpay.com.br/rpayjs/rpay-latest.dev.min.js';
+        return 'https://static.genpay.com.br/rpayjs/rpay-latest.dev.min.js';
     }
 
     /**
@@ -579,7 +579,7 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
             $invoice->getOrder()->setCustomerNoteNotify(true);
             $invoice->getOrder()->setIsInProcess(true);
             $invoice->sendEmail(true, '');
-            $history = $order->addStatusHistoryComment('Fatura gerada pelo RakutenPay no Status Processing.', false);
+            $history = $order->addStatusHistoryComment('Fatura gerada pelo GenPay no Status Processing.', false);
             $history->setIsCustomerNotified(true);
             $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE);
             $invoice->register();
