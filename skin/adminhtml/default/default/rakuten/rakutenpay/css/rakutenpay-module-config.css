@@ -27,7 +27,7 @@
 #rakutenpay-module p { margin: 1em 0; line-height: 1.4em; }
 
 /* Admin/Logo */
-.rakutenpay_logo { float: left; width: 453px; height: 71px; }
+.rakutenpay_logo { float: left; height: 71px; }
 
 /* Buttons */
 .rakutenpay-button { -webkit-box-sizing : border-box; -moz-box-sizing : border-box; -ms-box-sizing : border-box; -o-box-sizing : border-box; box-sizing : border-box; }

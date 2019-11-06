@@ -4,7 +4,7 @@
         <payment>
             <groups>
                 <rakutenpay_settings translate="label" module="paygate">
-                    <label>Rakuten Connector</label>
+                    <label>GenPay</label>
                     <sort_order>670</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -256,15 +256,6 @@
                                             <show_in_website>1</show_in_website>
                                             <show_in_store>1</show_in_store>
                                         </title>
-                                        <expiration translate="label">
-                                            <label>DIAS ATÉ O VENCIMENTO DO BOLETO</label>
-                                            <tooltip>Tempo, em dias, para o vencimento do boleto.</tooltip>
-                                            <frontend_type>text</frontend_type>
-                                            <sort_order>200</sort_order>
-                                            <show_in_default>1</show_in_default>
-                                            <show_in_website>1</show_in_website>
-                                            <show_in_store>1</show_in_store>
-                                        </expiration>
                                     </fields>
                                 </rakutenpay_boleto>
                             </fields>

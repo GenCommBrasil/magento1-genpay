@@ -15,7 +15,7 @@
                     <frontName>rakutenlogistics</frontName>
                 </args>
             </rakutenlogistics>
-        </routers>    
+        </routers>
     </frontend>
     <global>
         <events>
@@ -137,7 +137,7 @@
             <rakuten_rakutenlogistics>
                 <active>1</active>
                 <model>Rakuten_RakutenLogistics_Model_Shipping_Carrier_RakutenLogistics</model>
-                <title>Rakuten Logistics</title>
+                <title>GenLog</title>
                 <name>Default Rate</name>
                 <sallowspecific>0</sallowspecific>
             </rakuten_rakutenlogistics>

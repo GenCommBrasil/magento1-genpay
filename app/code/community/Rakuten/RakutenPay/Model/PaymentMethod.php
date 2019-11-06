@@ -190,7 +190,7 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
         \Rakuten\Connector\Resources\Log\Logger::info('DOB set.');
 
         if ($helper->isRakutenShippingMethod($this->order->getShippingMethod())) {
-            \Rakuten\Connector\Resources\Log\Logger::info('ShippingMethod is RakutenLogistics.');
+            \Rakuten\Connector\Resources\Log\Logger::info('ShippingMethod is GenLog.');
             $postageServiceCode = str_replace(self::RAKUTEN_LOGISTICS_CODE, '', $this->order->getShippingMethod());
 
             $payment->setKind(self::RAKUTEN_LOGISTICS_KIND);

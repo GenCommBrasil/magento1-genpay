@@ -19,7 +19,7 @@
 ?>
 
 <p>
-    <b>Alterações de status feitas nesta tela podem não ser refletidas para o sistema Rakuten Pay.</b>
+    <b>Alterações de status feitas nesta tela podem não ser refletidas para o sistema GenPay.</b>
 </p>
 <p><b><?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?></b></p>
 
@@ -39,7 +39,7 @@
     <p><button class="button" onclick="window.location.href='<?php echo $this->getDashboardLink(); ?>'">Dashboard RakutenPay</button><br></p>
 <?php endif;?>
 <?php if(!empty($this->getLabelUrl()) && !empty($this->getTrackingUrl())): ?>
-    <br><p><b>Rakuten Logistics</b></p>
+    <br><p><b>GenLog</b></p>
     <p>
         <button class="button" onclick="window.location.href='<?php echo $this->getLabelUrl(); ?>'">Gerar Etiqueta</button>
         <button class="button" onclick="window.location.href='<?php echo $this->getTrackingUrl(); ?>'">Rastreamento</button>

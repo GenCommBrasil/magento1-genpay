@@ -8,8 +8,8 @@ namespace Rakuten\Connector\Enum\DirectPayment;
  */
 class Link
 {
-    const DASHBOARD_LINK_PRODUCTION = 'https://dashboard.rakutenpay.com.br/sales/';
-    const DASHBOARD_LINK_SANDBOX = 'https://dashboard-sandbox.rakutenpay.com.br/sales/';
+    const DASHBOARD_LINK_PRODUCTION = 'https://dashboard.genpay.com.br/sales/';
+    const DASHBOARD_LINK_SANDBOX = 'https://dashboard-sandbox.genpay.com.br/sales/';
 
     const SANDBOX = 'sandbox';
     const PRODUCTION = 'production';

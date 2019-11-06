@@ -33,10 +33,10 @@ class Rakuten_RakutenLogistics_Enum_Endpoints
     /**
      * Endpoints Sandbox
      */
-    const SANDBOX_BATCH = "https://oneapi-sandbox.rakutenpay.com.br/logistics/batch";
-    const SANDBOX_BATCH_DETAIL = "https://oneapi-sandbox.rakutenpay.com.br/logistics/order/";
-    const SANDBOX_CARRIER_METHODS = "https://oneapi-sandbox.rakutenpay.com.br/logistics/client/info";
-    const SANDBOX_CARRIER_PRICES = "https://oneapi-sandbox.rakutenpay.com.br/logistics/calculation";
+    const SANDBOX_BATCH = "https://oneapi-sandbox.genpay.com.br/logistics/batch";
+    const SANDBOX_BATCH_DETAIL = "https://oneapi-sandbox.genpay.com.br/logistics/order/";
+    const SANDBOX_CARRIER_METHODS = "https://oneapi-sandbox.genpay.com.br/logistics/client/info";
+    const SANDBOX_CARRIER_PRICES = "https://oneapi-sandbox.genpay.com.br/logistics/calculation";
 
     /**
      * Endpoints Production

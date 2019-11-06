@@ -38,13 +38,13 @@ class Rakuten_RakutenLogistics_InvoiceDataController extends Mage_Adminhtml_Cont
         try {
 
             if (!$helper->isRakutenShippingMethod($order->getShippingMethod())) {
-                throw new \Rakuten\Connector\Exception\ConnectorException('Shipping Method is not Rakuten Logistics.');
+                throw new \Rakuten\Connector\Exception\ConnectorException('Shipping Method is not GenLog.');
             }
 
             $rakutenOrder = Mage::getModel('rakuten_rakutenlogistics/order')->load($order->getId(), 'order_id');
 
             if (!$rakutenOrder->getOrderId()) {
-                throw new \Rakuten\Connector\Exception\ConnectorException('Rakuten Order not found.');
+                throw new \Rakuten\Connector\Exception\ConnectorException('GenPay Order not found.');
             }
 
             Mage::register('order_data', $rakutenOrder);
@@ -65,7 +65,7 @@ class Rakuten_RakutenLogistics_InvoiceDataController extends Mage_Adminhtml_Cont
     public function saveAction()
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing saveAction in InvoiceDataController.');
-        $orderIncrementId = $this->getRequest()->getParam('order_increment_id');  
+        $orderIncrementId = $this->getRequest()->getParam('order_increment_id');
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
         $rakutenOrder = Mage::getModel('rakuten_rakutenpay/order')->load($order->getId(), 'order_id');
 

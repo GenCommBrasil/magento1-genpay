@@ -1,5 +1,5 @@
 <?php
- 
+
 /**
  ************************************************************************
  * Copyright [2018] [RakutenConnector]
@@ -29,7 +29,7 @@ class Rakuten_RakutenLogistics_Block_Adminhtml_Sales_Order_View extends Mage_Adm
             $order = Mage::registry('current_order');
             $url = Mage::helper("adminhtml")->getUrl('rakutenlogistics/invoiceData/edit/order_increment_id/' . $order->getIncrementId());
             $this->_addButton('button_id', array(
-                'label' => "RakutenLog Invoice",
+                'label' => "GenLog Invoice",
                 'onclick' => 'setLocation(\'' . $url . '\')',
                 'class' => 'go'
             ), 0, 100, 'header', 'header');
