@@ -29,8 +29,8 @@ use Rakuten\Connector\Resources\Http\Response;
  */
 class Authorization extends Response
 {
-    const SANDBOX = 'https://oneapi-sandbox.rakutenpay.com.br/';
-    const PRODUCTION = 'https://api.rakuten.com.br/';
+    const SANDBOX = 'https://oneapi-sandbox.genpay.com.br/';
+    const PRODUCTION = 'https://api.gencomm.com.br/';
     const RAKUTENPAY_DIRECT_PAYMENT = 'rpay/v1/charges';
 
     /**

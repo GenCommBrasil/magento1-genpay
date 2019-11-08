@@ -536,10 +536,10 @@ class Rakuten_RakutenPay_Helper_Data extends Mage_Payment_Helper_Data
     {
         \Rakuten\Connector\Resources\Log\Logger::info('Processing getRakutenPayDirectPaymentJs.');
          if (Mage::getStoreConfig('payment/rakutenpay/environment') === 'production') {
-            return 'https://static.rakutenpay.com.br/rpayjs/rpay-latest.min.js';
+            return 'https://static.genpay.com.br/rpayjs/rpay-latest.min.js';
         }
 
-        return 'https://static.rakutenpay.com.br/rpayjs/rpay-latest.dev.min.js';
+        return 'https://static.genpay.com.br/rpayjs/rpay-latest.dev.min.js';
     }
 
     /**

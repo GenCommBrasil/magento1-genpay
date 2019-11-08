@@ -27,9 +27,9 @@
     var script = document.createElement("script");
     script.async = 1;
 <?php if(strtolower(Mage::getStoreConfig('payment/rakutenpay/environment')) == "sandbox"): ?>
-    script.src = "https://static.rakutenpay.com.br/rpayjs/rpay-latest.dev.min.js";
+    script.src = "https://static.genpay.com.br/rpayjs/rpay-latest.dev.min.js";
 <?php else: ?>
-    script.src = "https://static.rakutenpay.com.br/rpayjs/rpay-latest.min.js";
+    script.src = "https://static.genpay.com.br/rpayjs/rpay-latest.min.js";
 <?php endif ?>
     head.appendChild(script);
 

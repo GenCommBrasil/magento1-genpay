@@ -4,10 +4,10 @@
         <protocol>https</protocol>
         <environment>
             <production>
-                <url>api.rakuten.com.br</url>
+                <url>api.gencomm.com.br</url>
             </production>
             <sandbox>
-                <url>oneapi-sandbox.rakutenpay.com.br</url>
+                <url>oneapi-sandbox.genpay.com.br</url>
             </sandbox>
         </environment>
     </path>
