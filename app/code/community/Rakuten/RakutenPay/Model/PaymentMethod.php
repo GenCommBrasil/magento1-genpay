@@ -256,7 +256,8 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
 
             switch ($paymentMethod) {
                 case 'rakutenpay_boleto':
-                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($this->order->getCustomerTaxvat());
+                    $document = !is_null($this->order->getCustomerTaxvat()) ? $this->order->getCustomerTaxvat() : $paymentData['boletoDocument'];
+                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($document);
                     $payment = new \Rakuten\Connector\Domains\Requests\DirectPayment\Boleto();
                     $payment->setFingerprint($paymentData['fingerprint']);
                     $payment->setSender()->setDocument()->withParameters(
@@ -267,8 +268,8 @@ class Rakuten_RakutenPay_Model_PaymentMethod extends Mage_Payment_Model_Method_A
                     break;
 
                 case 'rakutenpay_credit_card':
-                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($paymentData['creditCardDocument']);
-
+                    $document = !is_null($this->order->getCustomerTaxvat()) ? $this->order->getCustomerTaxvat() : $paymentData['creditCardDocument'];
+                    $formatedDocument = \Rakuten\Connector\Helpers\Document::formatDocument($document);
                     $payment = new \Rakuten\Connector\Domains\Requests\DirectPayment\CreditCard();
                     $payment->setFingerprint($paymentData['fingerprint']);
                     $payment->setToken($paymentData['creditCardToken']);
