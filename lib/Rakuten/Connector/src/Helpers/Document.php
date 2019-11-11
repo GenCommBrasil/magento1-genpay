@@ -47,8 +47,8 @@ class Document
                 return ['number' => $documentNumbers, 'type' => 'CPF'];
                 break;
             default:
-                Logger::error('Invalid document');
-                throw new ConnectorException('Invalid document');
+                Logger::error(sprintf('Invalid document. Document Number: %s', $document));
+                return ['number' => $documentNumbers, 'type' => 'CPF'];
                 break;
         }
     }
