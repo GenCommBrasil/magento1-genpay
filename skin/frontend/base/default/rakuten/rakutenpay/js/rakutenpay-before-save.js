@@ -17,13 +17,19 @@
  */
  //call events before magento payment.save() event
 Payment.prototype.save = Payment.prototype.save.wrap(function(save) {
-  var validator = new Validation(this.form);
-  if (this.validate() && validator.validate()) {
-    // Do form validations
-    // if (validateRakutenPayActiveMethod()) {
-    //   save();
-    // }
-    validateRakutenPayActiveMethod(save);
+  if (payment.currentMethod === "rakutenpay_credit_card" || payment.currentMethod === "rakutenpay_boleto") {
+    var validator = new Validation(this.form);
+    if (this.validate() && validator.validate()) {
+      // Do form validations
+      // if (validateRakutenPayActiveMethod()) {
+      //   save();
+      // }
+      validateRakutenPayActiveMethod(save);
+    }
+  } else {
+    save();
+
+    return true;
   }
 });
 

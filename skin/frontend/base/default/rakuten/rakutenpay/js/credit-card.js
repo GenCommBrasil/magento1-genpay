@@ -15,7 +15,7 @@
  * limitations under the License.
  ************************************************************************
  */
-function validateCreditCard(self) {
+function validateRakutenCreditCard(self) {
   if (self.validity.valid && removeNumbers(unmask(self.value)) === "" && (self.value.length >= 14 && self.value.length <= 22)) {
     var rpay = new RPay();
     cardValidate = rpay.cardValidate(unmask(self.value));
@@ -138,7 +138,7 @@ function validateHiddenFields() {
 }
 
 function getBrand(self) {
-  if (validateCreditCard(self)) {
+  if (validateRakutenCreditCard(self)) {
     var rpay = new RPay();
     brand = rpay.cardBrand(unmask(document.getElementById('creditCardNumVisible').value));
     document.getElementById('creditCardBrand').value = brand;
@@ -217,7 +217,7 @@ function validateCreditCardCode(self) {
 
 function validateCreditCardForm(save) {
   if (
-      validateCreditCard(document.querySelector('#creditCardNum')) &&
+      validateRakutenCreditCard(document.querySelector('#creditCardNum')) &&
       validateCreditCardCode(document.querySelector('#creditCardCode')) &&
       validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
       validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
@@ -232,7 +232,7 @@ function validateCreditCardForm(save) {
     return true;
   }
 
-  validateCreditCard(document.querySelector('#creditCardNum'))
+  validateRakutenCreditCard(document.querySelector('#creditCardNum'))
   validateCreditCardCode(document.querySelector('#creditCardCode'))
   validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
   validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
@@ -244,7 +244,7 @@ function validateCreditCardForm(save) {
 
 function validateCreditCardFormOneStepCheckout() {
     if (
-        validateCreditCard(document.querySelector('#creditCardNumVisible')) &&
+        validateRakutenCreditCard(document.querySelector('#creditCardNumVisible')) &&
         validateCreditCardCode(document.querySelector('#creditCardCode')) &&
         validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth')) &&
         validateCreditCardYear(document.querySelector('#creditCardExpirationYear')) &&
@@ -259,7 +259,7 @@ function validateCreditCardFormOneStepCheckout() {
 }
 
 function validateCreateToken() {
-  if (validateCreditCard(document.querySelector('#creditCardNum'))
+  if (validateRakutenCreditCard(document.querySelector('#creditCardNum'))
     && validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'))
     && validateCreditCardYear(document.querySelector('#creditCardExpirationYear'))
     && validateCreditCardCode(document.querySelector('#creditCardCode'))
@@ -268,7 +268,7 @@ function validateCreateToken() {
     return true
   }
 
-  validateCreditCard(document.querySelector('#creditCardNum'));
+  validateRakutenCreditCard(document.querySelector('#creditCardNum'));
   validateCreditCardMonth(document.querySelector('#creditCardExpirationMonth'));
   validateCreditCardYear(document.querySelector('#creditCardExpirationYear'));
   validateCreditCardCode(document.querySelector('#creditCardCode'));
