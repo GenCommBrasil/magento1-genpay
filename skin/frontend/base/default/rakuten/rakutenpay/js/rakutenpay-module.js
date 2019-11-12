@@ -195,7 +195,6 @@ var Menu = new function() {
     var wrapper  = jQuery("#rakutenpay-module-menu");
     var saveForm = $("#rakutenpay-save-wrapper");
     var body = $("html, body");
-    var windowSel  = jQuery(window);
     var animating = false;
 
     var applyMenu = function() {
@@ -232,63 +231,8 @@ var Menu = new function() {
                     animating = false;
                 };
 
-                if (windowSel.scrollTop() > 100) {
-                    body.animate({scrollTop:0}, 800, 'swing', function(){
-                        setTimeout(showNewPage, 100);
-                    });
-                } else {
-                    showNewPage();
-                }
             };
             return false;
-        });
-    };
-
-    var applyFixedPostion = function() {
-        var initialPos      = wrapper.offset().top;
-        var initialLeft     = wrapper.offset().left;
-        var initialWidth    = wrapper.width();
-        var fixedClass      = 'fixed';
-
-        var resetFixed = function() {
-            wrapper.css('width', '');
-            wrapper.css('top', '');
-            wrapper.removeClass(fixedClass);
-        };
-
-        var applyFixed = function(top) {
-            if (!wrapper.hasClass('fixed')) {
-                wrapper.addClass(fixedClass);
-            }
-
-            wrapper.css('top', parseInt(top - initialPos, 10) + 'px');
-            wrapper.width(initialWidth);
-        };
-
-        var getWindowTop = function() {
-            var aditionalSum = jQuery(".page-head").length > 0 ? 100 : 0;
-            return windowSel.scrollTop() + aditionalSum;
-        };
-
-        windowSel.scroll(function(e){
-            var top = getWindowTop();
-
-            if (top >= initialPos) {
-                applyFixed(top);
-            } else {
-                resetFixed();
-            }
-        });
-
-        windowSel.resize(function(){
-            var wasFixed = wrapper.hasClass(fixedClass);
-
-            resetFixed();
-            initialWidth = wrapper.width();
-
-            if (wasFixed){
-                applyFixed(getWindowTop());
-            }
         });
     };
 
@@ -321,7 +265,6 @@ var Menu = new function() {
     };
 
     this.init = function(){
-        applyFixedPostion();
         applyMenu();
         applyGotoConfig();
         retractableMenu();
