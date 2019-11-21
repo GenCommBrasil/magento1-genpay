@@ -19,36 +19,41 @@
 
 ?>
 <script type="text/javascript">
-    jQuery( document ).ready(function() {
-        var beforeSaveJsUrl = "<?php echo $this->getRakutenPayBeforeSaveJsSkinUrl() ?>";
-        var rpay = "https://static.genpay.com.br/rpayjs/rpay-latest.min.js";
-        <?php if(strtolower(Mage::getStoreConfig('payment/rakutenpay/environment')) == "sandbox"): ?>
-        var rpay = "https://static.genpay.com.br/rpayjs/rpay-latest.dev.min.js";
+    (function(window, document){
+        if(!!window["RPay"]) return;
+        var head = document.getElementsByTagName("head")[0];
+        var script = document.createElement("script");
+        script.async = 1;
+        <?php if(strtolower(Mage::getStoreConfig('payment/genpay/environment')) == "sandbox"): ?>
+        script.src = "https://static.genpay.com.br/rpayjs/rpay-latest.dev.min.js";
+        <?php else: ?>
+        script.src = "https://static.genpay.com.br/rpayjs/rpay-latest.min.js";
         <?php endif ?>
-
-        loadScript(rpay);
-        loadScript(beforeSaveJsUrl);
-
-        function loadScript(script) {
-            var x = document.getElementsByTagName("script");
-            var header_already_added = false;
-            for (var i = 0; i < x.length; i++) {
-                if (x[i].src == script) {
-                    header_already_added = true;
-                }
-            }
-
-            if (header_already_added == false) {
-                // add header if not already added
-                var head = document.getElementsByTagName("head")[0];
-                var s = document.createElement('script');
-                s.type = 'text/javascript';
-                s.src = script;
-                head.appendChild(s);
-            }
-        }
-    });
+        head.appendChild(script);
+    })(window, document)
 </script>
+
+<script>
+    //<![CDATA[
+    var beforeSaveJsUrl = "<?php echo $this->getRakutenPayBeforeSaveJsSkinUrl() ?>";
+    var x = document.getElementsByTagName("script");
+    var header_already_added = false;
+    for (var i=0; i< x.length; i++){
+        if (x[i].src == beforeSaveJsUrl){
+            header_already_added = true;
+        }
+    }
+    if (header_already_added == false){
+        // add header if not already added
+        var head = document.getElementsByTagName("head")[0];
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = beforeSaveJsUrl;
+        head.appendChild(s);
+    }
+    //]]>
+</script>
+
 <div class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
     <div id="rakutenpay-cc-method-div"></div>
     <div class="display-none validation-advice creditCardHiddenFields-error-message">Ocorreu um problema ao validar o cartão. Por favor, tente novamente.</div>
@@ -244,3 +249,11 @@
         </div>
     </div>
 </div>
+
+<?php if ($this->getHasOneStepCheckout()): ?>
+    <script type="text/javascript">
+        if (typeof addCardFieldsObserver !== "undefined") {
+            addCardFieldsObserver();
+        }
+    </script>
+<?php endif ?>
