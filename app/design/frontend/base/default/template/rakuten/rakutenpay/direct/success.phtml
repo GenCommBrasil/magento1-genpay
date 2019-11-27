@@ -17,7 +17,10 @@
  ************************************************************************
  */
 ?>
-<?php $billetUrl = (array_key_exists('billet_url', $_GET)) ? $_GET['billet_url'] : false; ?>
+<?php
+    $billetUrl = (array_key_exists('billet_url', $_GET)) ? $_GET['billet_url'] : false;
+    $billetDisplay = (array_key_exists('billet_display', $_GET)) ? $_GET['billet_display'] : false;
+    ?>
     <script>
     function copyTextToClipboard(text) {
         var textArea = document.createElement("textarea");
@@ -167,8 +170,9 @@
     </style>
 
     <div class="buttons-set">
-        <button class="button" onclick="copyTextToClipboard('<?php echo $billetUrl; ?>')">Copiar Link do Boleto</button>
+    <?php if ($billetDisplay == "modal"): ?>
         <button class="modal-btn button" id="botao" >VISUALIZAR BOLETO</button>
+        <button class="button" onclick="copyTextToClipboard('<?php echo $billetUrl; ?>')">Copiar Link do Boleto</button>
 
         <div id="myModal" class="modal hide">
             <span class="close" id="close">&times;</span>
@@ -177,8 +181,14 @@
                 <iframe src="<?php echo $billetUrl; ?>" width="900" height="800"></iframe>
             </div>
         </div>
+    <?php elseif ($billetDisplay == "tab"): ?>
+        <a href="<?php echo $billetUrl; ?>" target="_blank" class="button" title="Abrir Boleto em nova Aba">VISUALIZAR BOLETO</a>
+        <button class="button" onclick="copyTextToClipboard('<?php echo $billetUrl; ?>')">COPIAR LINK DO BOLETO</button>
+    <?php else: ?>
+        <button class="button" onclick="window.location.href='<?php echo $billetUrl; ?>'">VISUALIZAR BOLETO</button>
+        <button class="button" onclick="copyTextToClipboard('<?php echo $billetUrl; ?>')">COPIAR LINK DO BOLETO</button>
 
-
+    <?php endif;?>
     </div>
 
 <?php } ?>
