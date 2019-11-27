@@ -209,6 +209,9 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             $result = $this->payment->paymentRegister($payment);
             \Rakuten\Connector\Resources\Log\Logger::info('Registered the payment.');
 
+            $billetDisplay = Mage::getStoreConfig('payment/rakutenpay_boleto/boleto_display');
+            \Rakuten\Connector\Resources\Log\Logger::info(sprintf('Billet Display in Config is: %s', $billetDisplay));
+
             $paymentMethod = $order->getPayment()->getMethod();
             if ($paymentMethod == 'rakutenpay_credit_card' && isset($customerPaymentData['creditCardInterestAmount'])) {
                 \Rakuten\Connector\Resources\Log\Logger::info('Setting grand base total without interest.');
@@ -218,7 +221,14 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             if ($result->getCode() == \Rakuten\Connector\Enum\DirectPayment\CodeError::CODE_CHARGE_ALREADY_EXISTS) {
 
                 if ($order->getPayment()->getMethod() == 'rakutenpay_boleto') {
-                    $redirectParams = ['_secure'=> false, '_query'=> array('billet_url' => $order->getPayment()->getAdditionalInformation('billet_url'))];
+                    $redirectParams = [
+                        '_secure'=> false,
+                        '_query'=> [
+                            'billet_url' => $order->getPayment()->getAdditionalInformation('billet_url'),
+                            'billet' => $order->getPayment()->getAdditionalInformation('billet'),
+                            'billet_display' => $billetDisplay,
+                        ],
+                    ];
                 }
 
                 return  Mage_Core_Controller_Varien_Action::_redirect(
@@ -258,14 +268,23 @@ class Rakuten_RakutenPay_PaymentController extends Mage_Core_Controller_Front_Ac
             /** controy redirect url according with payment return link **/
             if (method_exists($result, 'getBillet') && $result->getBillet()) {
                 $billetUrl = $result->getBilletUrl();
+                $billet = $result->getBillet();
 
                 $payment = $order->getPayment();
                 $payment
                     ->setAdditionalInformation('billet_url', $billetUrl)
+                    ->setAdditionalInformation('billet', $billet)
                     ->setAdditionalInformation('rakutenpay_id', $result->getId())
                     ->save();
 
-                $redirectParams = array('_secure'=> false, '_query'=> array('billet_url' => $billetUrl));
+                $redirectParams = [
+                    '_secure'=> false,
+                    '_query'=> [
+                        'billet_url' => $billetUrl,
+                        'billet' => $billet,
+                        'billet_display' => $billetDisplay,
+                        ],
+                    ];
             } else {
                 $payment = $order->getPayment();
                 $payment

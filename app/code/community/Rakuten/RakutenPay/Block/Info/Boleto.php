@@ -90,4 +90,11 @@ class Rakuten_RakutenPay_Block_Info_Boleto extends Mage_Payment_Block_Info
 
         return \Rakuten\Connector\Enum\DirectPayment\Link::getDashboardLink($environment) . $this->getInfo()->getAdditionalInformation('rakutenpay_id');
     }
+
+    public function getBilletDisplay()
+    {
+        $billetDisplay = Mage::getStoreConfig('payment/rakutenpay_boleto/boleto_display');
+
+        return $billetDisplay;
+    }
 }
