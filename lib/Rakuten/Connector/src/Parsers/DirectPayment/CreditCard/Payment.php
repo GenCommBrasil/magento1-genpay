@@ -52,7 +52,7 @@ trait Payment
         if (!is_null(current($request->getInstallment())->getQuantity())) {
             $payment_values[$properties::INSTALLMENT_QUANTITY] = intval(current($request->getInstallment())->getQuantity());
         }
-        if (!is_null(current($request->getInstallment())->getInterestAmount())){
+        if (!is_null(current($request->getInstallment())->getInterestAmount()) && 0.00 != (float) current($request->getInstallment())->getInterestAmount()){
             $installment = [];
             $current_installment = current($request->getInstallment());
             $installment[$properties::QUANTITY] = intval($current_installment->getQuantity());
